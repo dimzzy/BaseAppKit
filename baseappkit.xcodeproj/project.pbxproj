@@ -23,6 +23,13 @@
 		1F7F0FEF138EF27F00E62046 /* BAProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F7F0FEC138EF27F00E62046 /* BAProgressView.m */; };
 		1F7F0FF3138EF50500E62046 /* BAProgressViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F7F0FF1138EF50500E62046 /* BAProgressViewController.m */; };
 		1F7F0FF4138EF50500E62046 /* BAProgressViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1F7F0FF2138EF50500E62046 /* BAProgressViewController.xib */; };
+		1F7F1002138EFF1300E62046 /* BAToggleBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F7F0FF6138EFF1100E62046 /* BAToggleBar.m */; };
+		1F7F1003138EFF1300E62046 /* BAToggleItemImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F7F0FF9138EFF1100E62046 /* BAToggleItemImage.m */; };
+		1F7F1004138EFF1300E62046 /* BAToggleItemLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F7F0FFB138EFF1200E62046 /* BAToggleItemLabel.m */; };
+		1F7F1005138EFF1300E62046 /* UINavigationController+BATransitions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F7F0FFD138EFF1200E62046 /* UINavigationController+BATransitions.m */; };
+		1F7F1006138EFF1300E62046 /* UITableView+BALoading.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F7F0FFF138EFF1200E62046 /* UITableView+BALoading.m */; };
+		1F7F1007138EFF1300E62046 /* BARefreshHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F7F1001138EFF1300E62046 /* BARefreshHeaderView.m */; };
+		1F7F1009138F00D800E62046 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F7F1008138F00D800E62046 /* QuartzCore.framework */; };
 		1F98003D138E745500B91C2C /* CHANGELOG.md in Resources */ = {isa = PBXBuildFile; fileRef = 1F980023138E745500B91C2C /* CHANGELOG.md */; };
 		1F98003E138E745500B91C2C /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F980025138E745500B91C2C /* JSONKit.m */; };
 		1F98003F138E745500B91C2C /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 1F980026138E745500B91C2C /* README.md */; };
@@ -58,15 +65,29 @@
 		1F7F0FE1138EED8100E62046 /* BAPageControlViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BAPageControlViewController.h; sourceTree = "<group>"; };
 		1F7F0FE2138EED8100E62046 /* BAPageControlViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BAPageControlViewController.m; sourceTree = "<group>"; };
 		1F7F0FE3138EED8100E62046 /* BAPageControlViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BAPageControlViewController.xib; sourceTree = "<group>"; };
-		1F7F0FE7138EF27F00E62046 /* BAHyperHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; path = BAHyperHandler.h; sourceTree = "<group>"; };
+		1F7F0FE7138EF27F00E62046 /* BAHyperHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BAHyperHandler.h; sourceTree = "<group>"; };
 		1F7F0FE8138EF27F00E62046 /* BAHyperHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BAHyperHandler.m; sourceTree = "<group>"; };
-		1F7F0FE9138EF27F00E62046 /* BAHyperParser.h */ = {isa = PBXFileReference; fileEncoding = 4; path = BAHyperParser.h; sourceTree = "<group>"; };
+		1F7F0FE9138EF27F00E62046 /* BAHyperParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BAHyperParser.h; sourceTree = "<group>"; };
 		1F7F0FEA138EF27F00E62046 /* BAHyperParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BAHyperParser.m; sourceTree = "<group>"; };
 		1F7F0FEB138EF27F00E62046 /* BAProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BAProgressView.h; sourceTree = "<group>"; };
 		1F7F0FEC138EF27F00E62046 /* BAProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BAProgressView.m; sourceTree = "<group>"; };
 		1F7F0FF0138EF50500E62046 /* BAProgressViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BAProgressViewController.h; sourceTree = "<group>"; };
 		1F7F0FF1138EF50500E62046 /* BAProgressViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BAProgressViewController.m; sourceTree = "<group>"; };
 		1F7F0FF2138EF50500E62046 /* BAProgressViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BAProgressViewController.xib; sourceTree = "<group>"; };
+		1F7F0FF5138EFF1100E62046 /* BAToggleBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BAToggleBar.h; sourceTree = "<group>"; };
+		1F7F0FF6138EFF1100E62046 /* BAToggleBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BAToggleBar.m; sourceTree = "<group>"; };
+		1F7F0FF7138EFF1100E62046 /* BAToggleItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BAToggleItem.h; sourceTree = "<group>"; };
+		1F7F0FF8138EFF1100E62046 /* BAToggleItemImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BAToggleItemImage.h; sourceTree = "<group>"; };
+		1F7F0FF9138EFF1100E62046 /* BAToggleItemImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BAToggleItemImage.m; sourceTree = "<group>"; };
+		1F7F0FFA138EFF1200E62046 /* BAToggleItemLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BAToggleItemLabel.h; sourceTree = "<group>"; };
+		1F7F0FFB138EFF1200E62046 /* BAToggleItemLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BAToggleItemLabel.m; sourceTree = "<group>"; };
+		1F7F0FFC138EFF1200E62046 /* UINavigationController+BATransitions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationController+BATransitions.h"; sourceTree = "<group>"; };
+		1F7F0FFD138EFF1200E62046 /* UINavigationController+BATransitions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+BATransitions.m"; sourceTree = "<group>"; };
+		1F7F0FFE138EFF1200E62046 /* UITableView+BALoading.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableView+BALoading.h"; sourceTree = "<group>"; };
+		1F7F0FFF138EFF1200E62046 /* UITableView+BALoading.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+BALoading.m"; sourceTree = "<group>"; };
+		1F7F1000138EFF1200E62046 /* BARefreshHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BARefreshHeaderView.h; sourceTree = "<group>"; };
+		1F7F1001138EFF1300E62046 /* BARefreshHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BARefreshHeaderView.m; sourceTree = "<group>"; };
+		1F7F1008138F00D800E62046 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		1F980023138E745500B91C2C /* CHANGELOG.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CHANGELOG.md; sourceTree = "<group>"; };
 		1F980024138E745500B91C2C /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
 		1F980025138E745500B91C2C /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
@@ -94,6 +115,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1F7F1009138F00D800E62046 /* QuartzCore.framework in Frameworks */,
 				1FC7B7EE138E592800900EA2 /* UIKit.framework in Frameworks */,
 				1FC7B7F0138E592800900EA2 /* Foundation.framework in Frameworks */,
 				1FC7B7F2138E592800900EA2 /* CoreGraphics.framework in Frameworks */,
@@ -148,12 +170,25 @@
 				1F7F0FE8138EF27F00E62046 /* BAHyperHandler.m */,
 				1F7F0FE9138EF27F00E62046 /* BAHyperParser.h */,
 				1F7F0FEA138EF27F00E62046 /* BAHyperParser.m */,
+				1F7F0FFC138EFF1200E62046 /* UINavigationController+BATransitions.h */,
+				1F7F0FFD138EFF1200E62046 /* UINavigationController+BATransitions.m */,
+				1F7F0FFE138EFF1200E62046 /* UITableView+BALoading.h */,
+				1F7F0FFF138EFF1200E62046 /* UITableView+BALoading.m */,
 				1F6D31B2138E96FF00DEA7FE /* BARemoteImageView.h */,
 				1F6D31B3138E970000DEA7FE /* BARemoteImageView.m */,
 				1F6D31B0138E96FF00DEA7FE /* BAPageControl.h */,
 				1F6D31B1138E96FF00DEA7FE /* BAPageControl.m */,
 				1F7F0FEB138EF27F00E62046 /* BAProgressView.h */,
 				1F7F0FEC138EF27F00E62046 /* BAProgressView.m */,
+				1F7F1000138EFF1200E62046 /* BARefreshHeaderView.h */,
+				1F7F1001138EFF1300E62046 /* BARefreshHeaderView.m */,
+				1F7F0FF5138EFF1100E62046 /* BAToggleBar.h */,
+				1F7F0FF6138EFF1100E62046 /* BAToggleBar.m */,
+				1F7F0FF7138EFF1100E62046 /* BAToggleItem.h */,
+				1F7F0FF8138EFF1100E62046 /* BAToggleItemImage.h */,
+				1F7F0FF9138EFF1100E62046 /* BAToggleItemImage.m */,
+				1F7F0FFA138EFF1200E62046 /* BAToggleItemLabel.h */,
+				1F7F0FFB138EFF1200E62046 /* BAToggleItemLabel.m */,
 			);
 			path = BaseAppKit;
 			sourceTree = "<group>";
@@ -191,6 +226,7 @@
 		1FC7B7EC138E592800900EA2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1F7F1008138F00D800E62046 /* QuartzCore.framework */,
 				1FC7B7ED138E592800900EA2 /* UIKit.framework */,
 				1FC7B7EF138E592800900EA2 /* Foundation.framework */,
 				1FC7B7F1138E592800900EA2 /* CoreGraphics.framework */,
@@ -283,6 +319,12 @@
 				1F7F0FEE138EF27F00E62046 /* BAHyperParser.m in Sources */,
 				1F7F0FEF138EF27F00E62046 /* BAProgressView.m in Sources */,
 				1F7F0FF3138EF50500E62046 /* BAProgressViewController.m in Sources */,
+				1F7F1002138EFF1300E62046 /* BAToggleBar.m in Sources */,
+				1F7F1003138EFF1300E62046 /* BAToggleItemImage.m in Sources */,
+				1F7F1004138EFF1300E62046 /* BAToggleItemLabel.m in Sources */,
+				1F7F1005138EFF1300E62046 /* UINavigationController+BATransitions.m in Sources */,
+				1F7F1006138EFF1300E62046 /* UITableView+BALoading.m in Sources */,
+				1F7F1007138EFF1300E62046 /* BARefreshHeaderView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
