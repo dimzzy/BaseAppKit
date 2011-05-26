@@ -26,53 +26,38 @@
  or implied, of Dmitry Stadnik.
 */
 
-#import "BADemoViewController.h"
-#import "BAPageControlViewController.h"
 #import "BAProgressViewController.h"
 
-@implementation BADemoViewController
+
+@implementation BAProgressViewController
 
 - (void)dealloc {
+	[_progressView1 release];
+	[_progressView2 release];
     [super dealloc];
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	return 2;
+- (void)viewDidUnload {
+    [super viewDidUnload];
+	[_progressView1 release];
+	_progressView1 = nil;
+	[_progressView2 release];
+	_progressView2 = nil;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
-	if (!cell) {
-		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
-	}
-	switch (indexPath.row) {
-		case 0:
-			cell.textLabel.text = @"Page Control";
-			break;
-		case 1:
-			cell.textLabel.text = @"Progress View";
-			break;
-	}
-	return cell;
+- (void)viewDidLoad {
+    [super viewDidLoad];
+	_progressView1.progressColor = [UIColor darkGrayColor];
+	_progressView2.progressColor = [UIColor grayColor];
+	_progressView2.failed = YES;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	switch (indexPath.row) {
-		case 0: {
-			BAPageControlViewController *controller = [[[BAPageControlViewController alloc] initWithNibName:@"BAPageControlViewController"
-																									 bundle:nil] autorelease];
-			controller.navigationItem.title = @"Page Control";
-			[self.navigationController pushViewController:controller animated:YES];
-			break;
-		}
-		case 1: {
-			BAProgressViewController *controller = [[[BAProgressViewController alloc] initWithNibName:@"BAProgressViewController"
-																							   bundle:nil] autorelease];
-			controller.navigationItem.title = @"Progress View";
-			[self.navigationController pushViewController:controller animated:YES];
-			break;
-		}
-	}
+- (IBAction)less {
+	_progressView1.progress -= 0.2;
+}
+
+- (IBAction)more {
+	_progressView1.progress += 0.2;
 }
 
 @end
