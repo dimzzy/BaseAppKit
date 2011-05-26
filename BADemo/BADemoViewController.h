@@ -28,8 +28,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface BADemoViewController : UIViewController {
-    
+@interface BADemoViewController : UITableViewController {
 }
 
 @end

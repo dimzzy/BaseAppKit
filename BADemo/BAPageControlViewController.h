@@ -27,10 +27,19 @@
 */
 
 #import <UIKit/UIKit.h>
+#import "BAPageControl.h"
 
-@interface BADemoAppDelegate : NSObject <UIApplicationDelegate> {
+@interface BAPageControlViewController : UIViewController {
+	IBOutlet BAPageControl *_pageControl1;
+	IBOutlet BAPageControl *_pageControl2;
+	IBOutlet BAPageControl *_pageControl3;
+	IBOutlet BAPageControl *_pageControl4;
+	IBOutlet BAPageControl *_pageControl5;
+	IBOutlet BAPageControl *_pageControl6;
 }
 
-@property (nonatomic, retain) IBOutlet UIWindow *window;
+- (IBAction)addPage;
+- (IBAction)removePage;
 
 @end
+

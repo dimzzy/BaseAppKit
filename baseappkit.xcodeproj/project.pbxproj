@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		1F4B38E3138E704D003FE58C /* BADemoAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F4B38D9138E704D003FE58C /* BADemoAppDelegate.m */; };
 		1F4B38E4138E704D003FE58C /* BADemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F4B38DB138E704D003FE58C /* BADemoViewController.m */; };
-		1F4B38E5138E704D003FE58C /* BADemoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1F4B38DC138E704D003FE58C /* BADemoViewController.xib */; };
 		1F4B38E6138E704D003FE58C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1F4B38DE138E704D003FE58C /* InfoPlist.strings */; };
 		1F4B38E8138E704D003FE58C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F4B38E1138E704D003FE58C /* main.m */; };
 		1F4B38E9138E704D003FE58C /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1F4B38E2138E704D003FE58C /* MainWindow.xib */; };
@@ -17,6 +16,8 @@
 		1F6D31AE138E959600DEA7FE /* BAXMLParserBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F6D31AC138E959600DEA7FE /* BAXMLParserBase.m */; };
 		1F6D31B4138E970000DEA7FE /* BAPageControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F6D31B1138E96FF00DEA7FE /* BAPageControl.m */; };
 		1F6D31B5138E970000DEA7FE /* BARemoteImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F6D31B3138E970000DEA7FE /* BARemoteImageView.m */; };
+		1F7F0FE4138EED8100E62046 /* BAPageControlViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F7F0FE2138EED8100E62046 /* BAPageControlViewController.m */; };
+		1F7F0FE5138EED8100E62046 /* BAPageControlViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1F7F0FE3138EED8100E62046 /* BAPageControlViewController.xib */; };
 		1F98003D138E745500B91C2C /* CHANGELOG.md in Resources */ = {isa = PBXBuildFile; fileRef = 1F980023138E745500B91C2C /* CHANGELOG.md */; };
 		1F98003E138E745500B91C2C /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F980025138E745500B91C2C /* JSONKit.m */; };
 		1F98003F138E745500B91C2C /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 1F980026138E745500B91C2C /* README.md */; };
@@ -36,7 +37,6 @@
 		1F4B38D9138E704D003FE58C /* BADemoAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BADemoAppDelegate.m; sourceTree = "<group>"; };
 		1F4B38DA138E704D003FE58C /* BADemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BADemoViewController.h; sourceTree = "<group>"; };
 		1F4B38DB138E704D003FE58C /* BADemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BADemoViewController.m; sourceTree = "<group>"; };
-		1F4B38DC138E704D003FE58C /* BADemoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BADemoViewController.xib; sourceTree = "<group>"; };
 		1F4B38DD138E704D003FE58C /* BADemo-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "BADemo-Prefix.pch"; sourceTree = "<group>"; };
 		1F4B38DF138E704D003FE58C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1F4B38E0138E704D003FE58C /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -46,10 +46,13 @@
 		1F6D31AA138E959600DEA7FE /* BAXMLLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BAXMLLoader.m; sourceTree = "<group>"; };
 		1F6D31AB138E959600DEA7FE /* BAXMLParserBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BAXMLParserBase.h; sourceTree = "<group>"; };
 		1F6D31AC138E959600DEA7FE /* BAXMLParserBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BAXMLParserBase.m; sourceTree = "<group>"; };
-		1F6D31B0138E96FF00DEA7FE /* BAPageControl.h */ = {isa = PBXFileReference; fileEncoding = 4; path = BAPageControl.h; sourceTree = "<group>"; };
+		1F6D31B0138E96FF00DEA7FE /* BAPageControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BAPageControl.h; sourceTree = "<group>"; };
 		1F6D31B1138E96FF00DEA7FE /* BAPageControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BAPageControl.m; sourceTree = "<group>"; };
-		1F6D31B2138E96FF00DEA7FE /* BARemoteImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; path = BARemoteImageView.h; sourceTree = "<group>"; };
+		1F6D31B2138E96FF00DEA7FE /* BARemoteImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BARemoteImageView.h; sourceTree = "<group>"; };
 		1F6D31B3138E970000DEA7FE /* BARemoteImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BARemoteImageView.m; sourceTree = "<group>"; };
+		1F7F0FE1138EED8100E62046 /* BAPageControlViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BAPageControlViewController.h; sourceTree = "<group>"; };
+		1F7F0FE2138EED8100E62046 /* BAPageControlViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BAPageControlViewController.m; sourceTree = "<group>"; };
+		1F7F0FE3138EED8100E62046 /* BAPageControlViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BAPageControlViewController.xib; sourceTree = "<group>"; };
 		1F980023138E745500B91C2C /* CHANGELOG.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CHANGELOG.md; sourceTree = "<group>"; };
 		1F980024138E745500B91C2C /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
 		1F980025138E745500B91C2C /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
@@ -94,7 +97,9 @@
 				1F4B38E2138E704D003FE58C /* MainWindow.xib */,
 				1F4B38DA138E704D003FE58C /* BADemoViewController.h */,
 				1F4B38DB138E704D003FE58C /* BADemoViewController.m */,
-				1F4B38DC138E704D003FE58C /* BADemoViewController.xib */,
+				1F7F0FE1138EED8100E62046 /* BAPageControlViewController.h */,
+				1F7F0FE2138EED8100E62046 /* BAPageControlViewController.m */,
+				1F7F0FE3138EED8100E62046 /* BAPageControlViewController.xib */,
 				1F4B38DD138E704D003FE58C /* BADemo-Prefix.pch */,
 				1F4B38DE138E704D003FE58C /* InfoPlist.strings */,
 				1F4B38E0138E704D003FE58C /* Info.plist */,
@@ -220,11 +225,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1F4B38E5138E704D003FE58C /* BADemoViewController.xib in Resources */,
 				1F4B38E6138E704D003FE58C /* InfoPlist.strings in Resources */,
 				1F4B38E9138E704D003FE58C /* MainWindow.xib in Resources */,
 				1F98003D138E745500B91C2C /* CHANGELOG.md in Resources */,
 				1F98003F138E745500B91C2C /* README.md in Resources */,
+				1F7F0FE5138EED8100E62046 /* BAPageControlViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -249,6 +254,7 @@
 				1F6D31AE138E959600DEA7FE /* BAXMLParserBase.m in Sources */,
 				1F6D31B4138E970000DEA7FE /* BAPageControl.m in Sources */,
 				1F6D31B5138E970000DEA7FE /* BARemoteImageView.m in Sources */,
+				1F7F0FE4138EED8100E62046 /* BAPageControlViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
