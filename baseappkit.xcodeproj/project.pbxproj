@@ -16,6 +16,12 @@
 		1F98003D138E745500B91C2C /* CHANGELOG.md in Resources */ = {isa = PBXBuildFile; fileRef = 1F980023138E745500B91C2C /* CHANGELOG.md */; };
 		1F98003E138E745500B91C2C /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F980025138E745500B91C2C /* JSONKit.m */; };
 		1F98003F138E745500B91C2C /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 1F980026138E745500B91C2C /* README.md */; };
+		1F980061138E892700B91C2C /* BAPersistentCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F980056138E892700B91C2C /* BAPersistentCache.m */; };
+		1F980062138E892700B91C2C /* BADataLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F980058138E892700B91C2C /* BADataLoader.m */; };
+		1F980063138E892700B91C2C /* BAJSONLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F98005A138E892700B91C2C /* BAJSONLoader.m */; };
+		1F980064138E892700B91C2C /* BANetworkActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F98005C138E892700B91C2C /* BANetworkActivity.m */; };
+		1F980065138E892700B91C2C /* NSDictionary+BAHTTP.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F98005E138E892700B91C2C /* NSDictionary+BAHTTP.m */; };
+		1F980066138E892700B91C2C /* NSString+BACoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F980060138E892700B91C2C /* NSString+BACoding.m */; };
 		1FC7B7EE138E592800900EA2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FC7B7ED138E592800900EA2 /* UIKit.framework */; };
 		1FC7B7F0138E592800900EA2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FC7B7EF138E592800900EA2 /* Foundation.framework */; };
 		1FC7B7F2138E592800900EA2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FC7B7F1138E592800900EA2 /* CoreGraphics.framework */; };
@@ -36,6 +42,18 @@
 		1F980024138E745500B91C2C /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
 		1F980025138E745500B91C2C /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 		1F980026138E745500B91C2C /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		1F980055138E892700B91C2C /* BAPersistentCache.h */ = {isa = PBXFileReference; fileEncoding = 4; path = BAPersistentCache.h; sourceTree = "<group>"; };
+		1F980056138E892700B91C2C /* BAPersistentCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BAPersistentCache.m; sourceTree = "<group>"; };
+		1F980057138E892700B91C2C /* BADataLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; path = BADataLoader.h; sourceTree = "<group>"; };
+		1F980058138E892700B91C2C /* BADataLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BADataLoader.m; sourceTree = "<group>"; };
+		1F980059138E892700B91C2C /* BAJSONLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; path = BAJSONLoader.h; sourceTree = "<group>"; };
+		1F98005A138E892700B91C2C /* BAJSONLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BAJSONLoader.m; sourceTree = "<group>"; };
+		1F98005B138E892700B91C2C /* BANetworkActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; path = BANetworkActivity.h; sourceTree = "<group>"; };
+		1F98005C138E892700B91C2C /* BANetworkActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BANetworkActivity.m; sourceTree = "<group>"; };
+		1F98005D138E892700B91C2C /* NSDictionary+BAHTTP.h */ = {isa = PBXFileReference; fileEncoding = 4; path = "NSDictionary+BAHTTP.h"; sourceTree = "<group>"; };
+		1F98005E138E892700B91C2C /* NSDictionary+BAHTTP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+BAHTTP.m"; sourceTree = "<group>"; };
+		1F98005F138E892700B91C2C /* NSString+BACoding.h */ = {isa = PBXFileReference; fileEncoding = 4; path = "NSString+BACoding.h"; sourceTree = "<group>"; };
+		1F980060138E892700B91C2C /* NSString+BACoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+BACoding.m"; sourceTree = "<group>"; };
 		1FC7B7E9138E592800900EA2 /* BADemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BADemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FC7B7ED138E592800900EA2 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		1FC7B7EF138E592800900EA2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -73,6 +91,25 @@
 			path = BADemo;
 			sourceTree = "<group>";
 		};
+		1F980054138E892700B91C2C /* BaseAppKit */ = {
+			isa = PBXGroup;
+			children = (
+				1F98005F138E892700B91C2C /* NSString+BACoding.h */,
+				1F980060138E892700B91C2C /* NSString+BACoding.m */,
+				1F98005D138E892700B91C2C /* NSDictionary+BAHTTP.h */,
+				1F98005E138E892700B91C2C /* NSDictionary+BAHTTP.m */,
+				1F98005B138E892700B91C2C /* BANetworkActivity.h */,
+				1F98005C138E892700B91C2C /* BANetworkActivity.m */,
+				1F980055138E892700B91C2C /* BAPersistentCache.h */,
+				1F980056138E892700B91C2C /* BAPersistentCache.m */,
+				1F980057138E892700B91C2C /* BADataLoader.h */,
+				1F980058138E892700B91C2C /* BADataLoader.m */,
+				1F980059138E892700B91C2C /* BAJSONLoader.h */,
+				1F98005A138E892700B91C2C /* BAJSONLoader.m */,
+			);
+			path = BaseAppKit;
+			sourceTree = "<group>";
+		};
 		1F98FFFD138E745500B91C2C /* JSONKit */ = {
 			isa = PBXGroup;
 			children = (
@@ -87,6 +124,7 @@
 		1FC7B7DE138E592800900EA2 = {
 			isa = PBXGroup;
 			children = (
+				1F980054138E892700B91C2C /* BaseAppKit */,
 				1F98FFFD138E745500B91C2C /* JSONKit */,
 				1F4B38D7138E704D003FE58C /* BADemo */,
 				1FC7B7EC138E592800900EA2 /* Frameworks */,
@@ -181,6 +219,12 @@
 				1F4B38E4138E704D003FE58C /* BADemoViewController.m in Sources */,
 				1F4B38E8138E704D003FE58C /* main.m in Sources */,
 				1F98003E138E745500B91C2C /* JSONKit.m in Sources */,
+				1F980061138E892700B91C2C /* BAPersistentCache.m in Sources */,
+				1F980062138E892700B91C2C /* BADataLoader.m in Sources */,
+				1F980063138E892700B91C2C /* BAJSONLoader.m in Sources */,
+				1F980064138E892700B91C2C /* BANetworkActivity.m in Sources */,
+				1F980065138E892700B91C2C /* NSDictionary+BAHTTP.m in Sources */,
+				1F980066138E892700B91C2C /* NSString+BACoding.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
