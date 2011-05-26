@@ -15,6 +15,8 @@
 		1F4B38E9138E704D003FE58C /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1F4B38E2138E704D003FE58C /* MainWindow.xib */; };
 		1F6D31AD138E959600DEA7FE /* BAXMLLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F6D31AA138E959600DEA7FE /* BAXMLLoader.m */; };
 		1F6D31AE138E959600DEA7FE /* BAXMLParserBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F6D31AC138E959600DEA7FE /* BAXMLParserBase.m */; };
+		1F6D31B4138E970000DEA7FE /* BAPageControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F6D31B1138E96FF00DEA7FE /* BAPageControl.m */; };
+		1F6D31B5138E970000DEA7FE /* BARemoteImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F6D31B3138E970000DEA7FE /* BARemoteImageView.m */; };
 		1F98003D138E745500B91C2C /* CHANGELOG.md in Resources */ = {isa = PBXBuildFile; fileRef = 1F980023138E745500B91C2C /* CHANGELOG.md */; };
 		1F98003E138E745500B91C2C /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F980025138E745500B91C2C /* JSONKit.m */; };
 		1F98003F138E745500B91C2C /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 1F980026138E745500B91C2C /* README.md */; };
@@ -40,10 +42,14 @@
 		1F4B38E0138E704D003FE58C /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1F4B38E1138E704D003FE58C /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		1F4B38E2138E704D003FE58C /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
-		1F6D31A9138E959600DEA7FE /* BAXMLLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; path = BAXMLLoader.h; sourceTree = "<group>"; };
+		1F6D31A9138E959600DEA7FE /* BAXMLLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BAXMLLoader.h; sourceTree = "<group>"; };
 		1F6D31AA138E959600DEA7FE /* BAXMLLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BAXMLLoader.m; sourceTree = "<group>"; };
-		1F6D31AB138E959600DEA7FE /* BAXMLParserBase.h */ = {isa = PBXFileReference; fileEncoding = 4; path = BAXMLParserBase.h; sourceTree = "<group>"; };
+		1F6D31AB138E959600DEA7FE /* BAXMLParserBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BAXMLParserBase.h; sourceTree = "<group>"; };
 		1F6D31AC138E959600DEA7FE /* BAXMLParserBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BAXMLParserBase.m; sourceTree = "<group>"; };
+		1F6D31B0138E96FF00DEA7FE /* BAPageControl.h */ = {isa = PBXFileReference; fileEncoding = 4; path = BAPageControl.h; sourceTree = "<group>"; };
+		1F6D31B1138E96FF00DEA7FE /* BAPageControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BAPageControl.m; sourceTree = "<group>"; };
+		1F6D31B2138E96FF00DEA7FE /* BARemoteImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; path = BARemoteImageView.h; sourceTree = "<group>"; };
+		1F6D31B3138E970000DEA7FE /* BARemoteImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BARemoteImageView.m; sourceTree = "<group>"; };
 		1F980023138E745500B91C2C /* CHANGELOG.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CHANGELOG.md; sourceTree = "<group>"; };
 		1F980024138E745500B91C2C /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
 		1F980025138E745500B91C2C /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
@@ -116,6 +122,10 @@
 				1F6D31AC138E959600DEA7FE /* BAXMLParserBase.m */,
 				1F6D31A9138E959600DEA7FE /* BAXMLLoader.h */,
 				1F6D31AA138E959600DEA7FE /* BAXMLLoader.m */,
+				1F6D31B2138E96FF00DEA7FE /* BARemoteImageView.h */,
+				1F6D31B3138E970000DEA7FE /* BARemoteImageView.m */,
+				1F6D31B0138E96FF00DEA7FE /* BAPageControl.h */,
+				1F6D31B1138E96FF00DEA7FE /* BAPageControl.m */,
 			);
 			path = BaseAppKit;
 			sourceTree = "<group>";
@@ -237,6 +247,8 @@
 				1F980066138E892700B91C2C /* NSString+BACoding.m in Sources */,
 				1F6D31AD138E959600DEA7FE /* BAXMLLoader.m in Sources */,
 				1F6D31AE138E959600DEA7FE /* BAXMLParserBase.m in Sources */,
+				1F6D31B4138E970000DEA7FE /* BAPageControl.m in Sources */,
+				1F6D31B5138E970000DEA7FE /* BARemoteImageView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
