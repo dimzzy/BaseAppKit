@@ -13,6 +13,8 @@
 		1F4B38E6138E704D003FE58C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1F4B38DE138E704D003FE58C /* InfoPlist.strings */; };
 		1F4B38E8138E704D003FE58C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F4B38E1138E704D003FE58C /* main.m */; };
 		1F4B38E9138E704D003FE58C /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1F4B38E2138E704D003FE58C /* MainWindow.xib */; };
+		1F6D31AD138E959600DEA7FE /* BAXMLLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F6D31AA138E959600DEA7FE /* BAXMLLoader.m */; };
+		1F6D31AE138E959600DEA7FE /* BAXMLParserBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F6D31AC138E959600DEA7FE /* BAXMLParserBase.m */; };
 		1F98003D138E745500B91C2C /* CHANGELOG.md in Resources */ = {isa = PBXBuildFile; fileRef = 1F980023138E745500B91C2C /* CHANGELOG.md */; };
 		1F98003E138E745500B91C2C /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F980025138E745500B91C2C /* JSONKit.m */; };
 		1F98003F138E745500B91C2C /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 1F980026138E745500B91C2C /* README.md */; };
@@ -38,21 +40,25 @@
 		1F4B38E0138E704D003FE58C /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1F4B38E1138E704D003FE58C /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		1F4B38E2138E704D003FE58C /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
+		1F6D31A9138E959600DEA7FE /* BAXMLLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; path = BAXMLLoader.h; sourceTree = "<group>"; };
+		1F6D31AA138E959600DEA7FE /* BAXMLLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BAXMLLoader.m; sourceTree = "<group>"; };
+		1F6D31AB138E959600DEA7FE /* BAXMLParserBase.h */ = {isa = PBXFileReference; fileEncoding = 4; path = BAXMLParserBase.h; sourceTree = "<group>"; };
+		1F6D31AC138E959600DEA7FE /* BAXMLParserBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BAXMLParserBase.m; sourceTree = "<group>"; };
 		1F980023138E745500B91C2C /* CHANGELOG.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CHANGELOG.md; sourceTree = "<group>"; };
 		1F980024138E745500B91C2C /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
 		1F980025138E745500B91C2C /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 		1F980026138E745500B91C2C /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
-		1F980055138E892700B91C2C /* BAPersistentCache.h */ = {isa = PBXFileReference; fileEncoding = 4; path = BAPersistentCache.h; sourceTree = "<group>"; };
+		1F980055138E892700B91C2C /* BAPersistentCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BAPersistentCache.h; sourceTree = "<group>"; };
 		1F980056138E892700B91C2C /* BAPersistentCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BAPersistentCache.m; sourceTree = "<group>"; };
-		1F980057138E892700B91C2C /* BADataLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; path = BADataLoader.h; sourceTree = "<group>"; };
+		1F980057138E892700B91C2C /* BADataLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BADataLoader.h; sourceTree = "<group>"; };
 		1F980058138E892700B91C2C /* BADataLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BADataLoader.m; sourceTree = "<group>"; };
-		1F980059138E892700B91C2C /* BAJSONLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; path = BAJSONLoader.h; sourceTree = "<group>"; };
+		1F980059138E892700B91C2C /* BAJSONLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BAJSONLoader.h; sourceTree = "<group>"; };
 		1F98005A138E892700B91C2C /* BAJSONLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BAJSONLoader.m; sourceTree = "<group>"; };
-		1F98005B138E892700B91C2C /* BANetworkActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; path = BANetworkActivity.h; sourceTree = "<group>"; };
+		1F98005B138E892700B91C2C /* BANetworkActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BANetworkActivity.h; sourceTree = "<group>"; };
 		1F98005C138E892700B91C2C /* BANetworkActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BANetworkActivity.m; sourceTree = "<group>"; };
-		1F98005D138E892700B91C2C /* NSDictionary+BAHTTP.h */ = {isa = PBXFileReference; fileEncoding = 4; path = "NSDictionary+BAHTTP.h"; sourceTree = "<group>"; };
+		1F98005D138E892700B91C2C /* NSDictionary+BAHTTP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+BAHTTP.h"; sourceTree = "<group>"; };
 		1F98005E138E892700B91C2C /* NSDictionary+BAHTTP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+BAHTTP.m"; sourceTree = "<group>"; };
-		1F98005F138E892700B91C2C /* NSString+BACoding.h */ = {isa = PBXFileReference; fileEncoding = 4; path = "NSString+BACoding.h"; sourceTree = "<group>"; };
+		1F98005F138E892700B91C2C /* NSString+BACoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+BACoding.h"; sourceTree = "<group>"; };
 		1F980060138E892700B91C2C /* NSString+BACoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+BACoding.m"; sourceTree = "<group>"; };
 		1FC7B7E9138E592800900EA2 /* BADemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BADemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FC7B7ED138E592800900EA2 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -106,6 +112,10 @@
 				1F980058138E892700B91C2C /* BADataLoader.m */,
 				1F980059138E892700B91C2C /* BAJSONLoader.h */,
 				1F98005A138E892700B91C2C /* BAJSONLoader.m */,
+				1F6D31AB138E959600DEA7FE /* BAXMLParserBase.h */,
+				1F6D31AC138E959600DEA7FE /* BAXMLParserBase.m */,
+				1F6D31A9138E959600DEA7FE /* BAXMLLoader.h */,
+				1F6D31AA138E959600DEA7FE /* BAXMLLoader.m */,
 			);
 			path = BaseAppKit;
 			sourceTree = "<group>";
@@ -225,6 +235,8 @@
 				1F980064138E892700B91C2C /* BANetworkActivity.m in Sources */,
 				1F980065138E892700B91C2C /* NSDictionary+BAHTTP.m in Sources */,
 				1F980066138E892700B91C2C /* NSString+BACoding.m in Sources */,
+				1F6D31AD138E959600DEA7FE /* BAXMLLoader.m in Sources */,
+				1F6D31AE138E959600DEA7FE /* BAXMLParserBase.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
