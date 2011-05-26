@@ -7,32 +7,32 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1F4B38E3138E704D003FE58C /* BADemoAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F4B38D9138E704D003FE58C /* BADemoAppDelegate.m */; };
+		1F4B38E4138E704D003FE58C /* BADemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F4B38DB138E704D003FE58C /* BADemoViewController.m */; };
+		1F4B38E5138E704D003FE58C /* BADemoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1F4B38DC138E704D003FE58C /* BADemoViewController.xib */; };
+		1F4B38E6138E704D003FE58C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1F4B38DE138E704D003FE58C /* InfoPlist.strings */; };
+		1F4B38E8138E704D003FE58C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F4B38E1138E704D003FE58C /* main.m */; };
+		1F4B38E9138E704D003FE58C /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1F4B38E2138E704D003FE58C /* MainWindow.xib */; };
 		1FC7B7EE138E592800900EA2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FC7B7ED138E592800900EA2 /* UIKit.framework */; };
 		1FC7B7F0138E592800900EA2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FC7B7EF138E592800900EA2 /* Foundation.framework */; };
 		1FC7B7F2138E592800900EA2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FC7B7F1138E592800900EA2 /* CoreGraphics.framework */; };
-		1FC7B7F8138E592800900EA2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1FC7B7F6138E592800900EA2 /* InfoPlist.strings */; };
-		1FC7B7FB138E592800900EA2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1FC7B7FA138E592800900EA2 /* main.m */; };
-		1FC7B7FE138E592800900EA2 /* BADemoAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1FC7B7FD138E592800900EA2 /* BADemoAppDelegate.m */; };
-		1FC7B804138E592800900EA2 /* BADemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1FC7B803138E592800900EA2 /* BADemoViewController.m */; };
-		1FC7B818138E61EC00900EA2 /* BADemoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1FC7B816138E61EC00900EA2 /* BADemoViewController.xib */; };
-		1FC7B819138E61EC00900EA2 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1FC7B817138E61EC00900EA2 /* MainWindow.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1F4B38D8138E704D003FE58C /* BADemoAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BADemoAppDelegate.h; sourceTree = "<group>"; };
+		1F4B38D9138E704D003FE58C /* BADemoAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BADemoAppDelegate.m; sourceTree = "<group>"; };
+		1F4B38DA138E704D003FE58C /* BADemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BADemoViewController.h; sourceTree = "<group>"; };
+		1F4B38DB138E704D003FE58C /* BADemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BADemoViewController.m; sourceTree = "<group>"; };
+		1F4B38DC138E704D003FE58C /* BADemoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BADemoViewController.xib; sourceTree = "<group>"; };
+		1F4B38DD138E704D003FE58C /* BADemo-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "BADemo-Prefix.pch"; sourceTree = "<group>"; };
+		1F4B38DF138E704D003FE58C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1F4B38E0138E704D003FE58C /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1F4B38E1138E704D003FE58C /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		1F4B38E2138E704D003FE58C /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
 		1FC7B7E9138E592800900EA2 /* BADemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BADemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FC7B7ED138E592800900EA2 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		1FC7B7EF138E592800900EA2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1FC7B7F1138E592800900EA2 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		1FC7B7F5138E592800900EA2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1FC7B7F7138E592800900EA2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		1FC7B7F9138E592800900EA2 /* baseappkit-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "baseappkit-Prefix.pch"; sourceTree = "<group>"; };
-		1FC7B7FA138E592800900EA2 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		1FC7B7FC138E592800900EA2 /* BADemoAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BADemoAppDelegate.h; sourceTree = "<group>"; };
-		1FC7B7FD138E592800900EA2 /* BADemoAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BADemoAppDelegate.m; sourceTree = "<group>"; };
-		1FC7B802138E592800900EA2 /* BADemoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BADemoViewController.h; sourceTree = "<group>"; };
-		1FC7B803138E592800900EA2 /* BADemoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BADemoViewController.m; sourceTree = "<group>"; };
-		1FC7B816138E61EC00900EA2 /* BADemoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BADemoViewController.xib; sourceTree = "<group>"; };
-		1FC7B817138E61EC00900EA2 /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -49,10 +49,27 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1F4B38D7138E704D003FE58C /* BADemo */ = {
+			isa = PBXGroup;
+			children = (
+				1F4B38D8138E704D003FE58C /* BADemoAppDelegate.h */,
+				1F4B38D9138E704D003FE58C /* BADemoAppDelegate.m */,
+				1F4B38E2138E704D003FE58C /* MainWindow.xib */,
+				1F4B38DA138E704D003FE58C /* BADemoViewController.h */,
+				1F4B38DB138E704D003FE58C /* BADemoViewController.m */,
+				1F4B38DC138E704D003FE58C /* BADemoViewController.xib */,
+				1F4B38DD138E704D003FE58C /* BADemo-Prefix.pch */,
+				1F4B38DE138E704D003FE58C /* InfoPlist.strings */,
+				1F4B38E0138E704D003FE58C /* Info.plist */,
+				1F4B38E1138E704D003FE58C /* main.m */,
+			);
+			path = BADemo;
+			sourceTree = "<group>";
+		};
 		1FC7B7DE138E592800900EA2 = {
 			isa = PBXGroup;
 			children = (
-				1FC7B7F3138E592800900EA2 /* BaseAppKit */,
+				1F4B38D7138E704D003FE58C /* BADemo */,
 				1FC7B7EC138E592800900EA2 /* Frameworks */,
 				1FC7B7EA138E592800900EA2 /* Products */,
 			);
@@ -74,32 +91,6 @@
 				1FC7B7F1138E592800900EA2 /* CoreGraphics.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		1FC7B7F3138E592800900EA2 /* BaseAppKit */ = {
-			isa = PBXGroup;
-			children = (
-				1FC7B817138E61EC00900EA2 /* MainWindow.xib */,
-				1FC7B7FC138E592800900EA2 /* BADemoAppDelegate.h */,
-				1FC7B7FD138E592800900EA2 /* BADemoAppDelegate.m */,
-				1FC7B816138E61EC00900EA2 /* BADemoViewController.xib */,
-				1FC7B802138E592800900EA2 /* BADemoViewController.h */,
-				1FC7B803138E592800900EA2 /* BADemoViewController.m */,
-				1FC7B7F4138E592800900EA2 /* Supporting Files */,
-			);
-			name = BaseAppKit;
-			path = baseappkit;
-			sourceTree = "<group>";
-		};
-		1FC7B7F4138E592800900EA2 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				1FC7B7F5138E592800900EA2 /* Info.plist */,
-				1FC7B7F6138E592800900EA2 /* InfoPlist.strings */,
-				1FC7B7F9138E592800900EA2 /* baseappkit-Prefix.pch */,
-				1FC7B7FA138E592800900EA2 /* main.m */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -152,9 +143,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1FC7B7F8138E592800900EA2 /* InfoPlist.strings in Resources */,
-				1FC7B818138E61EC00900EA2 /* BADemoViewController.xib in Resources */,
-				1FC7B819138E61EC00900EA2 /* MainWindow.xib in Resources */,
+				1F4B38E5138E704D003FE58C /* BADemoViewController.xib in Resources */,
+				1F4B38E6138E704D003FE58C /* InfoPlist.strings in Resources */,
+				1F4B38E9138E704D003FE58C /* MainWindow.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -165,19 +156,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1FC7B7FB138E592800900EA2 /* main.m in Sources */,
-				1FC7B7FE138E592800900EA2 /* BADemoAppDelegate.m in Sources */,
-				1FC7B804138E592800900EA2 /* BADemoViewController.m in Sources */,
+				1F4B38E3138E704D003FE58C /* BADemoAppDelegate.m in Sources */,
+				1F4B38E4138E704D003FE58C /* BADemoViewController.m in Sources */,
+				1F4B38E8138E704D003FE58C /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		1FC7B7F6138E592800900EA2 /* InfoPlist.strings */ = {
+		1F4B38DE138E704D003FE58C /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				1FC7B7F7138E592800900EA2 /* en */,
+				1F4B38DF138E704D003FE58C /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -224,8 +215,8 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "baseappkit/baseappkit-Prefix.pch";
-				INFOPLIST_FILE = baseappkit/Info.plist;
+				GCC_PREFIX_HEADER = "BADemo/BADemo-Prefix.pch";
+				INFOPLIST_FILE = BADemo/Info.plist;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -237,8 +228,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "baseappkit/baseappkit-Prefix.pch";
-				INFOPLIST_FILE = baseappkit/Info.plist;
+				GCC_PREFIX_HEADER = "BADemo/BADemo-Prefix.pch";
+				INFOPLIST_FILE = BADemo/Info.plist;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
