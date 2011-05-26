@@ -13,6 +13,9 @@
 		1F4B38E6138E704D003FE58C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1F4B38DE138E704D003FE58C /* InfoPlist.strings */; };
 		1F4B38E8138E704D003FE58C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F4B38E1138E704D003FE58C /* main.m */; };
 		1F4B38E9138E704D003FE58C /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1F4B38E2138E704D003FE58C /* MainWindow.xib */; };
+		1F98003D138E745500B91C2C /* CHANGELOG.md in Resources */ = {isa = PBXBuildFile; fileRef = 1F980023138E745500B91C2C /* CHANGELOG.md */; };
+		1F98003E138E745500B91C2C /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F980025138E745500B91C2C /* JSONKit.m */; };
+		1F98003F138E745500B91C2C /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 1F980026138E745500B91C2C /* README.md */; };
 		1FC7B7EE138E592800900EA2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FC7B7ED138E592800900EA2 /* UIKit.framework */; };
 		1FC7B7F0138E592800900EA2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FC7B7EF138E592800900EA2 /* Foundation.framework */; };
 		1FC7B7F2138E592800900EA2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FC7B7F1138E592800900EA2 /* CoreGraphics.framework */; };
@@ -29,6 +32,10 @@
 		1F4B38E0138E704D003FE58C /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1F4B38E1138E704D003FE58C /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		1F4B38E2138E704D003FE58C /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
+		1F980023138E745500B91C2C /* CHANGELOG.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CHANGELOG.md; sourceTree = "<group>"; };
+		1F980024138E745500B91C2C /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
+		1F980025138E745500B91C2C /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
+		1F980026138E745500B91C2C /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		1FC7B7E9138E592800900EA2 /* BADemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BADemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FC7B7ED138E592800900EA2 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		1FC7B7EF138E592800900EA2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -66,9 +73,21 @@
 			path = BADemo;
 			sourceTree = "<group>";
 		};
+		1F98FFFD138E745500B91C2C /* JSONKit */ = {
+			isa = PBXGroup;
+			children = (
+				1F980023138E745500B91C2C /* CHANGELOG.md */,
+				1F980024138E745500B91C2C /* JSONKit.h */,
+				1F980025138E745500B91C2C /* JSONKit.m */,
+				1F980026138E745500B91C2C /* README.md */,
+			);
+			path = JSONKit;
+			sourceTree = "<group>";
+		};
 		1FC7B7DE138E592800900EA2 = {
 			isa = PBXGroup;
 			children = (
+				1F98FFFD138E745500B91C2C /* JSONKit */,
 				1F4B38D7138E704D003FE58C /* BADemo */,
 				1FC7B7EC138E592800900EA2 /* Frameworks */,
 				1FC7B7EA138E592800900EA2 /* Products */,
@@ -146,6 +165,8 @@
 				1F4B38E5138E704D003FE58C /* BADemoViewController.xib in Resources */,
 				1F4B38E6138E704D003FE58C /* InfoPlist.strings in Resources */,
 				1F4B38E9138E704D003FE58C /* MainWindow.xib in Resources */,
+				1F98003D138E745500B91C2C /* CHANGELOG.md in Resources */,
+				1F98003F138E745500B91C2C /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -159,6 +180,7 @@
 				1F4B38E3138E704D003FE58C /* BADemoAppDelegate.m in Sources */,
 				1F4B38E4138E704D003FE58C /* BADemoViewController.m in Sources */,
 				1F4B38E8138E704D003FE58C /* main.m in Sources */,
+				1F98003E138E745500B91C2C /* JSONKit.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
