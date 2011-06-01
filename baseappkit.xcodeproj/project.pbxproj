@@ -42,6 +42,8 @@
 		1FC7B7EE138E592800900EA2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FC7B7ED138E592800900EA2 /* UIKit.framework */; };
 		1FC7B7F0138E592800900EA2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FC7B7EF138E592800900EA2 /* Foundation.framework */; };
 		1FC7B7F2138E592800900EA2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FC7B7F1138E592800900EA2 /* CoreGraphics.framework */; };
+		1FE78BD61396988800B35BDE /* BADemo_AdHoc.mobileprovision in Resources */ = {isa = PBXBuildFile; fileRef = 1FE78BD41396988800B35BDE /* BADemo_AdHoc.mobileprovision */; };
+		1FE78BD71396988800B35BDE /* build.sh in Resources */ = {isa = PBXBuildFile; fileRef = 1FE78BD51396988800B35BDE /* build.sh */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -108,6 +110,8 @@
 		1FC7B7ED138E592800900EA2 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		1FC7B7EF138E592800900EA2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1FC7B7F1138E592800900EA2 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		1FE78BD41396988800B35BDE /* BADemo_AdHoc.mobileprovision */ = {isa = PBXFileReference; lastKnownFileType = file; path = BADemo_AdHoc.mobileprovision; sourceTree = "<group>"; };
+		1FE78BD51396988800B35BDE /* build.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = build.sh; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -212,6 +216,7 @@
 				1F4B38D7138E704D003FE58C /* BADemo */,
 				1FC7B7EC138E592800900EA2 /* Frameworks */,
 				1FC7B7EA138E592800900EA2 /* Products */,
+				1FE78BD31396988800B35BDE /* autobuild */,
 			);
 			sourceTree = "<group>";
 		};
@@ -232,6 +237,15 @@
 				1FC7B7F1138E592800900EA2 /* CoreGraphics.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		1FE78BD31396988800B35BDE /* autobuild */ = {
+			isa = PBXGroup;
+			children = (
+				1FE78BD51396988800B35BDE /* build.sh */,
+				1FE78BD41396988800B35BDE /* BADemo_AdHoc.mobileprovision */,
+			);
+			path = autobuild;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -290,6 +304,8 @@
 				1F98003F138E745500B91C2C /* README.md in Resources */,
 				1F7F0FE5138EED8100E62046 /* BAPageControlViewController.xib in Resources */,
 				1F7F0FF4138EF50500E62046 /* BAProgressViewController.xib in Resources */,
+				1FE78BD61396988800B35BDE /* BADemo_AdHoc.mobileprovision in Resources */,
+				1FE78BD71396988800B35BDE /* build.sh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -359,7 +375,7 @@
 			};
 			name = Debug;
 		};
-		1FC7B809138E592800900EA2 /* Release */ = {
+		1FC7B809138E592800900EA2 /* AdHoc */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
@@ -372,7 +388,7 @@
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 			};
-			name = Release;
+			name = AdHoc;
 		};
 		1FC7B80B138E592800900EA2 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -388,7 +404,7 @@
 			};
 			name = Debug;
 		};
-		1FC7B80C138E592800900EA2 /* Release */ = {
+		1FC7B80C138E592800900EA2 /* AdHoc */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -400,7 +416,7 @@
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 			};
-			name = Release;
+			name = AdHoc;
 		};
 /* End XCBuildConfiguration section */
 
@@ -409,19 +425,19 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1FC7B808138E592800900EA2 /* Debug */,
-				1FC7B809138E592800900EA2 /* Release */,
+				1FC7B809138E592800900EA2 /* AdHoc */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = AdHoc;
 		};
 		1FC7B80A138E592800900EA2 /* Build configuration list for PBXNativeTarget "BADemo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1FC7B80B138E592800900EA2 /* Debug */,
-				1FC7B80C138E592800900EA2 /* Release */,
+				1FC7B80C138E592800900EA2 /* AdHoc */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = AdHoc;
 		};
 /* End XCConfigurationList section */
 	};
