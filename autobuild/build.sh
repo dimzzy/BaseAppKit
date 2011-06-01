@@ -61,7 +61,7 @@ for CONFIG in $CONFIGS; do
 -F team_token="$TF_TEAM_TOKEN" \
 -F notes="Auto Build" \
 -F notify=True \
--F distribution_lists="BADemo"
+-F distribution_lists="$TF_LISTS" || failed upload
 
 )
 
