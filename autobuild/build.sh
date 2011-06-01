@@ -54,6 +54,15 @@ for CONFIG in $CONFIGS; do
   zip -r $APP_OUT Payload
   cp -Rp *.dSYM $SYMBOLS_OUT
   cp $PROVISION $PROVISION_OUT
+
+  curl http://testflightapp.com/api/builds.json \
+-F file=@$APP_OUT \
+-F api_token='$TF_API_TOKEN' \
+-F team_token='$TF_TEAM_TOKEN' \
+-F notes='Auto Build' \
+-F notify=True \
+-F distribution_lists='BADemo'\
+
 )
 
 done
