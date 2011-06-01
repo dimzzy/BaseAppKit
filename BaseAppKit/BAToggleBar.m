@@ -42,12 +42,12 @@
 @end
 
 
-@interface ToggleScrollView : UIScrollView {
+@interface BAToggleScrollView : UIScrollView {
 }
 
 @end
 
-@implementation ToggleScrollView
+@implementation BAToggleScrollView
 
 - (BOOL)touchesShouldBegin:(NSSet *)touches withEvent:(UIEvent *)event inContentView:(UIView *)view {
 	BAToggleBar *toggleBar = (BAToggleBar *)self.superview;
@@ -71,7 +71,7 @@
 @synthesize delegate = _delegate;
 
 - (void)setupView {
-	_scrollView = [[ToggleScrollView alloc] initWithFrame:CGRectZero];
+	_scrollView = [[BAToggleScrollView alloc] initWithFrame:CGRectZero];
 	_scrollView.scrollsToTop = NO;
 	_scrollView.indicatorStyle = UIScrollViewIndicatorStyleWhite;
 	_scrollView.delegate = self;

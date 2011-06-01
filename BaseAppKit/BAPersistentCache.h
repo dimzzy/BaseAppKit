@@ -40,6 +40,8 @@
 
 + (BAPersistentCache *)persistentCache;
 
+- (NSDate *)modificationDateForKey:(NSString *)key;
+
 - (BOOL)hasDataForKey:(NSString *)key;
 - (NSData *)dataForKey:(NSString *)key;
 - (void)setData:(NSData *)data forKey:(NSString *)key;

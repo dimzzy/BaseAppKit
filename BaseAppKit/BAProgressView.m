@@ -85,6 +85,7 @@
 }
 
 - (void)drawRect:(CGRect)rect {
+	const CGFloat lw = 2;
 	const CGFloat ps = MIN(self.bounds.size.width / 2, self.bounds.size.height / 2) - 2;
 	const CGPoint cp = CGPointMake(self.bounds.size.width / 2, self.bounds.size.height / 2);
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
@@ -118,7 +119,7 @@
 		if (self.progress > 0) {
 			CGContextBeginPath(ctx);
 			CGContextMoveToPoint(ctx, cp.x, cp.y);
-			CGContextAddArc(ctx, cp.x, cp.y, ps, 0, M_PI * 2 * self.progress, 0);
+			CGContextAddArc(ctx, cp.x, cp.y, ps - lw * 2, -M_PI_2, -M_PI_2 + M_PI * 2 * self.progress, 0);
 			CGContextClosePath(ctx);
 			[self.progressColor set];
 			CGContextFillPath(ctx);
@@ -129,7 +130,7 @@
 		CGContextAddArc(ctx, cp.x, cp.y, ps, 0, M_PI * 2, 0);
 		CGContextClosePath(ctx);
 		[self.progressColor set];
-		CGContextSetLineWidth(ctx, 2);
+		CGContextSetLineWidth(ctx, lw);
 		CGContextStrokePath(ctx);
 		
 	}
