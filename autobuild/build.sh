@@ -46,12 +46,12 @@ for CONFIG in $CONFIGS; do
   mkdir Payload
   cp -Rp *.app Payload/
 
-  if [ "$CONFIG" == "AdHoc" ]
-  then
+#  if [ "$CONFIG" == "AdHoc" ]
+#  then
 #    cp -f $WORKSPACE/BADemo/Icon_512x512.png Payload/iTunesArtwork
-  fi
+#  fi
 
-  cp $APP_VERSION_OUT $APP_OUT
+  zip -r $APP_OUT Payload
   cp -Rp *.dSYM $SYMBOLS_OUT
   cp $PROVISION $PROVISION_OUT
 )
