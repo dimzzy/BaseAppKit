@@ -29,6 +29,7 @@
 #import "BADemoViewController.h"
 #import "BAPageControlViewController.h"
 #import "BAProgressViewController.h"
+#import "BAActivityViewController.h"
 
 @implementation BADemoViewController
 
@@ -37,7 +38,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	return 2;
+	return 3;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -52,23 +53,35 @@
 		case 1:
 			cell.textLabel.text = @"Progress View";
 			break;
+		case 2:
+			cell.textLabel.text = @"Activity View";
+			break;
 	}
 	return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+	UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+	NSString *title = cell.textLabel.text;
 	switch (indexPath.row) {
 		case 0: {
 			BAPageControlViewController *controller = [[[BAPageControlViewController alloc] initWithNibName:@"BAPageControlViewController"
 																									 bundle:nil] autorelease];
-			controller.navigationItem.title = @"Page Control";
+			controller.navigationItem.title = title;
 			[self.navigationController pushViewController:controller animated:YES];
 			break;
 		}
 		case 1: {
 			BAProgressViewController *controller = [[[BAProgressViewController alloc] initWithNibName:@"BAProgressViewController"
 																							   bundle:nil] autorelease];
-			controller.navigationItem.title = @"Progress View";
+			controller.navigationItem.title = title;
+			[self.navigationController pushViewController:controller animated:YES];
+			break;
+		}
+		case 2: {
+			BAActivityViewController *controller = [[[BAActivityViewController alloc] initWithNibName:@"BAActivityViewController"
+																							   bundle:nil] autorelease];
+			controller.navigationItem.title = title;
 			[self.navigationController pushViewController:controller animated:YES];
 			break;
 		}

@@ -97,7 +97,7 @@
 					<object class="IBUIView" id="452273299">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{135, 20}, {50, 50}}</string>
+						<string key="NSFrame">{{145, 30}, {30, 30}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="1048543531"/>
@@ -113,7 +113,7 @@
 					<object class="IBUIView" id="2429486">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{145, 154}, {30, 30}}</string>
+						<string key="NSFrame">{{145, 103}, {30, 30}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView"/>
@@ -201,9 +201,9 @@
 						<reference key="object" ref="191373211"/>
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<reference ref="452273299"/>
 							<reference ref="228451869"/>
 							<reference ref="1048543531"/>
+							<reference ref="452273299"/>
 							<reference ref="2429486"/>
 						</object>
 						<reference key="parent" ref="0"/>

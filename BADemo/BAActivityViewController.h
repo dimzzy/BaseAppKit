@@ -26,38 +26,10 @@
  or implied, of Dmitry Stadnik.
 */
 
-#import "BAProgressViewController.h"
+#import <UIKit/UIKit.h>
 
-
-@implementation BAProgressViewController
-
-- (void)dealloc {
-	[_progressView1 release];
-	[_progressView2 release];
-    [super dealloc];
-}
-
-- (void)viewDidUnload {
-    [super viewDidUnload];
-	[_progressView1 release];
-	_progressView1 = nil;
-	[_progressView2 release];
-	_progressView2 = nil;
-}
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-	_progressView1.progressColor = [UIColor darkGrayColor];
-	_progressView2.progressColor = [UIColor darkGrayColor];
-	_progressView2.failed = YES;
-}
-
-- (IBAction)less {
-	_progressView1.progress -= 0.2;
-}
-
-- (IBAction)more {
-	_progressView1.progress += 0.2;
+@interface BAActivityViewController : UIViewController {
+    
 }
 
 @end

@@ -85,8 +85,8 @@
 }
 
 - (void)drawRect:(CGRect)rect {
-	const CGFloat lw = 2;
-	const CGFloat ps = MIN(self.bounds.size.width / 2, self.bounds.size.height / 2) - 2;
+	const CGFloat lw = 3;
+	const CGFloat ps = MIN(self.bounds.size.width / 2, self.bounds.size.height / 2) - lw;
 	const CGPoint cp = CGPointMake(self.bounds.size.width / 2, self.bounds.size.height / 2);
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
 
@@ -101,14 +101,14 @@
 
 		// cross
 		CGContextBeginPath(ctx);
-		CGFloat cd = ps * 0.4;
+		CGFloat cd = ps * 0.35;
 		CGContextMoveToPoint(ctx, cp.x + cd, cp.y + cd);
 		CGContextAddLineToPoint(ctx, cp.x - cd, cp.y - cd);
 		CGContextMoveToPoint(ctx, cp.x - cd, cp.y + cd);
 		CGContextAddLineToPoint(ctx, cp.x + cd, cp.y - cd);
 		CGContextMoveToPoint(ctx, cp.x + cd, cp.y + cd);
 		CGContextClosePath(ctx);
-		CGContextSetLineWidth(ctx, 5);
+		CGContextSetLineWidth(ctx, 4);
 		CGContextSetLineCap(ctx, kCGLineCapRound);
 		[self.backgroundColor set];
 		CGContextStrokePath(ctx);
@@ -119,7 +119,7 @@
 		if (self.progress > 0) {
 			CGContextBeginPath(ctx);
 			CGContextMoveToPoint(ctx, cp.x, cp.y);
-			CGContextAddArc(ctx, cp.x, cp.y, ps - lw * 2, -M_PI_2, -M_PI_2 + M_PI * 2 * self.progress, 0);
+			CGContextAddArc(ctx, cp.x, cp.y, ps - lw - 1, -M_PI_2, -M_PI_2 + M_PI * 2 * self.progress, 0);
 			CGContextClosePath(ctx);
 			[self.progressColor set];
 			CGContextFillPath(ctx);

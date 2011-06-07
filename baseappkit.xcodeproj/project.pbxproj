@@ -12,6 +12,9 @@
 		1F4B38E6138E704D003FE58C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1F4B38DE138E704D003FE58C /* InfoPlist.strings */; };
 		1F4B38E8138E704D003FE58C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F4B38E1138E704D003FE58C /* main.m */; };
 		1F4B38E9138E704D003FE58C /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1F4B38E2138E704D003FE58C /* MainWindow.xib */; };
+		1F6C8F34139E730100DA3270 /* BAActivityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F6C8F32139E730100DA3270 /* BAActivityViewController.m */; };
+		1F6C8F35139E730100DA3270 /* BAActivityViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1F6C8F33139E730100DA3270 /* BAActivityViewController.xib */; };
+		1F6C8F39139E731900DA3270 /* BAActivityView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F6C8F38139E731900DA3270 /* BAActivityView.m */; };
 		1F6D31AD138E959600DEA7FE /* BAXMLLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F6D31AA138E959600DEA7FE /* BAXMLLoader.m */; };
 		1F6D31AE138E959600DEA7FE /* BAXMLParserBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F6D31AC138E959600DEA7FE /* BAXMLParserBase.m */; };
 		1F6D31B4138E970000DEA7FE /* BAPageControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F6D31B1138E96FF00DEA7FE /* BAPageControl.m */; };
@@ -56,6 +59,11 @@
 		1F4B38E0138E704D003FE58C /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1F4B38E1138E704D003FE58C /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		1F4B38E2138E704D003FE58C /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
+		1F6C8F31139E730100DA3270 /* BAActivityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BAActivityViewController.h; sourceTree = "<group>"; };
+		1F6C8F32139E730100DA3270 /* BAActivityViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BAActivityViewController.m; sourceTree = "<group>"; };
+		1F6C8F33139E730100DA3270 /* BAActivityViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BAActivityViewController.xib; sourceTree = "<group>"; };
+		1F6C8F37139E731900DA3270 /* BAActivityView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BAActivityView.h; sourceTree = "<group>"; };
+		1F6C8F38139E731900DA3270 /* BAActivityView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BAActivityView.m; sourceTree = "<group>"; };
 		1F6D31A9138E959600DEA7FE /* BAXMLLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BAXMLLoader.h; sourceTree = "<group>"; };
 		1F6D31AA138E959600DEA7FE /* BAXMLLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BAXMLLoader.m; sourceTree = "<group>"; };
 		1F6D31AB138E959600DEA7FE /* BAXMLParserBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BAXMLParserBase.h; sourceTree = "<group>"; };
@@ -143,6 +151,9 @@
 				1F7F0FF0138EF50500E62046 /* BAProgressViewController.h */,
 				1F7F0FF1138EF50500E62046 /* BAProgressViewController.m */,
 				1F7F0FF2138EF50500E62046 /* BAProgressViewController.xib */,
+				1F6C8F31139E730100DA3270 /* BAActivityViewController.h */,
+				1F6C8F32139E730100DA3270 /* BAActivityViewController.m */,
+				1F6C8F33139E730100DA3270 /* BAActivityViewController.xib */,
 				1F4B38DD138E704D003FE58C /* BADemo-Prefix.pch */,
 				1F4B38DE138E704D003FE58C /* InfoPlist.strings */,
 				1F4B38E0138E704D003FE58C /* Info.plist */,
@@ -151,7 +162,35 @@
 			path = BADemo;
 			sourceTree = "<group>";
 		};
-		1F980054138E892700B91C2C /* BaseAppKit */ = {
+		1F6C8F3A139E732800DA3270 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				1F7F0FFC138EFF1200E62046 /* UINavigationController+BATransitions.h */,
+				1F7F0FFD138EFF1200E62046 /* UINavigationController+BATransitions.m */,
+				1F7F0FFE138EFF1200E62046 /* UITableView+BALoading.h */,
+				1F7F0FFF138EFF1200E62046 /* UITableView+BALoading.m */,
+				1F6D31B2138E96FF00DEA7FE /* BARemoteImageView.h */,
+				1F6D31B3138E970000DEA7FE /* BARemoteImageView.m */,
+				1F6D31B0138E96FF00DEA7FE /* BAPageControl.h */,
+				1F6D31B1138E96FF00DEA7FE /* BAPageControl.m */,
+				1F7F0FEB138EF27F00E62046 /* BAProgressView.h */,
+				1F7F0FEC138EF27F00E62046 /* BAProgressView.m */,
+				1F7F1000138EFF1200E62046 /* BARefreshHeaderView.h */,
+				1F7F1001138EFF1300E62046 /* BARefreshHeaderView.m */,
+				1F7F0FF5138EFF1100E62046 /* BAToggleBar.h */,
+				1F7F0FF6138EFF1100E62046 /* BAToggleBar.m */,
+				1F7F0FF7138EFF1100E62046 /* BAToggleItem.h */,
+				1F7F0FF8138EFF1100E62046 /* BAToggleItemImage.h */,
+				1F7F0FF9138EFF1100E62046 /* BAToggleItemImage.m */,
+				1F7F0FFA138EFF1200E62046 /* BAToggleItemLabel.h */,
+				1F7F0FFB138EFF1200E62046 /* BAToggleItemLabel.m */,
+				1F6C8F37139E731900DA3270 /* BAActivityView.h */,
+				1F6C8F38139E731900DA3270 /* BAActivityView.m */,
+			);
+			name = UI;
+			sourceTree = "<group>";
+		};
+		1F6C8F3B139E733200DA3270 /* Core */ = {
 			isa = PBXGroup;
 			children = (
 				1F98005F138E892700B91C2C /* NSString+BACoding.h */,
@@ -174,25 +213,15 @@
 				1F7F0FE8138EF27F00E62046 /* BAHyperHandler.m */,
 				1F7F0FE9138EF27F00E62046 /* BAHyperParser.h */,
 				1F7F0FEA138EF27F00E62046 /* BAHyperParser.m */,
-				1F7F0FFC138EFF1200E62046 /* UINavigationController+BATransitions.h */,
-				1F7F0FFD138EFF1200E62046 /* UINavigationController+BATransitions.m */,
-				1F7F0FFE138EFF1200E62046 /* UITableView+BALoading.h */,
-				1F7F0FFF138EFF1200E62046 /* UITableView+BALoading.m */,
-				1F6D31B2138E96FF00DEA7FE /* BARemoteImageView.h */,
-				1F6D31B3138E970000DEA7FE /* BARemoteImageView.m */,
-				1F6D31B0138E96FF00DEA7FE /* BAPageControl.h */,
-				1F6D31B1138E96FF00DEA7FE /* BAPageControl.m */,
-				1F7F0FEB138EF27F00E62046 /* BAProgressView.h */,
-				1F7F0FEC138EF27F00E62046 /* BAProgressView.m */,
-				1F7F1000138EFF1200E62046 /* BARefreshHeaderView.h */,
-				1F7F1001138EFF1300E62046 /* BARefreshHeaderView.m */,
-				1F7F0FF5138EFF1100E62046 /* BAToggleBar.h */,
-				1F7F0FF6138EFF1100E62046 /* BAToggleBar.m */,
-				1F7F0FF7138EFF1100E62046 /* BAToggleItem.h */,
-				1F7F0FF8138EFF1100E62046 /* BAToggleItemImage.h */,
-				1F7F0FF9138EFF1100E62046 /* BAToggleItemImage.m */,
-				1F7F0FFA138EFF1200E62046 /* BAToggleItemLabel.h */,
-				1F7F0FFB138EFF1200E62046 /* BAToggleItemLabel.m */,
+			);
+			name = Core;
+			sourceTree = "<group>";
+		};
+		1F980054138E892700B91C2C /* BaseAppKit */ = {
+			isa = PBXGroup;
+			children = (
+				1F6C8F3B139E733200DA3270 /* Core */,
+				1F6C8F3A139E732800DA3270 /* UI */,
 			);
 			path = BaseAppKit;
 			sourceTree = "<group>";
@@ -306,6 +335,7 @@
 				1F7F0FF4138EF50500E62046 /* BAProgressViewController.xib in Resources */,
 				1FE78BD61396988800B35BDE /* BADemo_AdHoc.mobileprovision in Resources */,
 				1FE78BD71396988800B35BDE /* build.sh in Resources */,
+				1F6C8F35139E730100DA3270 /* BAActivityViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -341,6 +371,8 @@
 				1F7F1005138EFF1300E62046 /* UINavigationController+BATransitions.m in Sources */,
 				1F7F1006138EFF1300E62046 /* UITableView+BALoading.m in Sources */,
 				1F7F1007138EFF1300E62046 /* BARefreshHeaderView.m in Sources */,
+				1F6C8F34139E730100DA3270 /* BAActivityViewController.m in Sources */,
+				1F6C8F39139E731900DA3270 /* BAActivityView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

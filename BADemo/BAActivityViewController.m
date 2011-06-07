@@ -26,38 +26,23 @@
  or implied, of Dmitry Stadnik.
 */
 
-#import "BAProgressViewController.h"
+#import "BAActivityViewController.h"
+#import "BAActivityView.h"
 
-
-@implementation BAProgressViewController
-
-- (void)dealloc {
-	[_progressView1 release];
-	[_progressView2 release];
-    [super dealloc];
-}
-
-- (void)viewDidUnload {
-    [super viewDidUnload];
-	[_progressView1 release];
-	_progressView1 = nil;
-	[_progressView2 release];
-	_progressView2 = nil;
-}
+@implementation BAActivityViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-	_progressView1.progressColor = [UIColor darkGrayColor];
-	_progressView2.progressColor = [UIColor darkGrayColor];
-	_progressView2.failed = YES;
-}
-
-- (IBAction)less {
-	_progressView1.progress -= 0.2;
-}
-
-- (IBAction)more {
-	_progressView1.progress += 0.2;
+	
+	BAActivityView *v1 = [[[BAActivityView alloc] initWithFrame:CGRectMake(80, 50, 160, 50)] autorelease];
+	v1.descriptionLabel.text = @"Test Message";
+	[v1 sizeToFit];
+	[self.view addSubview:v1];
+	
+	BAActivityView *v2 = [[[BAActivityView alloc] initWithFrame:CGRectMake(80, 150, 160, 50)] autorelease];
+	v2.descriptionLabel.text = @"Long test message that occupies several lines of text";
+	[v2 sizeToFit];
+	[self.view addSubview:v2];
 }
 
 @end
