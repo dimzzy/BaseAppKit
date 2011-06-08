@@ -28,6 +28,14 @@
 
 #import "BAKeyboardTracker.h"
 
+@interface BAKeyboardTracker (Private)
+
+- (void)keyboardWillShow:(NSNotification *)notification;
+- (void)keyboardWillHide:(NSNotification *)notification;
+
+@end
+
+
 @implementation BAKeyboardTracker
 
 - (void)dealloc {
