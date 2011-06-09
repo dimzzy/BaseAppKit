@@ -30,8 +30,14 @@
 
 typedef enum {
 	BAFormFieldTypeLabel,
-	BAFormFieldTypeText
+	BAFormFieldTypeText,
+	BAFormFieldTypeButton
 } BAFormFieldType;
+
+@class BAFormFieldDescriptor;
+
+// Returns nil if value is OK and error message otherwise.
+typedef NSString *(^BAFormFieldValidator)(id fieldValue, BAFormFieldDescriptor *fieldDescriptor, NSDictionary *formModel);
 
 @interface BAFormFieldDescriptor : NSObject <UITextInputTraits> {
 @private
@@ -47,6 +53,7 @@ typedef enum {
 	UIReturnKeyType _returnKeyType;                       // default is UIReturnKeyDefault (See note under UIReturnKeyType enum)
 	BOOL _enablesReturnKeyAutomatically;                  // default is NO
 	BOOL _secureTextEntry;                                // default is NO
+	BAFormFieldValidator _validator;
 }
 
 @property(nonatomic, copy) NSString *identifier;
@@ -54,5 +61,8 @@ typedef enum {
 @property(nonatomic, assign) BAFormFieldType type;
 @property(nonatomic, copy) NSString *placeholder;
 @property(nonatomic, assign) UITextAlignment textAlignment;
+@property(nonatomic, retain) BAFormFieldValidator validator;
+
+- (void)useRegexpValidator:(NSString *)regexp withErrorMessage:(NSString *)error;
 
 @end

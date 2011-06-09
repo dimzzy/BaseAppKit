@@ -26,47 +26,28 @@
  or implied, of Dmitry Stadnik.
 */
 
-#import <UIKit/UIKit.h>
-#import "BAFormSectionDescriptor.h"
-#import "BAFormLabelFieldCell.h"
-#import "BAFormTextFieldCell.h"
 #import "BAFormButtonFieldCell.h"
 
-@class BAFormProvider;
+@implementation BAFormButtonFieldCell
 
+@synthesize fieldButton = _fieldButton;
 
-@protocol BAFormProviderDelegate <NSObject>
-
-@optional
-
-- (void)decorateLabelFieldCell:(BAFormLabelFieldCell *)cell
-					descriptor:(BAFormFieldDescriptor *)descriptor
-					 tableView:(UITableView *)tableView;
-- (void)decorateTextFieldCell:(BAFormTextFieldCell *)cell
-				   descriptor:(BAFormFieldDescriptor *)descriptor
-					tableView:(UITableView *)tableView;
-- (void)decorateButtonFieldCell:(BAFormButtonFieldCell *)cell
-					 descriptor:(BAFormFieldDescriptor *)descriptor
-					  tableView:(UITableView *)tableView;
-
-@end
-
-
-@interface BAFormProvider : NSObject <UITableViewDataSource, UITextFieldDelegate> {
-@private
-	NSMutableDictionary *_model;
-	NSMutableArray *_sectionDescriptors;
-	id<BAFormProviderDelegate> _delegate;
+- (void)dealloc {
+	[_fieldButton release];
+	[super dealloc];
 }
 
-@property(nonatomic, readonly) NSMutableDictionary *model;
-@property(nonatomic, readonly) NSMutableArray *sectionDescriptors;
-@property(nonatomic, assign) id<BAFormProviderDelegate> delegate;
-
-- (NSString *)validate;
-
-- (UITableViewCell *)tableView:(UITableView *)tableView
-				  cellForField:(BAFormFieldDescriptor *)fieldDescriptor
-				   atIndexPath:(NSIndexPath *)indexPath;
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
+		_fieldButton = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
+		_fieldButton.frame = CGRectMake(kBAFormFieldNameWidth + kBAFormFieldSpacing * 3,
+										kBAFormFieldSpacing,
+										kBAFormFieldContentWidth,
+										kBAFormFieldHeight - kBAFormFieldSpacing * 2);
+		_fieldButton.titleLabel.font = [UIFont systemFontOfSize:14];
+		[self.contentView addSubview:_fieldButton];
+    }
+    return self;
+}
 
 @end

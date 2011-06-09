@@ -28,7 +28,11 @@
 
 #import "BAFormProvider.h"
 
+#define kMaxSectionCount 999
+
 @implementation BAFormProvider
+
+@synthesize delegate = _delegate;
 
 - (void)dealloc {
 	[_model release];
@@ -48,6 +52,41 @@
 		_sectionDescriptors = [[NSMutableArray alloc] init];
 	}
 	return _sectionDescriptors;
+}
+
+- (NSInteger)viewTagForField:(NSUInteger)fieldIndex inSection:(NSUInteger)sectionIndex {
+	return fieldIndex + kMaxSectionCount * sectionIndex;
+}
+
+- (BAFormFieldDescriptor *)fieldDescriptorWithViewTag:(NSInteger)tag {
+	if (tag < 0) {
+		return nil;
+	}
+	const NSUInteger sectionIndex = tag / kMaxSectionCount;
+	if (sectionIndex >= [self.sectionDescriptors count]) {
+		return nil;
+	}
+	BAFormSectionDescriptor *sectionDescriptor = [self.sectionDescriptors objectAtIndex:sectionIndex];
+	const NSUInteger fieldIndex = tag % kMaxSectionCount;
+	if (fieldIndex >= [sectionDescriptor.fieldDescriptors count]) {
+		return nil;
+	}
+	return [sectionDescriptor.fieldDescriptors objectAtIndex:fieldIndex];
+}
+
+- (NSString *)validate {
+	for (BAFormSectionDescriptor *sd in self.sectionDescriptors) {
+		for (BAFormFieldDescriptor *fd in sd.fieldDescriptors) {
+			id fieldValue = [self.model objectForKey:fd.identifier];
+			if (fd.validator) {
+				NSString *error = fd.validator(fieldValue, fd, self.model);
+				if (error) {
+					return error;
+				}
+			}
+		}
+	}
+	return nil;
 }
 
 #pragma mark Table Support
@@ -71,20 +110,19 @@
 	return [sectionDescriptor.fieldDescriptors count];
 }
 
-- (void)decorateLabelFieldCell:(BAFormLabelFieldCell *)cell {
-}
-
-- (void)decorateTextFieldCell:(BAFormTextFieldCell *)cell {
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForField:(BAFormFieldDescriptor *)fieldDescriptor {
+- (UITableViewCell *)tableView:(UITableView *)tableView
+				  cellForField:(BAFormFieldDescriptor *)fieldDescriptor
+				   atIndexPath:(NSIndexPath *)indexPath
+{
 	switch (fieldDescriptor.type) {
 		case BAFormFieldTypeLabel: {
 			BAFormLabelFieldCell *cell = (BAFormLabelFieldCell *)[tableView dequeueReusableCellWithIdentifier:@"BAFormLabelFieldCell"];
 			if (!cell) {
 				cell = [[[BAFormLabelFieldCell alloc] initWithStyle:UITableViewCellStyleDefault
 													reuseIdentifier:@"BAFormLabelFieldCell"] autorelease];
-				[self decorateLabelFieldCell:cell];
+				if ([self.delegate respondsToSelector:@selector(decorateLabelFieldCell:descriptor:tableView:)]) {
+					[self.delegate decorateLabelFieldCell:cell descriptor:fieldDescriptor tableView:tableView];
+				}
 			}
 			cell.nameLabel.text = fieldDescriptor.name;
 			NSString *text = [self.model objectForKey:fieldDescriptor.identifier];
@@ -96,7 +134,9 @@
 			if (!cell) {
 				cell = [[[BAFormTextFieldCell alloc] initWithStyle:UITableViewCellStyleDefault
 												   reuseIdentifier:@"BAFormTextFieldCell"] autorelease];
-				[self decorateTextFieldCell:cell];
+				if ([self.delegate respondsToSelector:@selector(decorateTextFieldCell:descriptor:tableView:)]) {
+					[self.delegate decorateTextFieldCell:cell descriptor:fieldDescriptor tableView:tableView];
+				}
 			}
 			cell.nameLabel.text = fieldDescriptor.name;
 			cell.textField.text = fieldDescriptor.placeholder;
@@ -112,6 +152,20 @@
 			cell.textField.text = text;
 			cell.textField.placeholder = fieldDescriptor.placeholder;
 			cell.textField.delegate = self;
+			cell.textField.tag = [self viewTagForField:indexPath.row inSection:indexPath.section];
+			return cell;
+		}
+		case BAFormFieldTypeButton: {
+			BAFormButtonFieldCell *cell = (BAFormButtonFieldCell *)[tableView dequeueReusableCellWithIdentifier:@"BAFormButtonFieldCell"];
+			if (!cell) {
+				cell = [[[BAFormButtonFieldCell alloc] initWithStyle:UITableViewCellStyleDefault
+													 reuseIdentifier:@"BAFormButtonFieldCell"] autorelease];
+				if ([self.delegate respondsToSelector:@selector(decorateButtonFieldCell:descriptor:tableView:)]) {
+					[self.delegate decorateButtonFieldCell:cell descriptor:fieldDescriptor tableView:tableView];
+				}
+			}
+			cell.nameLabel.text = fieldDescriptor.name;
+			[cell.fieldButton setTitle:fieldDescriptor.placeholder forState:UIControlStateNormal];
 			return cell;
 		}
 	}
@@ -120,7 +174,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	BAFormSectionDescriptor *sectionDescriptor = [self.sectionDescriptors objectAtIndex:indexPath.section];
 	BAFormFieldDescriptor *fieldDescriptor = [sectionDescriptor.fieldDescriptors objectAtIndex:indexPath.row];
-	return [self tableView:tableView cellForField:fieldDescriptor];
+	return [self tableView:tableView cellForField:fieldDescriptor atIndexPath:indexPath];
 }
 
 #pragma mark -
@@ -129,6 +183,19 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
 	[textField resignFirstResponder];
 	return YES;
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+	BAFormFieldDescriptor *fieldDescriptor = [self fieldDescriptorWithViewTag:textField.tag];
+	if (!fieldDescriptor) {
+		return;
+	}
+	NSString *fieldValue = textField.text;
+	if (fieldValue) {
+		[self.model setObject:fieldValue forKey:fieldDescriptor.identifier];
+	} else {
+		[self.model removeObjectForKey:fieldDescriptor.identifier];
+	}
 }
 
 @end

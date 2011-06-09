@@ -45,6 +45,7 @@
 																   kBAFormFieldHeight - kBAFormFieldSpacing * 4)];
 		_textField.borderStyle = UITextBorderStyleBezel;
 		_textField.font = [UIFont systemFontOfSize:14];
+		_textField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
 		[self.contentView addSubview:_textField];
     }
     return self;

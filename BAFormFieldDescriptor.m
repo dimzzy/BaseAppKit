@@ -42,6 +42,15 @@
 @synthesize returnKeyType = _returnKeyType;
 @synthesize enablesReturnKeyAutomatically = _enablesReturnKeyAutomatically;
 @synthesize secureTextEntry = _secureTextEntry;
+@synthesize validator = _validator;
+
+- (void)dealloc {
+	[_identifier release];
+	[_name release];
+	[_placeholder release];
+	[_validator release];
+	[super dealloc];
+}
 
 - (id)init {
     if ((self = [super init])) {
@@ -56,6 +65,25 @@
 		_secureTextEntry = NO;
     }
     return self;
+}
+
+- (void)useRegexpValidator:(NSString *)regexp withErrorMessage:(NSString *)error {
+	_validator = [^NSString *(id fieldValue, BAFormFieldDescriptor *fieldDescriptor, NSDictionary *formModel) {
+		if (!fieldValue || ![fieldValue isKindOfClass:[NSString class]]) {
+			return error;
+		}
+		NSString *fieldText = (NSString *)fieldValue;
+		NSRegularExpression *regexpObject = [NSRegularExpression regularExpressionWithPattern:regexp
+																					  options:0
+																						error:NULL];
+		NSRange range = [regexpObject rangeOfFirstMatchInString:fieldValue
+														options:0
+														  range:NSMakeRange(0, [fieldText length])];
+		if (range.location == NSNotFound || range.length != [fieldText length]) {
+			return error;
+		}
+		return nil;
+	} retain];
 }
 
 @end

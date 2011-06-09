@@ -27,46 +27,13 @@
 */
 
 #import <UIKit/UIKit.h>
-#import "BAFormSectionDescriptor.h"
-#import "BAFormLabelFieldCell.h"
-#import "BAFormTextFieldCell.h"
-#import "BAFormButtonFieldCell.h"
+#import "BAFormFieldCell.h"
 
-@class BAFormProvider;
-
-
-@protocol BAFormProviderDelegate <NSObject>
-
-@optional
-
-- (void)decorateLabelFieldCell:(BAFormLabelFieldCell *)cell
-					descriptor:(BAFormFieldDescriptor *)descriptor
-					 tableView:(UITableView *)tableView;
-- (void)decorateTextFieldCell:(BAFormTextFieldCell *)cell
-				   descriptor:(BAFormFieldDescriptor *)descriptor
-					tableView:(UITableView *)tableView;
-- (void)decorateButtonFieldCell:(BAFormButtonFieldCell *)cell
-					 descriptor:(BAFormFieldDescriptor *)descriptor
-					  tableView:(UITableView *)tableView;
-
-@end
-
-
-@interface BAFormProvider : NSObject <UITableViewDataSource, UITextFieldDelegate> {
+@interface BAFormButtonFieldCell : BAFormFieldCell {
 @private
-	NSMutableDictionary *_model;
-	NSMutableArray *_sectionDescriptors;
-	id<BAFormProviderDelegate> _delegate;
+	UIButton *_fieldButton;
 }
 
-@property(nonatomic, readonly) NSMutableDictionary *model;
-@property(nonatomic, readonly) NSMutableArray *sectionDescriptors;
-@property(nonatomic, assign) id<BAFormProviderDelegate> delegate;
-
-- (NSString *)validate;
-
-- (UITableViewCell *)tableView:(UITableView *)tableView
-				  cellForField:(BAFormFieldDescriptor *)fieldDescriptor
-				   atIndexPath:(NSIndexPath *)indexPath;
+@property(nonatomic, readonly) UIButton *fieldButton;
 
 @end
