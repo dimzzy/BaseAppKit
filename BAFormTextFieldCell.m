@@ -28,12 +28,15 @@
 
 #import "BAFormTextFieldCell.h"
 
+#define kBAFormStateSize 20
+
 @implementation BAFormTextFieldCell
 
 @synthesize textField = _textField;
 
 - (void)dealloc {
 	[_textField release];
+	[_stateView release];
 	[super dealloc];
 }
 
@@ -47,8 +50,24 @@
 		_textField.font = [UIFont systemFontOfSize:14];
 		_textField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
 		[self.contentView addSubview:_textField];
+		
+		_stateView = [[UIImageView alloc] initWithFrame:CGRectMake(kBAFormFieldNameWidth + kBAFormFieldSpacing * 4 + kBAFormFieldContentWidth,
+																   (kBAFormFieldHeight - kBAFormStateSize) / 2,
+																   kBAFormStateSize, kBAFormStateSize)];
+		[self.contentView addSubview:_stateView];
     }
     return self;
+}
+
+- (void)setState:(BAFormFieldState)state {
+	[super setState:state];
+	UIImage *image = nil;
+	if (state == BAFormFieldStateValid) {
+		image = [UIImage imageNamed:@"form-field-valid.png"];
+	} else if (state == BAFormFieldStateInvalid) {
+		image = [UIImage imageNamed:@"form-field-invalid.png"];
+	}
+	_stateView.image = image;
 }
 
 @end

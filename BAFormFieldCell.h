@@ -31,13 +31,21 @@
 #define kBAFormFieldHeight 44
 #define kBAFormFieldSpacing 5
 #define kBAFormFieldNameWidth 100
-#define kBAFormFieldContentWidth 160
+#define kBAFormFieldContentWidth 140
+
+typedef enum {
+	BAFormFieldStateUnknown,
+	BAFormFieldStateValid,
+	BAFormFieldStateInvalid
+} BAFormFieldState;
 
 @interface BAFormFieldCell : UITableViewCell {
 @private
 	UILabel *_nameLabel;
+	BAFormFieldState _state;
 }
 
 @property(nonatomic, readonly) UILabel *nameLabel;
+@property(nonatomic, assign) BAFormFieldState state;
 
 @end

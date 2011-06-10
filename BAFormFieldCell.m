@@ -31,6 +31,7 @@
 @implementation BAFormFieldCell
 
 @synthesize nameLabel = _nameLabel;
+@synthesize state = _state;
 
 - (void)dealloc {
 	[_nameLabel release];

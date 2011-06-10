@@ -49,6 +49,8 @@
 					 descriptor:(BAFormFieldDescriptor *)descriptor
 					  tableView:(UITableView *)tableView;
 
+- (void)formProvider:(BAFormProvider *)formProvider fieldDidChange:(BAFormFieldDescriptor *)fieldDescriptor;
+
 @end
 
 

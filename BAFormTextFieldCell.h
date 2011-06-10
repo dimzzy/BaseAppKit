@@ -32,6 +32,7 @@
 @interface BAFormTextFieldCell : BAFormFieldCell {
 @private
 	UITextField *_textField;
+	UIImageView *_stateView;
 }
 
 @property(nonatomic, readonly) UITextField *textField;

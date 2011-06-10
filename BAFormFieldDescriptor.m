@@ -83,7 +83,7 @@
 			return error;
 		}
 		return nil;
-	} retain];
+	} copy];
 }
 
 @end

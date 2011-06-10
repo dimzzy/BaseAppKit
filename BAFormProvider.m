@@ -114,6 +114,13 @@
 				  cellForField:(BAFormFieldDescriptor *)fieldDescriptor
 				   atIndexPath:(NSIndexPath *)indexPath
 {
+	BAFormFieldState state = BAFormFieldStateUnknown;
+	id fieldValue = [self.model objectForKey:fieldDescriptor.identifier];
+	if (fieldValue && fieldDescriptor.validator) {
+		NSString *error = fieldDescriptor.validator(fieldValue, fieldDescriptor, self.model);
+		state = error ? BAFormFieldStateInvalid : BAFormFieldStateValid;
+	}
+	
 	switch (fieldDescriptor.type) {
 		case BAFormFieldTypeLabel: {
 			BAFormLabelFieldCell *cell = (BAFormLabelFieldCell *)[tableView dequeueReusableCellWithIdentifier:@"BAFormLabelFieldCell"];
@@ -127,6 +134,7 @@
 			cell.nameLabel.text = fieldDescriptor.name;
 			NSString *text = [self.model objectForKey:fieldDescriptor.identifier];
 			cell.fieldLabel.text = text;
+			cell.state = state;
 			return cell;
 		}
 		case BAFormFieldTypeText: {
@@ -153,6 +161,7 @@
 			cell.textField.placeholder = fieldDescriptor.placeholder;
 			cell.textField.delegate = self;
 			cell.textField.tag = [self viewTagForField:indexPath.row inSection:indexPath.section];
+			cell.state = state;
 			return cell;
 		}
 		case BAFormFieldTypeButton: {
@@ -166,6 +175,7 @@
 			}
 			cell.nameLabel.text = fieldDescriptor.name;
 			[cell.fieldButton setTitle:fieldDescriptor.placeholder forState:UIControlStateNormal];
+			cell.state = state;
 			return cell;
 		}
 	}
@@ -191,10 +201,13 @@
 		return;
 	}
 	NSString *fieldValue = textField.text;
-	if (fieldValue) {
+	if ([fieldValue length] > 0) {
 		[self.model setObject:fieldValue forKey:fieldDescriptor.identifier];
 	} else {
 		[self.model removeObjectForKey:fieldDescriptor.identifier];
+	}
+	if ([self.delegate respondsToSelector:@selector(formProvider:fieldDidChange:)]) {
+		[self.delegate formProvider:self fieldDidChange:fieldDescriptor];
 	}
 }
 
