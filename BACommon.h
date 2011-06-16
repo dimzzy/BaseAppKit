@@ -33,3 +33,8 @@
 													   delegate:nil \
 											  cancelButtonTitle:@"OK" \
 											  otherButtonTitles:nil] autorelease] show]
+
+#define UIColorFromRGB(RGB) [UIColor colorWithRed:((float)((RGB & 0xFF0000) >> 16)) / 255.0 \
+											green:((float)((RGB & 0xFF00) >> 8)) / 255.0 \
+											 blue:((float)((RGB & 0xFF))) / 255.0 \
+											alpha:1.0]
