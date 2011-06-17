@@ -58,11 +58,15 @@
 @private
 	NSMutableDictionary *_model;
 	NSMutableArray *_sectionDescriptors;
+	BAFormFieldDescriptor *_activeFieldDescriptor;
+	NSIndexPath *_activeIndexPath;
 	id<BAFormProviderDelegate> _delegate;
 }
 
 @property(nonatomic, readonly) NSMutableDictionary *model;
 @property(nonatomic, readonly) NSMutableArray *sectionDescriptors;
+@property(nonatomic, readonly) BAFormFieldDescriptor *activeFieldDescriptor;
+@property(nonatomic, readonly) NSIndexPath *activeIndexPath;
 @property(nonatomic, assign) id<BAFormProviderDelegate> delegate;
 
 - (NSString *)validate;

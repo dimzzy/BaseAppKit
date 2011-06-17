@@ -40,11 +40,15 @@
 
 @implementation BAFormProvider
 
+@synthesize activeFieldDescriptor = _activeFieldDescriptor;
+@synthesize activeIndexPath = _activeIndexPath;
 @synthesize delegate = _delegate;
 
 - (void)dealloc {
 	[_model release];
 	[_sectionDescriptors release];
+	[_activeFieldDescriptor release];
+	[_activeIndexPath release];
 	[super dealloc];
 }
 
@@ -64,6 +68,22 @@
 
 - (NSInteger)viewTagForField:(NSUInteger)fieldIndex inSection:(NSUInteger)sectionIndex {
 	return fieldIndex + kMaxSectionCount * sectionIndex;
+}
+
+- (NSIndexPath *)indexPathWithViewTag:(NSInteger)tag {
+	if (tag < 0) {
+		return nil;
+	}
+	const NSUInteger sectionIndex = tag / kMaxSectionCount;
+	if (sectionIndex >= [self.sectionDescriptors count]) {
+		return nil;
+	}
+	BAFormSectionDescriptor *sectionDescriptor = [self.sectionDescriptors objectAtIndex:sectionIndex];
+	const NSUInteger fieldIndex = tag % kMaxSectionCount;
+	if (fieldIndex >= [sectionDescriptor.fieldDescriptors count]) {
+		return nil;
+	}
+	return [NSIndexPath indexPathForRow:fieldIndex inSection:sectionIndex];
 }
 
 - (BAFormFieldDescriptor *)fieldDescriptorWithViewTag:(NSInteger)tag {
@@ -216,6 +236,22 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
 	[textField resignFirstResponder];
 	return YES;
+}
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+	[_activeFieldDescriptor release];
+	BAFormFieldDescriptor *fieldDescriptor = [self fieldDescriptorWithViewTag:textField.tag];
+	_activeFieldDescriptor = [fieldDescriptor retain];
+	[_activeIndexPath release];
+	NSIndexPath *indexPath = [self indexPathWithViewTag:textField.tag];
+	_activeIndexPath = [indexPath retain];
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+	[_activeFieldDescriptor release];
+	_activeFieldDescriptor = nil;
+	[_activeIndexPath release];
+	_activeIndexPath = nil;
 }
 
 - (void)textFieldDidChange:(UITextField *)textField {
