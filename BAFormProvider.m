@@ -28,7 +28,15 @@
 
 #import "BAFormProvider.h"
 
-#define kMaxSectionCount 999
+#define kMaxSectionCount 1024
+
+
+@interface BAFormProvider (Private)
+
+- (void)textFieldDidChange:(UITextField *)textField;
+
+@end
+
 
 @implementation BAFormProvider
 
@@ -89,6 +97,26 @@
 	return nil;
 }
 
+- (BAFormFieldState)evalFieldState:(BAFormFieldDescriptor *)fieldDescriptor {
+	BAFormFieldState state = BAFormFieldStateUnknown;
+	id fieldValue = [self.model objectForKey:fieldDescriptor.identifier];
+	if (fieldValue && fieldDescriptor.validator) {
+		NSString *error = fieldDescriptor.validator(fieldValue, fieldDescriptor, self.model);
+		state = error ? BAFormFieldStateInvalid : BAFormFieldStateValid;
+	}
+	return state;
+}
+
+- (void)updateFieldStates:(UITableView *)tableView {
+	for (NSIndexPath *indexPath in [tableView indexPathsForVisibleRows]) {
+		BAFormSectionDescriptor *sectionDescriptor = [self.sectionDescriptors objectAtIndex:indexPath.section];
+		BAFormFieldDescriptor *fieldDescriptor = [sectionDescriptor.fieldDescriptors objectAtIndex:indexPath.row];
+		BAFormFieldState state = [self evalFieldState:fieldDescriptor];
+		BAFormLabelFieldCell *cell = (BAFormLabelFieldCell *)[tableView cellForRowAtIndexPath:indexPath];
+		cell.state = state;
+	}
+}
+
 #pragma mark Table Support
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -114,12 +142,6 @@
 				  cellForField:(BAFormFieldDescriptor *)fieldDescriptor
 				   atIndexPath:(NSIndexPath *)indexPath
 {
-	BAFormFieldState state = BAFormFieldStateUnknown;
-	id fieldValue = [self.model objectForKey:fieldDescriptor.identifier];
-	if (fieldValue && fieldDescriptor.validator) {
-		NSString *error = fieldDescriptor.validator(fieldValue, fieldDescriptor, self.model);
-		state = error ? BAFormFieldStateInvalid : BAFormFieldStateValid;
-	}
 	
 	switch (fieldDescriptor.type) {
 		case BAFormFieldTypeLabel: {
@@ -134,7 +156,7 @@
 			cell.nameLabel.text = fieldDescriptor.name;
 			NSString *text = [self.model objectForKey:fieldDescriptor.identifier];
 			cell.fieldLabel.text = text;
-			cell.state = state;
+			cell.state = [self evalFieldState:fieldDescriptor];
 			return cell;
 		}
 		case BAFormFieldTypeText: {
@@ -142,6 +164,7 @@
 			if (!cell) {
 				cell = [[[BAFormTextFieldCell alloc] initWithStyle:UITableViewCellStyleDefault
 												   reuseIdentifier:@"BAFormTextFieldCell"] autorelease];
+				[cell.textField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
 				if ([self.delegate respondsToSelector:@selector(decorateTextFieldCell:descriptor:tableView:)]) {
 					[self.delegate decorateTextFieldCell:cell descriptor:fieldDescriptor tableView:tableView];
 				}
@@ -161,7 +184,7 @@
 			cell.textField.placeholder = fieldDescriptor.placeholder;
 			cell.textField.delegate = self;
 			cell.textField.tag = [self viewTagForField:indexPath.row inSection:indexPath.section];
-			cell.state = state;
+			cell.state = [self evalFieldState:fieldDescriptor];
 			return cell;
 		}
 		case BAFormFieldTypeButton: {
@@ -175,7 +198,7 @@
 			}
 			cell.nameLabel.text = fieldDescriptor.name;
 			[cell.fieldButton setTitle:fieldDescriptor.placeholder forState:UIControlStateNormal];
-			cell.state = state;
+			cell.state = [self evalFieldState:fieldDescriptor];
 			return cell;
 		}
 	}
@@ -195,7 +218,7 @@
 	return YES;
 }
 
-- (void)textFieldDidEndEditing:(UITextField *)textField {
+- (void)textFieldDidChange:(UITextField *)textField {
 	BAFormFieldDescriptor *fieldDescriptor = [self fieldDescriptorWithViewTag:textField.tag];
 	if (!fieldDescriptor) {
 		return;

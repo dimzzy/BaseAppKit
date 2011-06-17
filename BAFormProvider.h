@@ -66,6 +66,7 @@
 @property(nonatomic, assign) id<BAFormProviderDelegate> delegate;
 
 - (NSString *)validate;
+- (void)updateFieldStates:(UITableView *)tableView;
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
 				  cellForField:(BAFormFieldDescriptor *)fieldDescriptor
