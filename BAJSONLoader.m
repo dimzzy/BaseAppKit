@@ -48,7 +48,7 @@
 	NSString *text = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
 //	NSLog(@"%@", [self.request URL]);
 //	NSLog(@"%@", text);
-	if (text) {
+	if (text && [text length] > 0) {
 		NSError *error = nil;
 		_JSONValue = [[text objectFromJSONStringWithParseOptions:JKParseOptionStrict error:&error] retain];
 		if (error) {
