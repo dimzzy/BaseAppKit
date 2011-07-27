@@ -104,10 +104,11 @@
 	if ([_delegate respondsToSelector:@selector(refreshHeaderDataSourceLastUpdated:)]) {
 		NSDate *date = [_delegate refreshHeaderDataSourceLastUpdated:self];
 		NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-		[formatter setAMSymbol:@"AM"];
-		[formatter setPMSymbol:@"PM"];
-		[formatter setDateFormat:@"MM/dd/yyyy hh:mm:a"];
-		_lastUpdatedLabel.text = [NSString stringWithFormat:@"Last Updated: %@", [formatter stringFromDate:date]];
+		[formatter setDateStyle:NSDateFormatterShortStyle];
+		[formatter setTimeStyle:NSDateFormatterMediumStyle];
+		_lastUpdatedLabel.text = [NSString stringWithFormat:@"%@ %@",
+								  NSLocalizedString(@"RefreshHeaderUpdated", nil),
+								  [formatter stringFromDate:date]];
 		[[NSUserDefaults standardUserDefaults] setObject:_lastUpdatedLabel.text forKey:@"BARefreshHeaderView_LastUpdate"];
 		[[NSUserDefaults standardUserDefaults] synchronize];
 		[formatter release];
