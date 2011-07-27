@@ -29,14 +29,22 @@
 #import <UIKit/UIKit.h>
 #import "BAToggleItem.h"
 
+typedef enum {
+//	BAToggleBarTailStateToggleAnimated,
+	BAToggleBarTailStateToggle,
+	BAToggleBarTailStateHidden,
+	BAToggleBarTailStateVisible
+} BAToggleBarTailState;
+
+
 @class BAToggleBar;
 
 
 @protocol BAToggleBarDelegate <NSObject>
 
-- (void)toggleBar:(BAToggleBar *)toggleBar didSelectItem:(NSString *)item atIndex:(NSInteger)index;
+- (void)toggleBar:(BAToggleBar *)toggleBar didSelectItem:(id)item atIndex:(NSInteger)index;
 @optional
-- (UIView<BAToggleItem> *)toggleBar:(BAToggleBar *)toggleBar viewForItem:(NSString *)item atIndex:(NSInteger)index;
+- (UIView<BAToggleItem> *)toggleBar:(BAToggleBar *)toggleBar viewForItem:(id)item atIndex:(NSInteger)index;
 - (UIView *)toggleBarSeparatorView:(BAToggleBar *)toggleBar;
 
 @end
@@ -46,9 +54,13 @@
 	BOOL _centered;
 	UIScrollView *_scrollView;
 	UIImageView *_leftTailView;
+	BAToggleBarTailState _leftTailState;
+	BOOL _leftTailHidden;
 	UIImageView *_rightTailView;
+	BAToggleBarTailState _rightTailState;
+	BOOL _rightTailHidden;
 	NSMutableArray *_itemViews; // [UIView<BAToggleItem>]
-	NSMutableArray *_items; // [NSString]
+	NSMutableArray *_items;
 	NSInteger _selectedItemIndex;
 	UIColor *_itemTextColor;
 	UIColor *_selectedItemTextColor;
@@ -57,6 +69,8 @@
 }
 
 @property(nonatomic, assign) BOOL centered;
+@property(nonatomic, assign) BAToggleBarTailState leftTailState;
+@property(nonatomic, assign) BAToggleBarTailState rightTailState;
 @property(nonatomic, copy) NSArray *items;
 @property(nonatomic, assign) NSInteger selectedItemIndex;
 @property(nonatomic, retain) UIColor *itemTextColor;

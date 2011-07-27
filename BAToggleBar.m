@@ -33,7 +33,7 @@
 #define kToggleItemVMargin 3
 #define kToggleBarSpacing 4
 #define kToggleTailWidth 30
-
+#define kToggleAnimationDuration 1
 
 @interface BAToggleBar ()
 
@@ -76,15 +76,21 @@
 	_scrollView.indicatorStyle = UIScrollViewIndicatorStyleWhite;
 	_scrollView.delegate = self;
 	[self addSubview:_scrollView];
+	
 	_leftTailView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"togglebar-left.png"]];
 	_leftTailView.userInteractionEnabled = NO;
 	_leftTailView.opaque = NO;
 	[self addSubview:_leftTailView];
+	_leftTailState = BAToggleBarTailStateToggle;
+	_leftTailHidden = NO;
+	
 	_rightTailView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"togglebar-right.png"]];
 	_rightTailView.userInteractionEnabled = NO;
 	_rightTailView.opaque = NO;
 	_rightTailView.backgroundColor = [UIColor clearColor];
 	[self addSubview:_rightTailView];
+	_rightTailState = BAToggleBarTailStateToggle;
+	_rightTailHidden = NO;
 
 	_itemViews = [[NSMutableArray alloc] init];
 	_items = [[NSMutableArray alloc] init];
@@ -117,11 +123,155 @@
     [super dealloc];
 }
 
-- (void)updateTailViews {
-	_leftTailView.hidden = (_scrollView.contentSize.width <= _scrollView.bounds.size.width ||
-							_scrollView.contentOffset.x == 0);
-	_rightTailView.hidden = (_scrollView.contentSize.width <= _scrollView.bounds.size.width ||
-							 _scrollView.contentOffset.x + _scrollView.bounds.size.width == _scrollView.contentSize.width);
+- (void)updateLeftTailView:(BOOL)animated {
+	BOOL hideLeft = (_scrollView.contentSize.width <= _scrollView.bounds.size.width ||
+					 _scrollView.contentOffset.x <= 0);
+	switch (self.leftTailState) {
+//		case BAToggleBarTailStateToggleAnimated: {
+//			_leftTailView.hidden = NO;
+//			if (_leftTailHidden && !hideLeft) {
+//				_leftTailHidden = NO;
+//				if (animated) {
+//					[UIView animateWithDuration:kToggleAnimationDuration
+//										  delay:0
+//										options:UIViewAnimationOptionCurveLinear
+//									 animations:^(void) {
+//										 CGRect r = _leftTailView.frame;
+//										 r.origin.x += kToggleTailWidth;
+//										 _leftTailView.frame = r;
+//									 }
+//									 completion:^(BOOL finished) {}];
+//				} else {
+//					CGRect r = _leftTailView.frame;
+//					r.origin.x += kToggleTailWidth;
+//					_leftTailView.frame = r;
+//				}
+//			} else if (!_leftTailHidden && hideLeft) {
+//				_leftTailHidden = YES;
+//				if (animated) {
+//					[UIView animateWithDuration:kToggleAnimationDuration
+//										  delay:0
+//										options:UIViewAnimationOptionCurveLinear
+//									 animations:^(void) {
+//										 CGRect r = _leftTailView.frame;
+//										 r.origin.x -= kToggleTailWidth;
+//										 _leftTailView.frame = r;
+//									 }
+//									 completion:^(BOOL finished) {}];
+//				} else {
+//					CGRect r = _leftTailView.frame;
+//					r.origin.x -= kToggleTailWidth;
+//					_leftTailView.frame = r;
+//				}
+//			}
+//			break;
+//		}
+		case BAToggleBarTailStateToggle: {
+			_leftTailView.hidden = hideLeft;
+			_leftTailHidden = hideLeft;
+			break;
+		}
+		case BAToggleBarTailStateHidden: {
+			_leftTailView.hidden = YES;
+			_leftTailHidden = YES;
+			break;
+		}
+		case BAToggleBarTailStateVisible: {
+			_leftTailView.hidden = NO;
+			_leftTailHidden = NO;
+			break;
+		}
+	}
+}
+
+- (void)updateRightTailView:(BOOL)animated {
+	BOOL hideRight = (_scrollView.contentSize.width <= _scrollView.bounds.size.width ||
+					  _scrollView.contentOffset.x + _scrollView.bounds.size.width >= _scrollView.contentSize.width);
+	switch (self.rightTailState) {
+//		case BAToggleBarTailStateToggleAnimated: {
+//			_rightTailView.hidden = NO;
+//			if (_rightTailHidden && !hideRight) {
+//				_rightTailHidden = NO;
+//				if (animated) {
+//					[UIView animateWithDuration:kToggleAnimationDuration
+//										  delay:0
+//										options:UIViewAnimationOptionCurveLinear
+//									 animations:^(void) {
+//										 CGRect r = _rightTailView.frame;
+//										 r.origin.x -= kToggleTailWidth;
+//										 _rightTailView.frame = r;
+//									 }
+//									 completion:^(BOOL finished) {}];
+//				} else {
+//					CGRect r = _rightTailView.frame;
+//					r.origin.x -= kToggleTailWidth;
+//					_rightTailView.frame = r;
+//				}
+//			} else if (!_rightTailHidden && hideRight) {
+//				_rightTailHidden = YES;
+//				if (animated) {
+//					[UIView animateWithDuration:kToggleAnimationDuration
+//										  delay:0
+//										options:UIViewAnimationOptionCurveLinear
+//									 animations:^(void) {
+//										 CGRect r = _rightTailView.frame;
+//										 r.origin.x += kToggleTailWidth;
+//										 _rightTailView.frame = r;
+//									 }
+//									 completion:^(BOOL finished) {}];
+//				} else {
+//					CGRect r = _rightTailView.frame;
+//					r.origin.x += kToggleTailWidth;
+//					_rightTailView.frame = r;
+//				}
+//			}
+//			break;
+//		}
+		case BAToggleBarTailStateToggle: {
+			_rightTailView.hidden = hideRight;
+			_rightTailHidden = hideRight;
+			break;
+		}
+		case BAToggleBarTailStateHidden: {
+			_rightTailView.hidden = YES;
+			_rightTailHidden = YES;
+			break;
+		}
+		case BAToggleBarTailStateVisible: {
+			_rightTailView.hidden = NO;
+			_rightTailHidden = NO;
+			break;
+		}
+	}
+}
+
+- (void)updateTailViews:(BOOL)animated {
+	[self updateLeftTailView:animated];
+	[self updateRightTailView:animated];
+}
+
+- (BAToggleBarTailState)leftTailState {
+	return _leftTailState;
+}
+
+- (void)setLeftTailState:(BAToggleBarTailState)tailState {
+	if (_leftTailState == tailState) {
+		return;
+	}
+	_leftTailState = tailState;
+	[self updateTailViews:NO];
+}
+
+- (BAToggleBarTailState)rightTailState {
+	return _rightTailState;
+}
+
+- (void)setRightTailState:(BAToggleBarTailState)tailState {
+	if (_rightTailState == tailState) {
+		return;
+	}
+	_rightTailState = tailState;
+	[self updateTailViews:NO];
 }
 
 - (void)updateItemsState {
@@ -135,7 +285,7 @@
 	const CGFloat width = self.bounds.size.width;
 	const CGFloat height = self.bounds.size.height;
 	const CGFloat maxItemHeight = height - kToggleItemVMargin * 2;
-	CGFloat x = kToggleBarSpacing;
+	CGFloat x = kToggleTailWidth;
 	for (UIView *subview in _scrollView.subviews) {
 		if ([_itemViews indexOfObject:subview] != NSNotFound) {
 			// item view
@@ -153,6 +303,7 @@
 			x += subview.bounds.size.width + kToggleBarSpacing;
 		}
 	}
+	x += kToggleTailWidth - kToggleBarSpacing;
 	if (x < width && self.centered) {
 		const CGFloat offset = roundf((width - x) / 2);
 		x = width;
@@ -163,22 +314,29 @@
 		}
 	}
 	[_scrollView setContentSize:CGSizeMake(x, height)];
-	[self updateTailViews];
+	[self updateTailViews:NO];
 }
 
 - (void)layoutSubviews {
 	[super layoutSubviews];
 	_scrollView.frame = self.bounds;
-	_leftTailView.frame = CGRectMake(0, 0,
-									 kToggleTailWidth, self.bounds.size.height);
-	_rightTailView.frame = CGRectMake(self.bounds.size.width - kToggleTailWidth, 0,
-									  kToggleTailWidth, self.bounds.size.height);
-	[self updateTailViews];
+	CGRect leftFrame = CGRectMake(0, 0, kToggleTailWidth, self.bounds.size.height);
+//	if (_leftTailState == BAToggleBarTailStateToggleAnimated && _leftTailHidden) {
+//		leftFrame.origin.x -= kToggleTailWidth;
+//	}
+	_leftTailView.frame = leftFrame;
+	CGRect rightFrame = CGRectMake(self.bounds.size.width - kToggleTailWidth, 0,
+								   kToggleTailWidth, self.bounds.size.height);
+//	if (_rightTailState == BAToggleBarTailStateToggleAnimated && _rightTailHidden) {
+//		rightFrame.origin.x += kToggleTailWidth;
+//	}
+	_rightTailView.frame = rightFrame;
+	[self updateTailViews:NO];
 }
 
-- (BAToggleItemLabel *)createDefaultItemView:(NSString *)text {
+- (BAToggleItemLabel *)createDefaultItemView:(id)item {
 	BAToggleItemLabel *itemView = [[[BAToggleItemLabel alloc] initWithFrame:CGRectZero] autorelease];
-	itemView.text = text;
+	itemView.text = [item description];
 	itemView.font = [UIFont boldSystemFontOfSize:14];
 	itemView.textAlignment = UITextAlignmentCenter;
 	itemView.textColor = self.itemTextColor;
@@ -216,7 +374,7 @@
 				[_scrollView addSubview:separatorView];
 			}
 		}
-		NSString *item = [_items objectAtIndex:itemIndex];
+		id item = [_items objectAtIndex:itemIndex];
 		UIView<BAToggleItem> *itemView = nil;
 		if (self.delegate && [self.delegate respondsToSelector:@selector(toggleBar:viewForItem:atIndex:)]) {
 			itemView = [self.delegate toggleBar:self viewForItem:item atIndex:itemIndex];
@@ -245,7 +403,7 @@
 	_selectedItemIndex = selectedItemIndex;
 	[self updateItemsState];
 	if (self.delegate) {
-		NSString *item = (selectedItemIndex < 0) ? nil : [_items objectAtIndex:_selectedItemIndex];
+		id item = (selectedItemIndex < 0) ? nil : [_items objectAtIndex:_selectedItemIndex];
 		[self.delegate toggleBar:self didSelectItem:item atIndex:_selectedItemIndex];
 	}
 }
@@ -255,7 +413,21 @@
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-	[self updateTailViews];
+//	if (self.leftTailState != BAToggleBarTailStateToggleAnimated) {
+//		[self updateLeftTailView:YES];
+//	}
+//	if (self.rightTailState != BAToggleBarTailStateToggleAnimated) {
+//		[self updateRightTailView:YES];
+//	}
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+//	if (self.leftTailState == BAToggleBarTailStateToggleAnimated) {
+//		[self updateLeftTailView:YES];
+//	}
+//	if (self.rightTailState == BAToggleBarTailStateToggleAnimated) {
+//		[self updateRightTailView:YES];
+//	}
 }
 
 @end
