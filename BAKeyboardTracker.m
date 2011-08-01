@@ -89,6 +89,13 @@
     return nil;
 }
 
+- (void)scrollViewFrameDidChange {
+}
+
+- (CGFloat)bottomSpacing {
+	return 0;
+}
+
 - (void)keyboardWillShow:(NSNotification *)notification {
 	if (!self.scrollView) {
 		return;
@@ -98,10 +105,10 @@
 	}
 	
     UIView *firstResponder = [self findFirstResponderBeneathView:self.scrollView];
-    if (!firstResponder) {
-        // No child view is the first responder - nothing to do here
-        return;
-    }
+//    if (!firstResponder) {
+//        // No child view is the first responder - nothing to do here
+//        return;
+//    }
     
     _priorFrame = self.scrollView.frame;
     
@@ -118,8 +125,10 @@
     CGRect newFrame = self.scrollView.frame;
 	const CGFloat keyboardBottom = keyboardBounds.origin.y + keyboardBounds.size.height;
 	const CGFloat scrollViewBottom = self.scrollView.bounds.origin.y + self.scrollView.bounds.size.height;
-    newFrame.size.height -= keyboardBounds.size.height - (keyboardBottom - scrollViewBottom);
-    
+    newFrame.size.height -= keyboardBounds.size.height - (keyboardBottom - scrollViewBottom) + [self bottomSpacing];
+
+    if (firstResponder) {
+		
     CGRect firstResponderFrame = [firstResponder convertRect:firstResponder.bounds toView:self.scrollView];
     if (firstResponderFrame.origin.y + firstResponderFrame.size.height >= screenBounds.origin.y + screenBounds.size.height - keyboardBounds.size.height) {
         // Prepare to scroll to make sure the view is above the keyboard
@@ -139,6 +148,8 @@
         }
     }
     
+	}
+	
     // Shrink view's height by the keyboard's height, and scroll to show the text field/view being edited
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationCurve:[[[notification userInfo] objectForKey:UIKeyboardAnimationCurveUserInfoKey] intValue]];
@@ -147,6 +158,7 @@
     if (offset != -1) {
         [self.scrollView setContentOffset:CGPointMake(self.scrollView.contentOffset.x, offset) animated:YES];
     }
+	[self scrollViewFrameDidChange];
     [UIView commitAnimations];
 }
 
@@ -164,6 +176,7 @@
     [UIView setAnimationDuration:[[[notification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue]];
     self.scrollView.frame = _priorFrame;
     _priorFrame = CGRectZero;
+	[self scrollViewFrameDidChange];
     [UIView commitAnimations];
 }
 

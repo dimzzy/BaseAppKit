@@ -38,4 +38,7 @@
 
 @property(nonatomic, retain) UIScrollView *scrollView;
 
+- (void)scrollViewFrameDidChange;
+- (CGFloat)bottomSpacing;
+
 @end
