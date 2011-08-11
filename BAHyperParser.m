@@ -132,6 +132,7 @@
 	NSString *attributeName = nil;
 	BOOL endOfElement = NO; // starts with slash; closing part
 	BOOL emptyElement = NO; // ends with slash; element without content
+    BOOL tagCompleted = NO; // final '>' found after attribute value without quotes
 	NSMutableString *buffer = [NSMutableString string];
 	unichar chars[1];
 	while ([_input hasNext]) {
@@ -193,6 +194,16 @@
 						chars[0] = c;
 						[buffer appendString:[NSString stringWithCharacters:chars length:1]];
 					}
+                } else if (c == '>'){
+                    if (firstQuote != '\0') {
+                        // character inside quotes
+                        chars[0] = c;
+                        [buffer appendString:[NSString stringWithCharacters:chars length:1]];
+                    } else {
+                        // end of tag and end of attribute value without quotes
+                        tagCompleted = YES;
+                        break;
+                    }
 				} else {
 					chars[0] = c;
 					[buffer appendString:[NSString stringWithCharacters:chars length:1]];
@@ -204,6 +215,9 @@
 				attributeName = nil;
 			}
 			buffer = [NSMutableString string];
+            if (tagCompleted) {
+				break;
+			}
 		} else if (c == '/') {
 			// buffer may contain element name
 			if ([buffer length] > 0) {
