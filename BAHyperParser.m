@@ -42,8 +42,8 @@
 - (BOOL)hasNext;
 - (unichar)next;
 - (BOOL)startsWithPrefix:(NSString *)prefix;
-- (NSString *)substringToSuffix:(NSString *)suffix;
-- (NSString *)substringFromPrefix:(NSString *)prefix toSuffix:(NSString *)suffix;
+- (NSString *)substringToSuffix:(NSString *)suffix validateSuffix:(BOOL)validateSuffix;
+- (NSString *)substringFromPrefix:(NSString *)prefix toSuffix:(NSString *)suffix validateSuffix:(BOOL)validateSuffix;
 
 @end
 
@@ -84,12 +84,16 @@
 	return YES;
 }
 
-- (NSString *)substringToSuffix:(NSString *)suffix {
+- (NSString *)substringToSuffix:(NSString *)suffix validateSuffix:(BOOL)validateSuffix {
 	NSRange range = {_position, _length - _position};
 	NSRange suffixRange = [_source rangeOfString:suffix options:NSLiteralSearch range:range];
 	if (suffixRange.location == NSNotFound) {
-		_position = _length;
-		return [_source substringFromIndex:_position];
+        if (validateSuffix) {
+            return nil;
+        } else {
+            _position = _length;
+            return [_source substringFromIndex:_position];
+        }
 	}
 	range.location = _position;
 	range.length = suffixRange.location - range.location;
@@ -98,12 +102,12 @@
 	return content;
 }
 
-- (NSString *)substringFromPrefix:(NSString *)prefix toSuffix:(NSString *)suffix {
+- (NSString *)substringFromPrefix:(NSString *)prefix toSuffix:(NSString *)suffix validateSuffix:(BOOL)validateSuffix {
 	if (![self startsWithPrefix:prefix]) {
 		return nil;
 	}
 	_position += [prefix length];
-	return [self substringToSuffix:suffix];
+	return [self substringToSuffix:suffix validateSuffix:validateSuffix];
 }
 
 @end
@@ -275,7 +279,7 @@
 			[pool drain];
 			pool = [[NSAutoreleasePool alloc] init];
 		}
-		NSString *string = [_input substringToSuffix:@"<"];
+		NSString *string = [_input substringToSuffix:@"<" validateSuffix:NO];
 		if ([string length] > 0) {
 			if ([self.delegate respondsToSelector:@selector(parser:foundCharacters:)]) {
 				[self.delegate parser:self foundCharacters:string];
@@ -285,7 +289,7 @@
 			}
 		}
 		// CDATA
-		string = [_input substringFromPrefix:@"![CDATA[" toSuffix:@"]]>"];
+		string = [_input substringFromPrefix:@"![CDATA[" toSuffix:@"]]>" validateSuffix:NO];
 		if (string) {
 			if ([self.delegate respondsToSelector:@selector(parser:foundCDATA:)]) {
 				[self.delegate parser:self foundCDATA:string];
@@ -293,7 +297,7 @@
 			continue;
 		}
 		// Comment
-		string = [_input substringFromPrefix:@"!--" toSuffix:@"-->"];
+		string = [_input substringFromPrefix:@"!--" toSuffix:@"-->" validateSuffix:YES];
 		if (string) {
 			if ([self.delegate respondsToSelector:@selector(parser:foundComment:)]) {
 				[self.delegate parser:self foundComment:string];
@@ -301,12 +305,12 @@
 			continue;
 		}
 		// Processing Instruction... ignore for now
-		string = [_input substringFromPrefix:@"?" toSuffix:@"?>"];
+		string = [_input substringFromPrefix:@"?" toSuffix:@"?>" validateSuffix:NO];
 		if (string) {
 			continue;
 		}
 		// DOCTYPE... ignore for now
-		string = [_input substringFromPrefix:@"!" toSuffix:@">"];
+		string = [_input substringFromPrefix:@"!" toSuffix:@">" validateSuffix:NO];
 		if (string) {
 			continue;
 		}
