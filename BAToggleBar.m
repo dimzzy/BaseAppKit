@@ -29,9 +29,6 @@
 #import "BAToggleBar.h"
 #import "BAToggleItemLabel.h"
 
-#define kToggleItemHMargin 8
-#define kToggleItemVMargin 3
-#define kToggleBarSpacing 4
 #define kToggleTailWidth 30
 #define kToggleAnimationDuration 1
 
@@ -64,14 +61,14 @@
 @implementation BAToggleBar
 
 @synthesize centered = _centered;
+@synthesize spacing = _spacing;
 @synthesize itemViews = _itemViews;
-@synthesize itemTextColor = _itemTextColor;
-@synthesize selectedItemTextColor = _selectedItemTextColor;
-@synthesize selectedItemBackgroundColor = _selectedItemBackgroundColor;
 @synthesize delegate = _delegate;
 
 - (void)setupView {
-	_scrollView = [[BAToggleScrollView alloc] initWithFrame:CGRectZero];
+	_scrollView = [[BAToggleScrollView alloc] initWithFrame:self.bounds];
+	_scrollView.backgroundColor = [UIColor clearColor];
+	_scrollView.opaque = NO;
 	_scrollView.scrollsToTop = NO;
 	_scrollView.indicatorStyle = UIScrollViewIndicatorStyleWhite;
 	_scrollView.delegate = self;
@@ -94,9 +91,6 @@
 
 	_itemViews = [[NSMutableArray alloc] init];
 	_items = [[NSMutableArray alloc] init];
-	_itemTextColor = [[UIColor whiteColor] retain];
-	_selectedItemTextColor = [[UIColor colorWithWhite:0.9 alpha:1.0] retain];
-	_selectedItemBackgroundColor = [[UIColor colorWithWhite:0.0 alpha:0.3] retain];
 }
 
 - (id)initWithFrame:(CGRect)aRect {
@@ -117,10 +111,23 @@
 	[_rightTailView release];
 	[_itemViews release];
 	[_items release];
-	[_itemTextColor release];
-	[_selectedItemTextColor release];
-	[_selectedItemBackgroundColor release];
     [super dealloc];
+}
+
+- (UIImage *)leftTailImage {
+	return _leftTailView.image;
+}
+
+- (void)setLeftTailImage:(UIImage *)image {
+	_leftTailView.image = image;
+}
+
+- (UIImage *)rightTailImage {
+	return _rightTailView.image;
+}
+
+- (void)setRightTailImage:(UIImage *)image {
+	_rightTailView.image = image;
 }
 
 - (void)updateLeftTailView:(BOOL)animated {
@@ -284,26 +291,21 @@
 - (void)layoutItemViews {
 	const CGFloat width = self.bounds.size.width;
 	const CGFloat height = self.bounds.size.height;
-	const CGFloat maxItemHeight = height - kToggleItemVMargin * 2;
 	CGFloat x = kToggleTailWidth;
 	for (UIView *subview in _scrollView.subviews) {
 		if ([_itemViews indexOfObject:subview] != NSNotFound) {
 			// item view
-			CGSize itemSize = [subview sizeThatFits:CGSizeMake(CGFLOAT_MAX / 2, maxItemHeight)];
-			itemSize.height = MIN(itemSize.height, maxItemHeight);
-			itemSize.width += kToggleItemHMargin * 2;
-			itemSize.height += kToggleItemVMargin * 2;
-			CGFloat y = roundf((height - itemSize.height) / 2);
-			subview.frame = CGRectMake(x, y, itemSize.width, itemSize.height);
-			x += itemSize.width + kToggleBarSpacing;
+			CGSize itemSize = [subview sizeThatFits:CGSizeMake(CGFLOAT_MAX / 2, height)];
+			subview.frame = CGRectMake(x, 0, itemSize.width, height);
+			x += itemSize.width + self.spacing;
 		} else {
 			// separator view
 			subview.frame = CGRectMake(x, (height - subview.bounds.size.height) / 2,
 									   subview.bounds.size.width, subview.bounds.size.height);
-			x += subview.bounds.size.width + kToggleBarSpacing;
+			x += subview.bounds.size.width + self.spacing;
 		}
 	}
-	x += kToggleTailWidth - kToggleBarSpacing;
+	x += kToggleTailWidth - self.spacing;
 	if (x < width && self.centered) {
 		const CGFloat offset = roundf((width - x) / 2);
 		x = width;
@@ -319,7 +321,12 @@
 
 - (void)layoutSubviews {
 	[super layoutSubviews];
-	_scrollView.frame = self.bounds;
+	
+	// position scroll view in a way to prevent bounce bug
+	if (!CGRectEqualToRect(self.bounds, _scrollView.frame)) {
+        _scrollView.frame = self.bounds;
+	}
+	
 	CGRect leftFrame = CGRectMake(0, 0, kToggleTailWidth, self.bounds.size.height);
 //	if (_leftTailState == BAToggleBarTailStateToggleAnimated && _leftTailHidden) {
 //		leftFrame.origin.x -= kToggleTailWidth;
@@ -338,15 +345,9 @@
 	BAToggleItemLabel *itemView = [[[BAToggleItemLabel alloc] initWithFrame:CGRectZero] autorelease];
 	itemView.text = [item description];
 	itemView.font = [UIFont boldSystemFontOfSize:14];
-	itemView.textAlignment = UITextAlignmentCenter;
-	itemView.textColor = self.itemTextColor;
+	itemView.textColor = [UIColor whiteColor];
 	itemView.shadowColor = [UIColor blackColor];
 	itemView.shadowOffset = CGSizeMake(0, -1);
-	itemView.selectedTextColor = self.selectedItemTextColor;
-	itemView.backgroundColor = [UIColor clearColor];
-	itemView.selectedBackgroundColor = self.selectedItemBackgroundColor;
-	itemView.opaque = NO;
-	itemView.userInteractionEnabled = YES;
 	return itemView;
 }
 

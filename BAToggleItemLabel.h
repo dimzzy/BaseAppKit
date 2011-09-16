@@ -32,13 +32,13 @@
 @interface BAToggleItemLabel : UILabel <BAToggleItem> {
 @private
 	BOOL _selected;
-	UIColor *_selectedBackgroundColor;
-	UIColor *_selectedTextColor;
 	UIColor *_normalTextColor;
 }
 
 @property(nonatomic, assign) BOOL selected;
 @property(nonatomic, retain) UIColor *selectedBackgroundColor;
 @property(nonatomic, retain) UIColor *selectedTextColor;
+@property(nonatomic, assign) UIEdgeInsets insets;
+@property(nonatomic, assign) CGFloat padding;
 
 @end

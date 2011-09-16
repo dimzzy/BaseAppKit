@@ -29,10 +29,14 @@
 #import <QuartzCore/QuartzCore.h>
 #import "BAToggleItemLabel.h"
 
+#define kDefaultPadding 10
+
 @implementation BAToggleItemLabel
 
 @synthesize selectedBackgroundColor = _selectedBackgroundColor;
 @synthesize selectedTextColor = _selectedTextColor;
+@synthesize insets = _insets;
+@synthesize padding = _padding;
 
 - (void)dealloc {
 	[_selectedBackgroundColor release];
@@ -41,12 +45,44 @@
 	[super dealloc];
 }
 
+- (id)initWithFrame:(CGRect)frame {
+	if ((self = [super initWithFrame:frame])) {
+		_selectedTextColor = [[UIColor colorWithWhite:0.9 alpha:1.0] retain];
+		_selectedBackgroundColor = [[UIColor colorWithWhite:0.0 alpha:0.3] retain];
+		self.insets = UIEdgeInsetsMake(kDefaultPadding / 2, kDefaultPadding, kDefaultPadding / 2, kDefaultPadding);
+		self.padding = kDefaultPadding;
+		self.textAlignment = UITextAlignmentCenter;
+		self.backgroundColor = [UIColor clearColor];
+		self.opaque = NO;
+		self.userInteractionEnabled = YES;
+	}
+	return self;
+}
+
+- (CGSize)sizeThatFits:(CGSize)size {
+	size.width -= (self.insets.left + self.insets.right);
+	size.height -= (self.insets.top + self.insets.bottom);
+	size = [super sizeThatFits:size];
+	size.width += (self.insets.left + self.insets.right);
+	size.height += (self.insets.top + self.insets.bottom);
+	return size;
+}
+
 - (void)drawRect:(CGRect)rect {
 	if (self.selected && self.selectedBackgroundColor) {
+		CGSize textSize = UIEdgeInsetsInsetRect(self.bounds, self.insets).size;
+		textSize = [self.text sizeWithFont:self.font
+						 constrainedToSize:textSize
+							 lineBreakMode:self.lineBreakMode];
 		[self.selectedBackgroundColor set];
 		CGContextRef ctx = UIGraphicsGetCurrentContext();
-		UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:self.bounds
-														cornerRadius:(self.bounds.size.height / 2)];
+		CGRect plateRect = CGRectMake((self.bounds.size.width - textSize.width) / 2,
+									  (self.bounds.size.height - textSize.height) / 2,
+									  textSize.width, textSize.height);
+		plateRect = UIEdgeInsetsInsetRect(plateRect, UIEdgeInsetsMake(-self.padding / 2, -self.padding,
+																	  -self.padding / 2, -self.padding));
+		UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:plateRect
+														cornerRadius:(plateRect.size.height / 2)];
 		CGContextAddPath(ctx, path.CGPath);
 		CGContextFillPath(ctx);
 	}

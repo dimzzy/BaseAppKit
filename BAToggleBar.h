@@ -51,7 +51,6 @@ typedef enum {
 
 
 @interface BAToggleBar : UIView <UIScrollViewDelegate> {
-	BOOL _centered;
 	UIScrollView *_scrollView;
 	UIImageView *_leftTailView;
 	BAToggleBarTailState _leftTailState;
@@ -62,20 +61,16 @@ typedef enum {
 	NSMutableArray *_itemViews; // [UIView<BAToggleItem>]
 	NSMutableArray *_items;
 	NSInteger _selectedItemIndex;
-	UIColor *_itemTextColor;
-	UIColor *_selectedItemTextColor;
-	UIColor *_selectedItemBackgroundColor;
-	id<BAToggleBarDelegate> _delegate;
 }
 
 @property(nonatomic, assign) BOOL centered;
+@property(nonatomic, assign) CGFloat spacing;
 @property(nonatomic, assign) BAToggleBarTailState leftTailState;
 @property(nonatomic, assign) BAToggleBarTailState rightTailState;
+@property(nonatomic, retain) UIImage *leftTailImage;
+@property(nonatomic, retain) UIImage *rightTailImage;
 @property(nonatomic, copy) NSArray *items;
 @property(nonatomic, assign) NSInteger selectedItemIndex;
-@property(nonatomic, retain) UIColor *itemTextColor;
-@property(nonatomic, retain) UIColor *selectedItemTextColor;
-@property(nonatomic, retain) UIColor *selectedItemBackgroundColor;
 @property(nonatomic, assign) IBOutlet id<BAToggleBarDelegate> delegate;
 
 - (void)setSelectedItemIndex:(NSInteger)selectedItemIndex revealingItem:(BOOL)revealingItem;
