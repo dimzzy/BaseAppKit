@@ -55,7 +55,7 @@
 			NSLog(@"%@", error);
 		}
 	} else {
-		NSLog(@"No JSON Data");
+//		NSLog(@"No JSON Data");
 	}
 
 //	if (self.dataEncoding == NSUTF8StringEncoding) {

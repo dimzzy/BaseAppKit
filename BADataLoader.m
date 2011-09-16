@@ -28,7 +28,6 @@
 
 #import "BADataLoader.h"
 #import "BANetworkActivity.h"
-#import "BAPersistentCache.h"
 #import "NSDictionary+BAHTTP.h"
 
 @interface BADataLoader()
@@ -41,23 +40,19 @@
 @implementation BADataLoader
 
 @synthesize request = _request;
+@synthesize cache = _cache;
 @synthesize receivedData = _receivedData;
 @synthesize expectedBytesCount = _expectedBytesCount;
 @synthesize statusCode = _statusCode;
 @synthesize delegate = _delegate;
 @synthesize dataEncoding = _dataEncoding;
-@synthesize disableCache = _disableCache;
-
-- (id)initWithRequest:(NSURLRequest *)request disableCache:(BOOL)disableCache {
-	if ((self = [super init])) {
-		_request = [request retain];
-		_disableCache = disableCache;
-	}
-	return self;
-}
 
 - (id)initWithRequest:(NSURLRequest *)request {
-	return [self initWithRequest:request disableCache:NO];
+	if ((self = [super init])) {
+		_request = [request retain];
+		_cache = [[BAPersistentCache persistentCache] retain];
+	}
+	return self;
 }
 
 - (void)resetConnection {
@@ -74,6 +69,7 @@
 	self.delegate = nil;
 	[self resetConnection];
 	[_request release];
+	[_cache release];
 	[_userInfo release];
 	[super dealloc];
 }
@@ -86,16 +82,18 @@
 	[self resetConnection];
 	if (_request) {
 		NSData *cachedData = nil;
-		if (!ignoreCache && !self.disableCache) {
+		if (!ignoreCache && self.cache) {
 			NSString *key = [_request.URL absoluteString];
-			cachedData = [[BAPersistentCache persistentCache] dataForKey:key];
+			cachedData = [self.cache dataForKey:key];
 		}
 		if (cachedData) {
+			//NSLog(@"#> %@", [_request URL]);
 			[self prepareData:cachedData];
 			if (_delegate) {
 				[_delegate loader:self didFinishLoadingData:cachedData fromCache:YES];
 			}
 		} else {
+			//NSLog(@">> %@", [_request URL]);
 			_currentConnection = [[NSURLConnection alloc] initWithRequest:_request delegate:self];
 			if (_currentConnection) {
 				self.receivedData = [NSMutableData data];
@@ -183,8 +181,8 @@
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-	if (!self.disableCache) {
-		[[BAPersistentCache persistentCache] setData:self.receivedData forKey:[_request.URL absoluteString]];
+	if (self.cache) {
+		[self.cache setData:self.receivedData forKey:[_request.URL absoluteString]];
 	}
 	[self prepareData:self.receivedData];
 	if (_delegate) {

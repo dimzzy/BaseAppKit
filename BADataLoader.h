@@ -27,6 +27,7 @@
 */
 
 #import <Foundation/Foundation.h>
+#import "BAPersistentCache.h"
 
 @class BADataLoader;
 
@@ -51,7 +52,7 @@
 @interface BADataLoader : NSObject {
 @private
 	NSURLRequest *_request;
-	BOOL _disableCache;
+	BAPersistentCache *_cache;
 	NSInteger _statusCode;
     NSMutableData *_receivedData;
 	NSStringEncoding _dataEncoding;
@@ -59,9 +60,11 @@
     NSURLConnection *_currentConnection;
 	id<BADataLoaderDelegate> _delegate;
 	NSMutableDictionary *_userInfo;
+	
 }
 
 @property(nonatomic, readonly) NSURLRequest *request;
+@property(nonatomic, retain) BAPersistentCache *cache;
 @property(nonatomic, readonly) NSUInteger expectedBytesCount;
 @property(nonatomic, readonly) NSUInteger receivedBytesCount;
 @property(nonatomic, readonly) float progress; // 0..1
@@ -69,8 +72,7 @@
 @property(nonatomic, assign) id<BADataLoaderDelegate> delegate;
 @property(nonatomic, readonly) NSMutableDictionary *userInfo;
 
-- (id)initWithRequest:(NSURLRequest *)request disableCache:(BOOL)disableCache;
-- (id)initWithRequest:(NSURLRequest *)request; // cache is enabled by default
+- (id)initWithRequest:(NSURLRequest *)request; // initially uses shared persistent cache
 - (void)startIgnoreCache:(BOOL)ignoreCache;
 - (void)cancel;
 - (float)progressWithExpectedBytesCount:(NSUInteger)expectedBytesCount;
@@ -83,7 +85,6 @@
 // Subclasses API
 
 @property(nonatomic, readonly) NSStringEncoding dataEncoding;
-@property(nonatomic, readonly) BOOL disableCache;
 - (void)resetConnection;
 - (void)prepareData:(NSData *)data;
 
