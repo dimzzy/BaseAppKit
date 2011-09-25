@@ -53,6 +53,7 @@
 - (BOOL)parsing:(NSString *)handle;
 - (void)enableBuffer;
 - (void)disableBuffer;
+- (void)appendText:(NSString *)text;
 - (NSString *)bufferText;
 
 @end

@@ -184,6 +184,10 @@
 	_currentText = nil;
 }
 
+- (void)appendText:(NSString *)text {
+	[_currentText appendString:text];
+}
+
 - (NSString *)bufferText {
 	return _currentText ? [_currentText stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] : nil;
 }
@@ -235,9 +239,7 @@
 }
 
 - (void)parser:(BAHyperParser *)parser foundCharacters:(NSString *)string {
-	if (_currentText) {
-		[_currentText appendString:string];
-	}
+	[self appendText:string];
 }
 
 - (void)parse:(NSData *)data {
