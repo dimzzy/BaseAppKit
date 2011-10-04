@@ -31,5 +31,6 @@
 @interface NSString (BACoding)
 
 - (NSString *)MD5Hash;
++ (NSString *)stringWithUUID;
 
 @end
