@@ -46,6 +46,7 @@
 	self.backgroundColor = [UIColor clearColor];
 	self.primaryMode = BAPageControlModeDots;
 	self.fitMode = BAPageControlModeProgress;
+	self.alignment = BAPageControlAlignmentCenter;
 	self.inset = kPillLineWidth + kPillSpacing + kUnitSize / 2; // make sure that we fit for any mode by default
 }
 
@@ -89,7 +90,18 @@
 	const BAPageControlMode mode = self.displayMode;
 	if (mode == BAPageControlModeDots || mode == BAPageControlModeBlocks) {
 		CGSize size = [self sizeForNumberOfPages:_numberOfPages];
-		const CGFloat left = (self.bounds.size.width - size.width) / 2;
+		CGFloat left;
+		switch (self.alignment) {
+			case BAPageControlAlignmentLeft:
+				left = 0;
+				break;
+			case BAPageControlAlignmentCenter:
+				left = (self.bounds.size.width - size.width) / 2;
+				break;
+			case BAPageControlAlignmentRight:
+				left = (self.bounds.size.width - size.width);
+				break;
+		}
 		const CGFloat top = (self.bounds.size.height - size.height) / 2;
 		for (NSInteger page = 0; page < _numberOfPages; page++) {
 			(page == _displayedPage) ? [activeColor set] : [inactiveColor set];
@@ -243,6 +255,18 @@
 	return self.primaryMode;
 }
 
+- (BAPageControlAlignment)alignment {
+	return _alignment;
+}
+
+- (void)setAlignment:(BAPageControlAlignment)alignment {
+	if (_alignment == alignment) {
+		return;
+	}
+	_alignment = alignment;
+	[self setNeedsDisplay];
+}
+
 - (CGFloat)inset {
 	return _inset;
 }
@@ -266,7 +290,18 @@
 	const BAPageControlMode mode = self.displayMode;
 	if (mode == BAPageControlModeDots || mode == BAPageControlModeBlocks) {
 		CGSize size = [self sizeForNumberOfPages:_numberOfPages];
-		const CGFloat left = (self.bounds.size.width - size.width) / 2;
+		CGFloat left;
+		switch (self.alignment) {
+			case BAPageControlAlignmentLeft:
+				left = 0;
+				break;
+			case BAPageControlAlignmentCenter:
+				left = (self.bounds.size.width - size.width) / 2;
+				break;
+			case BAPageControlAlignmentRight:
+				left = (self.bounds.size.width - size.width);
+				break;
+		}
 		displayedX = left + (kUnitSize + kUnitSpacing) * _displayedPage + kUnitSize / 2;
 	} else if (mode == BAPageControlModeProgress ||
 			   mode == BAPageControlModeBlock ||

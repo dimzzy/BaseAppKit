@@ -36,6 +36,12 @@ typedef enum {
 	BAPageControlModePill      // bordered progress bar with round corners
 } BAPageControlMode;
 
+typedef enum {
+	BAPageControlAlignmentCenter, // default
+	BAPageControlAlignmentLeft,
+	BAPageControlAlignmentRight
+} BAPageControlAlignment;
+
 @interface BAPageControl : UIControl {
 @private
 	NSInteger _numberOfPages;
@@ -47,6 +53,7 @@ typedef enum {
 	UIColor *_inactiveColor;
 	BAPageControlMode _primaryMode;
 	BAPageControlMode _fitMode;
+	BAPageControlAlignment _alignment;
 	CGFloat _inset;
 }
 
@@ -65,6 +72,8 @@ typedef enum {
 														// and they don't fit in bounds (too many pages);
                                                         // in most cases you want this to be progress, block or pill
 @property(nonatomic, readonly) BAPageControlMode displayMode; // primary or fit mode depending on bounds and pages count
+
+@property(nonatomic, assign) BAPageControlAlignment alignment;
 
 @property(nonatomic, assign) CGFloat inset; // for progress bar modes
 
