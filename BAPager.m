@@ -114,6 +114,50 @@
 	}
 }
 
+- (void)layoutPages {
+	if (!self.scrollView) {
+		return;
+	}
+	
+	if (_numberOfPages > 0 && _currentPageIndex >= 0) {
+		const CGFloat pageWidth = self.scrollView.bounds.size.width;
+		const CGFloat pageHeight = self.scrollView.bounds.size.height;
+		CGFloat offset = 0;
+		CGFloat x = 0;
+		CGFloat width = pageWidth;
+		NSMutableArray *pages = [NSMutableArray arrayWithArray:self.scrollView.subviews];
+		
+		if (_currentPageIndex > 0 && [pages count] > 0) {
+			// layout prev page
+			UIView *prevPage = [pages objectAtIndex:0];
+			prevPage.frame = CGRectMake(x, 0, pageWidth, pageHeight);
+			offset = pageWidth;
+			x += pageWidth;
+			width += pageWidth;
+			[pages removeObjectAtIndex:0];
+		}
+		
+		// layout curr page
+		if ([pages count] > 0) {
+			UIView *currPage = [pages objectAtIndex:0];
+			currPage.frame = CGRectMake(x, 0, pageWidth, pageHeight);
+			x += pageWidth;
+			[pages removeObjectAtIndex:0];
+		}
+		
+		if (_currentPageIndex < (NSInteger)(_numberOfPages - 1) && [pages count] > 0) {
+			// layout next page
+			UIView *nextPage = [pages objectAtIndex:0];
+			nextPage.frame = CGRectMake(x, 0, pageWidth, pageHeight);
+			width += pageWidth;
+			[pages removeObjectAtIndex:0];
+		}
+		
+		self.scrollView.contentOffset = CGPointMake(offset, 0);
+		self.scrollView.contentSize = CGSizeMake(width, pageHeight);
+	}
+}
+
 - (NSUInteger)numberOfPages {
 	return _numberOfPages;
 }

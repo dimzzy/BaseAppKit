@@ -55,5 +55,6 @@
 @property(nonatomic, assign) id<BAPagerDelegate> delegate;
 
 - (void)reloadPages;
+- (void)layoutPages;
 
 @end
