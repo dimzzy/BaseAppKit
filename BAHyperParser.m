@@ -172,7 +172,7 @@
 					} else if ([buffer length] > 0) {
 						// end of unquoted attribute value
 						if (attributeName) {
-							[attributeDict setObject:buffer forKey:attributeName];
+							[attributeDict setObject:buffer forKey:[attributeName lowercaseString]];
 							attributeName = nil;
 						}
 						buffer = [NSMutableString string];
@@ -183,7 +183,7 @@
 					if (firstQuote == c) {
 						// last quote
 						if (attributeName) {
-							[attributeDict setObject:buffer forKey:attributeName];
+							[attributeDict setObject:buffer forKey:[attributeName lowercaseString]];
 							attributeName = nil;
 						}
 						buffer = [NSMutableString string];
@@ -215,7 +215,7 @@
 			}
 			// try to recover incomplete attribute value
 			if (attributeName) {
-				[attributeDict setObject:buffer forKey:attributeName];
+				[attributeDict setObject:buffer forKey:[attributeName lowercaseString]];
 				attributeName = nil;
 			}
 			buffer = [NSMutableString string];
