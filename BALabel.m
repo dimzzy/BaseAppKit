@@ -26,21 +26,56 @@
  or implied, of Dmitry Stadnik.
  */
 
-#import <UIKit/UIKit.h>
+#import "BALabel.h"
 
-#define BAAlert(TITLE,MSG) [[[[UIAlertView alloc] initWithTitle:(TITLE) \
-														message:(MSG) \
-													   delegate:nil \
-											  cancelButtonTitle:@"OK" \
-											  otherButtonTitles:nil] autorelease] show]
+@implementation BALabel
 
-#define UIColorFromRGB(RGB) [UIColor colorWithRed:((float)((RGB & 0xFF0000) >> 16)) / 255.0 \
-											green:((float)((RGB & 0xFF00) >> 8)) / 255.0 \
-											 blue:((float)((RGB & 0xFF))) / 255.0 \
-											alpha:1.0]
+- (UIEdgeInsets)textInsets {
+	return _textInsets;
+}
 
-typedef enum {
-	BAVerticalAlignmentCenter = 0,
-	BAVerticalAlignmentTop,
-	BAVerticalAlignmentBottom
-} BAVerticalAlignment;
+- (void)setTextInsets:(UIEdgeInsets)textInsets {
+	if (UIEdgeInsetsEqualToEdgeInsets(_textInsets, textInsets)) {
+		return;
+	}
+	_textInsets = textInsets;
+	[self setNeedsDisplay];
+}
+
+- (BAVerticalAlignment)verticalAlignment {
+	return _verticalAlignment;
+}
+
+- (void)setVerticalAlignment:(BAVerticalAlignment)verticalAlignment {
+	if (_verticalAlignment == verticalAlignment) {
+		return;
+	}
+	_verticalAlignment = verticalAlignment;
+	[self setNeedsDisplay];
+}
+
+- (CGRect)textRectForBounds:(CGRect)bounds limitedToNumberOfLines:(NSInteger)numberOfLines {
+	CGRect r = bounds;
+	const CGFloat wd = self.textInsets.left + self.textInsets.right;
+	const CGFloat hd = self.textInsets.top + self.textInsets.bottom;
+	r.size.width -= wd;
+	r.size.height -= hd;
+	r = [super textRectForBounds:r limitedToNumberOfLines:numberOfLines];
+	r.size.width += wd;
+	r.size.height += hd;
+	return r;
+}
+
+- (void)drawTextInRect:(CGRect)rect {
+	CGRect tr = [self textRectForBounds:self.bounds limitedToNumberOfLines:self.numberOfLines];
+	const CGFloat hd = self.bounds.size.height - tr.size.height;
+	if (self.verticalAlignment == BAVerticalAlignmentCenter) {
+		tr.origin.y += rint(hd / 2);
+	} else if (self.verticalAlignment == BAVerticalAlignmentBottom) {
+		tr.origin.y += rint(hd);
+	}
+	tr = UIEdgeInsetsInsetRect(tr, self.textInsets);
+	[super drawTextInRect:tr];
+}
+
+@end
