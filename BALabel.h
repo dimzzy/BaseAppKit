@@ -38,7 +38,7 @@
 @property(nonatomic, assign) UIEdgeInsets textInsets;
 @property(nonatomic, assign) BAVerticalAlignment verticalAlignment;
 
-- (void)sizeToFitWidth;
-- (void)sizeToFitWidthToHeight:(CGFloat)maxHeight;
+- (void)sizeToFitInWidth;
+- (void)sizeToFitInWidthMaxHeight:(CGFloat)maxHeight;
 
 @end

@@ -78,14 +78,14 @@
 	[super drawTextInRect:tr];
 }
 
-- (void)sizeToFitWidthToHeight:(CGFloat)maxHeight {
+- (void)sizeToFitInWidth {
+	[self sizeToFitInWidthMaxHeight:CGFLOAT_MAX];
+}
+
+- (void)sizeToFitInWidthMaxHeight:(CGFloat)maxHeight {
 	const CGFloat w = self.bounds.size.width;
 	CGSize s = [self sizeThatFits:CGSizeMake(w, maxHeight)];
 	self.bounds = CGRectMake(0, 0, w, s.height);
-}
-
-- (void)sizeToFitWidth {
-	[self sizeToFitWidthToHeight:CGFLOAT_MAX];
 }
 
 @end
