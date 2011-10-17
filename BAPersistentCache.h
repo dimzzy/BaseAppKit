@@ -54,6 +54,7 @@
 
 - (id)initWithPath:(NSString *)path;
 - (void)flush;
+- (NSDate *)modificationDateForKey:(NSString *)key;
 
 - (id<BAPersistencePolicy>)policyForKey:(NSString *)key;
 - (void)setPolicy:(id<BAPersistencePolicy>)policy forKey:(NSString *)key;

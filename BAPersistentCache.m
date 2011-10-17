@@ -163,11 +163,11 @@
 	return [self.path stringByAppendingPathComponent:[key MD5Hash]];
 }
 
-//- (NSDate *)modificationDateForKey:(NSString *)key {
-//	NSString *path = [self pathForKey:key];
-//	NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:NULL];
-//	return attributes ? [attributes objectForKey:NSFileModificationDate] : nil;
-//}
+- (NSDate *)modificationDateForKey:(NSString *)key {
+	NSString *path = [self pathForKey:key];
+	NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:NULL];
+	return attributes ? [attributes objectForKey:NSFileModificationDate] : nil;
+}
 
 
 - (BOOL)hasDataForKey:(NSString *)key {
