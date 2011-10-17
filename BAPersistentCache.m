@@ -29,9 +29,58 @@
 #import "BAPersistentCache.h"
 #import "NSString+BACoding.h"
 
+@interface BAPersistencePolicyKeepForever : NSObject <BAPersistencePolicy>
+
+@end
+
+@implementation BAPersistencePolicyKeepForever
+
+- (BOOL)staleContentAtPath:(NSString *)path {
+	return NO;
+}
+
+@end
+
+
+@interface BAPersistencePolicyKeepForSomeTime : NSObject <BAPersistencePolicy> {
+@private
+	NSTimeInterval _timeInterval;
+}
+
+@end
+
+@implementation BAPersistencePolicyKeepForSomeTime
+
+- (id)initWithTimeInterval:(NSTimeInterval)timeInterval {
+	if ((self = [super init])) {
+		_timeInterval = timeInterval;
+	}
+	return self;
+}
+
+- (BOOL)staleContentAtPath:(NSString *)path {
+	NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:NULL];
+	if (!attributes) {
+		return YES;
+	}
+	NSDate *modificationDate = [attributes objectForKey:NSFileModificationDate];
+	if (!modificationDate) {
+		return YES;
+	}
+	NSDate *date = [NSDate dateWithTimeIntervalSinceNow:-_timeInterval];
+	if ([modificationDate compare:date] == NSOrderedAscending) {
+		return YES;
+	}
+	return NO;
+}
+
+@end
+
+
 @implementation BAPersistentCache
 
 @synthesize path = _path;
+@synthesize defaultPolicy = _defaultPolicy;
 
 + (BAPersistentCache *)persistentCache {
 	static BAPersistentCache *instance;
@@ -41,34 +90,84 @@
     return instance;
 }
 
-- (id)init {
++ (id<BAPersistencePolicy>)keepForeverPolicy {
+	static BAPersistencePolicyKeepForever *keepForeverPolicy;
+	if (!keepForeverPolicy) {
+		keepForeverPolicy = [[BAPersistencePolicyKeepForever alloc] init];
+	}
+	return keepForeverPolicy;
+}
+
++ (id<BAPersistencePolicy>)keepForSomeTimePolicy:(NSTimeInterval)timeInterval {
+	return [[[BAPersistencePolicyKeepForSomeTime alloc] initWithTimeInterval:timeInterval] autorelease];
+}
+
+- (void)dealloc {
+	[_path release];
+	[_policiesByKeyHashes release];
+	[_defaultPolicy release];
+	[super dealloc];
+}
+
+- (id)initWithPath:(NSString *)defaultPath {
 	if ((self = [super init])) {
-		NSString *defaultPath = [@"~/Library/Caches/DataCache" stringByExpandingTildeInPath];
-		if ([[NSFileManager defaultManager] fileExistsAtPath:defaultPath]) {
-			self.path = defaultPath;
-		} else {
-			if ([[NSFileManager defaultManager] createDirectoryAtPath:defaultPath
-										  withIntermediateDirectories:YES
-														   attributes:nil
-																error:NULL]) {
-				self.path = defaultPath;
-			} else {
-				self.path = [@"~/Library/Caches" stringByExpandingTildeInPath];
+		if (![[NSFileManager defaultManager] fileExistsAtPath:defaultPath]) {
+			if (![[NSFileManager defaultManager] createDirectoryAtPath:defaultPath
+										   withIntermediateDirectories:YES
+															attributes:nil
+																 error:NULL]) {
+				NSLog(@"Error creating cache at %@", defaultPath);
 			}
 		}
+		_path = [defaultPath retain];
+		_defaultPolicy = [[[self class] keepForSomeTimePolicy:kBAPersistentCacheRetainInterval] retain];
 	}
 	return self;
+}
+
+- (id)init {
+	NSString *defaultPath = [@"~/Library/Caches/DataCache" stringByExpandingTildeInPath];
+	return [self initWithPath:defaultPath];
+}
+
+- (id<BAPersistencePolicy>)policyForKey:(NSString *)key {
+	return [_policiesByKeyHashes objectForKey:[key MD5Hash]];
+}
+
+- (void)setPolicy:(id<BAPersistencePolicy>)policy forKey:(NSString *)key {
+	if (!_policiesByKeyHashes) {
+		_policiesByKeyHashes = [[NSMutableDictionary alloc] init];
+	}
+	[_policiesByKeyHashes setObject:policy forKey:[key MD5Hash]];
+}
+
+- (void)flush {
+	@synchronized(self) {
+		
+		NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:self.path error:NULL];
+		for (NSString *file in files) {
+			NSString *path = [NSString pathWithComponents:[NSArray arrayWithObjects:self.path, file, nil]];
+			id<BAPersistencePolicy> policy = [_policiesByKeyHashes objectForKey:file];
+			if (!policy) {
+				policy = _defaultPolicy;
+			}
+			if (!policy || [policy staleContentAtPath:path]) {
+				[[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
+			}
+		}
+		
+	}
 }
 
 - (NSString *)pathForKey:(NSString *)key {
 	return [self.path stringByAppendingPathComponent:[key MD5Hash]];
 }
 
-- (NSDate *)modificationDateForKey:(NSString *)key {
-	NSString *path = [self pathForKey:key];
-	NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:NULL];
-	return attributes ? [attributes objectForKey:NSFileModificationDate] : nil;
-}
+//- (NSDate *)modificationDateForKey:(NSString *)key {
+//	NSString *path = [self pathForKey:key];
+//	NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:NULL];
+//	return attributes ? [attributes objectForKey:NSFileModificationDate] : nil;
+//}
 
 
 - (BOOL)hasDataForKey:(NSString *)key {
@@ -114,30 +213,6 @@
 	NSString *path = [self pathForKey:key];
 	NSData *data = UIImageJPEGRepresentation(image, 1.0);
 	[data writeToFile:path atomically:YES];
-}
-
-
-- (void)clearOldData {
-	NSDate *date = [NSDate dateWithTimeIntervalSinceNow:-kBAPersistentCacheRetainInterval];
-	[self clearDataOlderThan:date];
-}
-
-- (void)clearDataOlderThan:(NSDate *)date {
-	@synchronized(self) {
-
-		NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:self.path error:NULL];
-		for (NSString *file in files) {
-			NSString *path = [NSString pathWithComponents:[NSArray arrayWithObjects:self.path, file, nil]];
-			NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:NULL];
-			if (attributes) {
-				NSDate *modificationDate = [attributes objectForKey:NSFileModificationDate];
-				if (modificationDate && [modificationDate compare:date] == NSOrderedAscending) {
-					[[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
-				}
-			}
-		}
-
-	}
 }
 
 @end

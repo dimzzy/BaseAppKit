@@ -31,16 +31,32 @@
 
 #define kBAPersistentCacheRetainInterval (60 * 60 * 24 * 7)
 
+@protocol BAPersistencePolicy <NSObject>
+
+- (BOOL)staleContentAtPath:(NSString *)path;
+
+@end
+
+
 @interface BAPersistentCache : NSObject {
 @private
 	NSString *_path;
+	NSMutableDictionary *_policiesByKeyHashes;
+	id<BAPersistencePolicy> _defaultPolicy;
 }
 
-@property(nonatomic, retain) NSString *path;
+@property(nonatomic, readonly) NSString *path;
+@property(nonatomic, retain) id<BAPersistencePolicy> defaultPolicy;
 
 + (BAPersistentCache *)persistentCache;
++ (id<BAPersistencePolicy>)keepForeverPolicy;
++ (id<BAPersistencePolicy>)keepForSomeTimePolicy:(NSTimeInterval)timeInterval;
 
-- (NSDate *)modificationDateForKey:(NSString *)key;
+- (id)initWithPath:(NSString *)path;
+- (void)flush;
+
+- (id<BAPersistencePolicy>)policyForKey:(NSString *)key;
+- (void)setPolicy:(id<BAPersistencePolicy>)policy forKey:(NSString *)key;
 
 - (BOOL)hasDataForKey:(NSString *)key;
 - (NSData *)dataForKey:(NSString *)key;
@@ -52,8 +68,5 @@
 
 - (UIImage *)imageForKey:(NSString *)key;
 - (void)setImage:(UIImage *)image forKey:(NSString *)key;
-
-- (void)clearOldData;
-- (void)clearDataOlderThan:(NSDate *)date;
 
 @end
