@@ -291,7 +291,10 @@
 - (void)layoutItemViews {
 	const CGFloat width = self.bounds.size.width;
 	const CGFloat height = self.bounds.size.height;
-	CGFloat x = kToggleTailWidth;
+	CGFloat x = 0;
+	if (self.leftTailImage) {
+		x += kToggleTailWidth;
+	}
 	for (UIView *subview in _scrollView.subviews) {
 		if ([_itemViews indexOfObject:subview] != NSNotFound) {
 			// item view
@@ -305,7 +308,10 @@
 			x += subview.bounds.size.width + self.spacing;
 		}
 	}
-	x += kToggleTailWidth - self.spacing;
+	if (self.rightTailImage) {
+		x += kToggleTailWidth;
+	}
+	x -= self.spacing;
 	if (x < width && self.centered) {
 		const CGFloat offset = roundf((width - x) / 2);
 		x = width;
