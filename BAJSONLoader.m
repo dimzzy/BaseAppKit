@@ -62,7 +62,20 @@
 	if ([NSJSONSerialization self]) {
 		return [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:error];
 	} else if ([data respondsToSelector:NSSelectorFromString(@"objectFromJSONData")]) {
-		return [data performSelector:NSSelectorFromString(@"objectFromJSONData")];
+		id JSONValue = nil;
+		@try {
+			JSONValue = [data performSelector:NSSelectorFromString(@"objectFromJSONData")];
+		}
+		@catch (NSException *e) {
+			JSONValue = nil;
+			if (error) {
+				*error = [NSError errorWithDomain:@"BaseAppKit"
+											 code:0
+										 userInfo:[NSDictionary dictionaryWithObject:e.reason
+																			  forKey:NSLocalizedDescriptionKey]];
+			}
+		}
+		return JSONValue;
 	} else {
 		NSLog(@"JSON parser is not available");
 	}
