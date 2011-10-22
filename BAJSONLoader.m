@@ -57,6 +57,8 @@
 			}
 		} else if ([data respondsToSelector:NSSelectorFromString(@"objectFromJSONData")]) {
 			_JSONValue = [[data performSelector:NSSelectorFromString(@"objectFromJSONData")] retain];
+		} else {
+			NSLog(@"JSON parser is not available");
 		}
 	}
 }
