@@ -35,6 +35,8 @@
 
 @property(nonatomic, readonly) id JSONValue;
 
++ (id)parseJSONData:(NSData *)data error:(NSError **)error;
+
 + (NSString *)stringFromJSONValue:(NSDictionary *)JSONValue forKey:(NSString *)key;
 + (NSArray *)arrayFromJSONValue:(NSDictionary *)JSONValue forKey:(NSString *)key;
 + (NSDictionary *)dictionaryFromJSONValue:(NSDictionary *)JSONValue forKey:(NSString *)key;

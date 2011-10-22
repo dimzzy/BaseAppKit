@@ -48,19 +48,25 @@
 //	NSLog(@"%@", [self.request URL]);
 //	NSLog(@"%@", text);
 
-	if (data) {
-		if ([NSJSONSerialization self]) {
-			NSError *error = nil;
-			_JSONValue = [[NSJSONSerialization JSONObjectWithData:data options:0 error:&error] retain];
-			if (error) {
-				NSLog(@"%@", error);
-			}
-		} else if ([data respondsToSelector:NSSelectorFromString(@"objectFromJSONData")]) {
-			_JSONValue = [[data performSelector:NSSelectorFromString(@"objectFromJSONData")] retain];
-		} else {
-			NSLog(@"JSON parser is not available");
-		}
+	NSError *error = nil;
+	_JSONValue = [[[self class] parseJSONData:data error:nil] retain];
+	if (error) {
+		NSLog(@"Error parsing JSON from %@: %@", [self.request URL], error);
 	}
+}
+
++ (id)parseJSONData:(NSData *)data error:(NSError **)error {
+	if (!data || [data length] == 0) {
+		return nil;
+	}
+	if ([NSJSONSerialization self]) {
+		return [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:error];
+	} else if ([data respondsToSelector:NSSelectorFromString(@"objectFromJSONData")]) {
+		return [data performSelector:NSSelectorFromString(@"objectFromJSONData")];
+	} else {
+		NSLog(@"JSON parser is not available");
+	}
+	return nil;
 }
 
 + (NSString *)stringFromJSONValue:(NSDictionary *)JSONValue forKey:(NSString *)key {
