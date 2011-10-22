@@ -27,7 +27,6 @@
 */
 
 #import "BAJSONLoader.h"
-#import "JSONKit.h"
 
 @implementation BAJSONLoader
 
@@ -45,31 +44,21 @@
 		_JSONValue = nil;
 	}
 
-	NSString *text = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
+//	NSString *text = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
 //	NSLog(@"%@", [self.request URL]);
 //	NSLog(@"%@", text);
-	if (text && [text length] > 0) {
-		NSError *error = nil;
-		_JSONValue = [[text objectFromJSONStringWithParseOptions:JKParseOptionStrict error:&error] retain];
-		if (error) {
-			NSLog(@"%@", error);
-		}
-	} else {
-//		NSLog(@"No JSON Data");
-	}
 
-//	if (self.dataEncoding == NSUTF8StringEncoding) {
-//		_JSONValue = [[data objectFromJSONDataWithParseOptions:JKParseOptionStrict] retain];
-//	} else {
-//		NSString *text = [[[NSString alloc] initWithData:data encoding:self.dataEncoding] autorelease];
-//		if (text) {
-//			NSError *error = nil;
-//			_JSONValue = [[text objectFromJSONStringWithParseOptions:JKParseOptionStrict error:&error] retain];
-//			if (error) {
-//				NSLog(@"%@", error);
-//			}
-//		}
-//	}
+	if (data) {
+		if ([NSJSONSerialization self]) {
+			NSError *error = nil;
+			_JSONValue = [[NSJSONSerialization JSONObjectWithData:data options:0 error:&error] retain];
+			if (error) {
+				NSLog(@"%@", error);
+			}
+		} else if ([data respondsToSelector:NSSelectorFromString(@"objectFromJSONData")]) {
+			_JSONValue = [[data performSelector:NSSelectorFromString(@"objectFromJSONData")] retain];
+		}
+	}
 }
 
 + (NSString *)stringFromJSONValue:(NSDictionary *)JSONValue forKey:(NSString *)key {
