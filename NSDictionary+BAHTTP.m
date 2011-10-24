@@ -39,7 +39,7 @@
 }
 
 - (NSString *)escapedString:(NSString *)s encoding:(CFStringEncoding)e {
-	return (NSString *)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)s, NULL, (CFStringRef)@";:@&=/+", e);
+	return [(NSString *)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)s, NULL, (CFStringRef)@";:@&=/+", e) autorelease];
 }
 
 - (NSString *)HTTPQueryUsingEncoding:(NSStringEncoding)encoding ordering:(NSArray *)ordering {
