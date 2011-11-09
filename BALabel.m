@@ -28,7 +28,19 @@
 
 #import "BALabel.h"
 
-@implementation BALabel
+@implementation BALabel {
+@private
+	UIEdgeInsets _textInsets;
+	BAVerticalAlignment _verticalAlignment;
+	BALabelBezel _bezel;
+	CGFloat _bezelLineWidth;
+	UIColor *_bezelColor;
+}
+
+- (void)dealloc {
+	[_bezelColor release];
+	[super dealloc];
+}
 
 - (UIEdgeInsets)textInsets {
 	return _textInsets;
@@ -54,6 +66,43 @@
 	[self setNeedsDisplay];
 }
 
+- (BALabelBezel)bezel {
+	return _bezel;
+}
+
+- (void)setBezel:(BALabelBezel)bezel {
+	if (_bezel == bezel) {
+		return;
+	}
+	_bezel = bezel;
+	[self setNeedsDisplay];
+}
+
+- (CGFloat)bezelLineWidth {
+	return _bezelLineWidth;
+}
+
+- (void)setBezelLineWidth:(CGFloat)bezelLineWidth {
+	if (_bezelLineWidth == bezelLineWidth) {
+		return;
+	}
+	_bezelLineWidth = bezelLineWidth;
+	[self setNeedsDisplay];
+}
+
+- (UIColor *)bezelColor {
+	return _bezelColor;
+}
+
+- (void)setBezelColor:(UIColor *)bezelColor {
+	if (_bezelColor == bezelColor) {
+		return;
+	}
+	[_bezelColor release];
+	_bezelColor = [bezelColor retain];
+	[self setNeedsDisplay];
+}
+
 - (CGRect)textRectForBounds:(CGRect)bounds limitedToNumberOfLines:(NSInteger)numberOfLines {
 	CGRect r = bounds;
 	const CGFloat wd = self.textInsets.left + self.textInsets.right;
@@ -76,6 +125,64 @@
 	}
 	tr = UIEdgeInsetsInsetRect(tr, self.textInsets);
 	[super drawTextInRect:tr];
+}
+
+- (CGPathRef)createRoundBezelPath {
+	CGRect b = CGRectInset(self.bounds, self.bezelLineWidth, self.bezelLineWidth);
+	const CGFloat w = b.size.width;
+	const CGFloat h = b.size.height;
+	if (w <= h) {
+		return CGPathCreateWithEllipseInRect(b, nil);
+	}
+	const CGFloat x = b.origin.x;
+	const CGFloat y = b.origin.y;
+	CGMutablePathRef path = CGPathCreateMutable();
+	const CGFloat r = h / 2;
+	CGPathMoveToPoint(path, NULL, x + r, y);
+	CGPathAddLineToPoint(path, NULL, x + w - r, y);
+	CGPathAddArc(path, NULL, x + w - r, y + r, r, -M_PI_2, M_PI_2, NO);
+	CGPathAddLineToPoint(path, NULL, x + r, y + h);
+	CGPathAddArc(path, NULL, x + r, y + r, r, M_PI_2, -M_PI_2, NO);
+	return path;
+}
+
+- (void)drawBezel {
+	switch (self.bezel) {
+		case kBALabelBezelNone:
+			break;
+		case kBALabelBezelRound: {
+			CGContextRef ctx = UIGraphicsGetCurrentContext();
+			CGContextSaveGState(ctx);
+			CGContextSetLineWidth(ctx, MAX(1, self.bezelLineWidth));
+			if (self.bezelColor) {
+				[self.bezelColor setStroke];
+			}
+			CGPathRef path = [self createRoundBezelPath];
+			CGContextAddPath(ctx, path);
+			CGPathRelease(path);
+			CGContextStrokePath(ctx);
+			CGContextRestoreGState(ctx);
+			break;
+		}
+		case kBALabelBezelRoundSolid: {
+			CGContextRef ctx = UIGraphicsGetCurrentContext();
+			CGContextSaveGState(ctx);
+			if (self.bezelColor) {
+				[self.bezelColor setFill];
+			}
+			CGPathRef path = [self createRoundBezelPath];
+			CGContextAddPath(ctx, path);
+			CGPathRelease(path);
+			CGContextFillPath(ctx);
+			CGContextRestoreGState(ctx);
+			break;
+		}
+	}
+}
+
+- (void)drawRect:(CGRect)rect {
+	[self drawBezel];
+	[super drawRect:rect];
 }
 
 - (void)sizeToFitInWidth {

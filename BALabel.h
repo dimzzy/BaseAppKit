@@ -29,14 +29,19 @@
 #import <UIKit/UIKit.h>
 #import "BACommon.h"
 
-@interface BALabel : UILabel {
-@private
-	UIEdgeInsets _textInsets;
-	BAVerticalAlignment _verticalAlignment;
-}
+typedef enum {
+	kBALabelBezelNone = 0,
+	kBALabelBezelRound,
+	kBALabelBezelRoundSolid
+} BALabelBezel;
+
+@interface BALabel : UILabel
 
 @property(nonatomic, assign) UIEdgeInsets textInsets;
 @property(nonatomic, assign) BAVerticalAlignment verticalAlignment;
+@property(nonatomic, assign) BALabelBezel bezel;
+@property(nonatomic, assign) CGFloat bezelLineWidth;
+@property(nonatomic, retain) UIColor *bezelColor;
 
 - (void)sizeToFitInWidth;
 - (void)sizeToFitInWidthMaxHeight:(CGFloat)maxHeight;
