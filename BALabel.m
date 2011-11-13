@@ -148,9 +148,9 @@
 
 - (void)drawBezel {
 	switch (self.bezel) {
-		case kBALabelBezelNone:
+		case BALabelBezelNone:
 			break;
-		case kBALabelBezelRound: {
+		case BALabelBezelRound: {
 			CGContextRef ctx = UIGraphicsGetCurrentContext();
 			CGContextSaveGState(ctx);
 			CGContextSetLineWidth(ctx, MAX(1, self.bezelLineWidth));
@@ -164,7 +164,7 @@
 			CGContextRestoreGState(ctx);
 			break;
 		}
-		case kBALabelBezelRoundSolid: {
+		case BALabelBezelRoundSolid: {
 			CGContextRef ctx = UIGraphicsGetCurrentContext();
 			CGContextSaveGState(ctx);
 			if (self.bezelColor) {

@@ -30,9 +30,9 @@
 #import "BACommon.h"
 
 typedef enum {
-	kBALabelBezelNone = 0,
-	kBALabelBezelRound,
-	kBALabelBezelRoundSolid
+	BALabelBezelNone = 0,
+	BALabelBezelRound,
+	BALabelBezelRoundSolid
 } BALabelBezel;
 
 @interface BALabel : UILabel
