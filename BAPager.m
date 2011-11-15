@@ -74,13 +74,13 @@
 			[view removeFromSuperview]; // should not reach this point though; do it just in case
 		}
 	}
+	const CGFloat pageWidth = self.scrollView.bounds.size.width;
+	const CGFloat pageHeight = self.scrollView.bounds.size.height;
+	CGFloat offset = 0;
+	CGFloat x = 0;
+	CGFloat width = pageWidth;
 	
 	if (_numberOfPages > 0 && _currentPageIndex >= 0) {
-		const CGFloat pageWidth = self.scrollView.bounds.size.width;
-		const CGFloat pageHeight = self.scrollView.bounds.size.height;
-		CGFloat offset = 0;
-		CGFloat x = 0;
-		CGFloat width = pageWidth;
 
 		if (_currentPageIndex > 0) {
 			// add prev page
@@ -102,16 +102,16 @@
 			nextPage.frame = CGRectMake(x, 0, pageWidth, pageHeight);
 			width += pageWidth;
 		}
-		
-		self.scrollView.contentOffset = CGPointMake(offset, 0);
-		self.scrollView.contentSize = CGSizeMake(width, pageHeight);
-		[cache enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-			if (self.delegate && [self.delegate respondsToSelector:@selector(pager:dropPageAtIndex:)]) {
-				[self.delegate pager:self dropPageAtIndex:[key integerValue]];
-			}
-			[obj removeFromSuperview];
-		}];
 	}
+	
+	self.scrollView.contentOffset = CGPointMake(offset, 0);
+	self.scrollView.contentSize = CGSizeMake(width, pageHeight);
+	[cache enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+		if (self.delegate && [self.delegate respondsToSelector:@selector(pager:dropPageAtIndex:)]) {
+			[self.delegate pager:self dropPageAtIndex:[key integerValue]];
+		}
+		[obj removeFromSuperview];
+	}];
 }
 
 - (void)layoutPages {
