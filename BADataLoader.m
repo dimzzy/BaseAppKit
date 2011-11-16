@@ -28,6 +28,7 @@
 
 #import "BADataLoader.h"
 #import "BANetworkActivity.h"
+#import "BANetwork.h"
 #import "NSDictionary+BAHTTP.h"
 
 @interface BADataLoader()
@@ -57,6 +58,8 @@
 
 - (void)resetConnection {
 	if (_currentConnection) {
+		[BANetwork finishLoadingURL:_request.URL];
+		[[BANetworkActivity networkActivity] stop];
 		[_currentConnection cancel];
 		[_currentConnection release];
 		_currentConnection = nil;
@@ -98,6 +101,7 @@
 			if (_currentConnection) {
 				self.receivedData = [NSMutableData data];
 				[[BANetworkActivity networkActivity] start];
+				[BANetwork startLoadingURL:_request.URL];
 			} else {
 				if (_delegate) {
 					[_delegate loader:self didFailWithError:nil];
@@ -120,9 +124,6 @@
 }
 
 - (void)cancel {
-	if (_currentConnection) {
-		[[BANetworkActivity networkActivity] stop];
-	}
 	[self resetConnection];
 }
 
@@ -170,6 +171,7 @@
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
+	[BANetwork finishLoadingURL:_request.URL];
 	if (_delegate) {
 		[_delegate loader:self didFailWithError:error];
 	}
@@ -181,6 +183,7 @@
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+	[BANetwork finishLoadingURL:_request.URL];
 	if (self.cache) {
 		[self.cache setData:self.receivedData forKey:[_request.URL absoluteString]];
 	}
