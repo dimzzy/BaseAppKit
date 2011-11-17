@@ -75,7 +75,7 @@ typedef enum {
 
 @property(nonatomic, assign) BAPageControlAlignment alignment;
 
-@property(nonatomic, assign) CGFloat inset; // for progress bar modes
+@property(nonatomic, assign) CGFloat inset; // for progress bar modes and left/right aligned modes
 
 - (void)updateCurrentPageDisplay; // update page display to match the currentPage.
 								  // ignored if defersCurrentPageDisplay is NO.

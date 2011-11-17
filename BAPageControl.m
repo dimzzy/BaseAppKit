@@ -93,13 +93,13 @@
 		CGFloat left;
 		switch (self.alignment) {
 			case BAPageControlAlignmentLeft:
-				left = 0;
+				left = self.inset;
 				break;
 			case BAPageControlAlignmentCenter:
 				left = (self.bounds.size.width - size.width) / 2;
 				break;
 			case BAPageControlAlignmentRight:
-				left = (self.bounds.size.width - size.width);
+				left = (self.bounds.size.width - size.width - self.inset);
 				break;
 		}
 		const CGFloat top = (self.bounds.size.height - size.height) / 2;
@@ -293,13 +293,13 @@
 		CGFloat left;
 		switch (self.alignment) {
 			case BAPageControlAlignmentLeft:
-				left = 0;
+				left = self.inset;
 				break;
 			case BAPageControlAlignmentCenter:
 				left = (self.bounds.size.width - size.width) / 2;
 				break;
 			case BAPageControlAlignmentRight:
-				left = (self.bounds.size.width - size.width);
+				left = (self.bounds.size.width - size.width - self.inset);
 				break;
 		}
 		displayedX = left + (kUnitSize + kUnitSpacing) * _displayedPage + kUnitSize / 2;
