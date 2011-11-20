@@ -101,7 +101,9 @@
 
 - (void)loader:(BADataLoader *)loader didFinishLoadingData:(NSData *)data fromCache:(BOOL)fromCache {
 	UIImage *image = [UIImage imageWithData:data];
-	[self updateRemoteImage:image animated:!fromCache];
+	if (image) {
+		[self updateRemoteImage:image animated:!fromCache];
+	}
 	[self resetLoader];
 	if (self.delegate && [self.delegate respondsToSelector:@selector(remoteImageViewDidLoad:)]) {
 		[self.delegate remoteImageViewDidLoad:self];
