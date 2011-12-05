@@ -148,6 +148,18 @@
         }
     }
     
+	} else {
+		
+		// Maintain visible portion of scroll view at the bottom
+		if (self.scrollView.contentSize.height > newFrame.size.height) {
+			CGFloat bottomY;
+			if (self.scrollView.contentSize.height > self.scrollView.bounds.size.height) {
+				bottomY = self.scrollView.contentOffset.y + self.scrollView.bounds.size.height;
+			} else {
+				bottomY = self.scrollView.contentSize.height;
+			}
+			offset = bottomY - newFrame.size.height;
+		}
 	}
 	
     // Shrink view's height by the keyboard's height, and scroll to show the text field/view being edited
