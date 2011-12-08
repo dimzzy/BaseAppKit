@@ -27,7 +27,6 @@
 */
 
 #import "BARemoteImageView.h"
-#import "BAPersistentCache.h"
 
 @implementation BARemoteImageView
 
@@ -77,6 +76,14 @@
 	return _remoteImageURL;
 }
 
+- (UIImage *)cachedImage:(NSURLRequest *)request {
+	NSCachedURLResponse *response = [[NSURLCache sharedURLCache] cachedResponseForRequest:request];
+	if (!response || !response.data) {
+		return nil;
+	}
+	return [UIImage imageWithData:response.data];
+}
+
 - (void)setRemoteImageURL:(NSURL *)remoteImageURL {
 	if (_remoteImageURL == remoteImageURL) {
 		return;
@@ -86,14 +93,15 @@
 
 	[self resetLoader];
 	if (_remoteImageURL) {
+		NSURLRequest *request = [NSURLRequest requestWithURL:_remoteImageURL];
 		// Check cache first so update is immediate; loader defers update
-		UIImage *image = [[BAPersistentCache persistentCache] imageForKey:[_remoteImageURL absoluteString]];
+		UIImage *image = [self cachedImage:request];
 		if (image) {
 			[self updateRemoteImage:image animated:NO];
 		} else {
-			NSURLRequest *request = [BADataLoader GETRequestWithURL:_remoteImageURL];
 			_loader = [[BADataLoader alloc] initWithRequest:request];
 			_loader.delegate = self;
+			_loader.cache = nil;
 			[_loader startIgnoreCache:NO];
 		}
 	}
