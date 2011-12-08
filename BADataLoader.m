@@ -206,14 +206,18 @@
 }
 
 + (NSMutableURLRequest *)GETRequestWithURL:(NSURL *)URL {
-	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
+	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL
+														   cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
+													   timeoutInterval:60];
 	[request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
 	[request setValue:@"gzip" forHTTPHeaderField:@"Accept-Encoding"];
 	return request;
 }
 
 + (NSMutableURLRequest *)POSTRequestWithURL:(NSURL *)URL form:(NSDictionary *)form {
-	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
+	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL
+														   cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
+													   timeoutInterval:60];
 	[request setHTTPMethod:@"POST"];
 	NSString *post = [form HTTPQueryUsingEncoding:NSUTF8StringEncoding];
 	NSData *postData = [post dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:YES];
@@ -225,7 +229,9 @@
 }
 
 + (NSMutableURLRequest *)POSTRequestWithURL:(NSURL *)URL JSON:(NSData *)JSON {
-	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
+	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL
+														   cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
+													   timeoutInterval:60];
 	[request setHTTPMethod:@"POST"];
 	NSString *postLength = [NSString stringWithFormat:@"%d", [JSON length]];
 	[request setValue:postLength forHTTPHeaderField:@"Content-Length"];
