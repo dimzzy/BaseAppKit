@@ -409,6 +409,10 @@
 	}
 	_selectedItemIndex = selectedItemIndex;
 	[self updateItemsState];
+	if (revealingItem && _selectedItemIndex >= 0) {
+		UIView *view = [_itemViews objectAtIndex:_selectedItemIndex];
+		[_scrollView scrollRectToVisible:view.frame animated:YES];
+	}
 	if (self.delegate) {
 		id item = (selectedItemIndex < 0) ? nil : [_items objectAtIndex:_selectedItemIndex];
 		[self.delegate toggleBar:self didSelectItem:item atIndex:_selectedItemIndex];
