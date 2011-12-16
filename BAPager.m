@@ -55,7 +55,11 @@
 	} else {
 		page = [self.delegate pager:self pageAtIndex:index];
 		page.cookie = key;
-		[self.scrollView insertSubview:page atIndex:0];
+		NSInteger order = 0;
+		if ([self.delegate respondsToSelector:@selector(pager:orderOfPageAtIndex:)]) {
+			order = [self.delegate pager:self orderOfPageAtIndex:index];
+		}
+		[self.scrollView insertSubview:page atIndex:order];
 	}
 	return page;
 }

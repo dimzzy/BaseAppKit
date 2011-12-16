@@ -36,6 +36,7 @@
 - (UIView *)pager:(BAPager *)pager pageAtIndex:(NSInteger)index;
 
 @optional
+- (NSInteger)pager:(BAPager *)pager orderOfPageAtIndex:(NSInteger)index;
 - (void)pager:(BAPager *)pager dropPageAtIndex:(NSInteger)index;
 - (void)pager:(BAPager *)pager currentPageDidChangeTo:(NSInteger)index;
 
