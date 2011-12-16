@@ -31,7 +31,7 @@
 @class BAPager;
 
 
-@protocol BAPagerDelegate <NSObject>
+@protocol BAPagerDelegate <UIScrollViewDelegate>
 
 - (UIView *)pager:(BAPager *)pager pageAtIndex:(NSInteger)index;
 

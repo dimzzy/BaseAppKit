@@ -55,7 +55,7 @@
 	} else {
 		page = [self.delegate pager:self pageAtIndex:index];
 		page.cookie = key;
-		[self.scrollView addSubview:page];
+		[self.scrollView insertSubview:page atIndex:0];
 	}
 	return page;
 }
@@ -70,8 +70,6 @@
 		id cookie = view.cookie;
 		if (cookie && [cookie isKindOfClass:[NSNumber class]]) {
 			[cache setObject:view forKey:cookie];
-		} else {
-			[view removeFromSuperview]; // should not reach this point though; do it just in case
 		}
 	}
 	const CGFloat pageWidth = self.scrollView.bounds.size.width;
@@ -125,32 +123,34 @@
 		CGFloat offset = 0;
 		CGFloat x = 0;
 		CGFloat width = pageWidth;
-		NSMutableArray *pages = [NSMutableArray arrayWithArray:self.scrollView.subviews];
+
+		NSMutableDictionary *cache = [NSMutableDictionary dictionaryWithCapacity:[self.scrollView.subviews count]];
+		for (UIView *view in [NSArray arrayWithArray:self.scrollView.subviews]) {
+			id cookie = view.cookie;
+			if (cookie && [cookie isKindOfClass:[NSNumber class]]) {
+				[cache setObject:view forKey:cookie];
+			}
+		}
 		
-		if (_currentPageIndex > 0 && [pages count] > 0) {
+		if (_currentPageIndex > 0) {
 			// layout prev page
-			UIView *prevPage = [pages objectAtIndex:0];
+			UIView *prevPage = [cache objectForKey:[NSNumber numberWithInt:(_currentPageIndex - 1)]];
 			prevPage.frame = CGRectMake(x, 0, pageWidth, pageHeight);
 			offset = pageWidth;
 			x += pageWidth;
 			width += pageWidth;
-			[pages removeObjectAtIndex:0];
 		}
 		
 		// layout curr page
-		if ([pages count] > 0) {
-			UIView *currPage = [pages objectAtIndex:0];
-			currPage.frame = CGRectMake(x, 0, pageWidth, pageHeight);
-			x += pageWidth;
-			[pages removeObjectAtIndex:0];
-		}
+		UIView *currPage = [cache objectForKey:[NSNumber numberWithInt:_currentPageIndex]];
+		currPage.frame = CGRectMake(x, 0, pageWidth, pageHeight);
+		x += pageWidth;
 		
-		if (_currentPageIndex < (NSInteger)(_numberOfPages - 1) && [pages count] > 0) {
+		if (_currentPageIndex < (NSInteger)(_numberOfPages - 1)) {
 			// layout next page
-			UIView *nextPage = [pages objectAtIndex:0];
+			UIView *nextPage = [cache objectForKey:[NSNumber numberWithInt:(_currentPageIndex + 1)]];
 			nextPage.frame = CGRectMake(x, 0, pageWidth, pageHeight);
 			width += pageWidth;
-			[pages removeObjectAtIndex:0];
 		}
 		
 		self.scrollView.contentOffset = CGPointMake(offset, 0);
@@ -217,6 +217,12 @@
 		localIndex--;
 	}
 	self.currentPageIndex += localIndex;
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+	if ([self.delegate respondsToSelector:@selector(scrollViewDidScroll:)]) {
+		[self.delegate scrollViewDidScroll:scrollView];
+	}
 }
 
 @end
