@@ -29,10 +29,7 @@
 #import "BADataLoader.h"
 #import "BAXMLParserBase.h"
 
-@interface BAXMLLoader : BADataLoader {
-@private
-	BAXMLParserBase *_parser;
-}
+@interface BAXMLLoader : BADataLoader
 
 @property(nonatomic, retain) BAXMLParserBase *parser;
 

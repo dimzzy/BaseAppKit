@@ -44,24 +44,12 @@
 
 // Quick note on caching
 // 
-// There are two options: disable cache and ignore cache.
-// When cache is disabled the loader does not use it in any way.
+// By default loader uses shared persistent cache.
+// You can set it to nil to completely disable caching.
 // When you ask for data ignoring cache the loader does not check
 // if data is in cache but loaded data is saved in the cache.
 
-@interface BADataLoader : NSObject {
-@private
-	NSURLRequest *_request;
-	BAPersistentCache *_cache;
-	NSInteger _statusCode;
-    NSMutableData *_receivedData;
-	NSStringEncoding _dataEncoding;
-	NSUInteger _expectedBytesCount;
-    NSURLConnection *_currentConnection;
-	id<BADataLoaderDelegate> _delegate;
-	NSMutableDictionary *_userInfo;
-	
-}
+@interface BADataLoader : NSObject
 
 @property(nonatomic, readonly) NSURLRequest *request;
 @property(nonatomic, retain) BAPersistentCache *cache;
@@ -72,7 +60,7 @@
 @property(nonatomic, assign) id<BADataLoaderDelegate> delegate;
 @property(nonatomic, readonly) NSMutableDictionary *userInfo;
 
-- (id)initWithRequest:(NSURLRequest *)request; // initially uses shared persistent cache
+- (id)initWithRequest:(NSURLRequest *)request;
 - (void)startIgnoreCache:(BOOL)ignoreCache;
 - (void)cancel;
 - (float)progressWithExpectedBytesCount:(NSUInteger)expectedBytesCount;
@@ -86,6 +74,7 @@
 
 @property(nonatomic, readonly) NSStringEncoding dataEncoding;
 - (void)resetConnection;
-- (void)prepareData:(NSData *)data;
+// If returns YES then received data is cached, otherwise received data is considered invalid and not cached.
+- (BOOL)prepareData:(NSData *)data;
 
 @end

@@ -38,7 +38,19 @@
 @end
 
 
-@implementation BADataLoader
+@implementation BADataLoader {
+@private
+	NSURLRequest *_request;
+	BAPersistentCache *_cache;
+	NSInteger _statusCode;
+    NSMutableData *_receivedData;
+	NSStringEncoding _dataEncoding;
+	NSUInteger _expectedBytesCount;
+    NSURLConnection *_currentConnection;
+	id<BADataLoaderDelegate> _delegate;
+	NSMutableDictionary *_userInfo;
+	
+}
 
 @synthesize request = _request;
 @synthesize cache = _cache;
@@ -77,7 +89,8 @@
 	[super dealloc];
 }
 
-- (void)prepareData:(NSData *)data {
+- (BOOL)prepareData:(NSData *)data {
+	return YES;
 }
 
 - (void)loadIgnoreCache:(NSNumber *)ignoreCacheWrapper {
@@ -184,10 +197,9 @@
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
 	[BANetwork finishLoadingURL:_request.URL];
-	if (self.cache) {
+	if ([self prepareData:self.receivedData] && self.cache) {
 		[self.cache setData:self.receivedData forKey:[_request.URL absoluteString]];
 	}
-	[self prepareData:self.receivedData];
 	if (_delegate) {
 		[_delegate loader:self didFinishLoadingData:self.receivedData fromCache:NO];
 	}

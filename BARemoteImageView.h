@@ -27,7 +27,7 @@
 */
 
 #import <UIKit/UIKit.h>
-#import "BADataLoader.h"
+#import "BAImageLoader.h"
 
 @class BARemoteImageView;
 
@@ -42,13 +42,7 @@
 
 @end
 
-@interface BARemoteImageView : UIImageView <BADataLoaderDelegate> {
-@private
-	NSURL *_remoteImageURL;
-	BADataLoader *_loader;
-	BOOL _animateImageUpdate;
-	id<BARemoteImageViewDelegate> _delegate;
-}
+@interface BARemoteImageView : UIImageView <BADataLoaderDelegate>
 
 @property(nonatomic, retain) NSURL *remoteImageURL;
 @property(nonatomic, assign) BOOL animateImageUpdate;

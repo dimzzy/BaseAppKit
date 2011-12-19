@@ -37,8 +37,8 @@
 	[super dealloc];
 }
 
-- (void)prepareData:(NSData *)data {
-	[_parser parse:data];
+- (BOOL)prepareData:(NSData *)data {
+	return ![_parser parse:data];
 }
 
 @end

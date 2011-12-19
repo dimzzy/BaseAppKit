@@ -24,24 +24,13 @@
  The views and conclusions contained in the software and documentation are those of the
  authors and should not be interpreted as representing official policies, either expressed
  or implied, of Dmitry Stadnik.
-*/
+ */
 
+#import <UIKit/UIKit.h>
 #import "BADataLoader.h"
 
-@interface BAJSONLoader : BADataLoader
+@interface BAImageLoader : BADataLoader
 
-@property(nonatomic, readonly) id JSONValue;
-
-+ (id)parseJSONData:(NSData *)data error:(NSError **)error;
-
-+ (NSString *)stringFromJSONValue:(NSDictionary *)JSONValue forKey:(NSString *)key;
-+ (NSArray *)arrayFromJSONValue:(NSDictionary *)JSONValue forKey:(NSString *)key;
-+ (NSDictionary *)dictionaryFromJSONValue:(NSDictionary *)JSONValue forKey:(NSString *)key;
-+ (BOOL)boolFromJSONValue:(NSDictionary *)JSONValue forKey:(NSString *)key;
-+ (BOOL)boolFromJSONValue:(NSDictionary *)JSONValue forKey:(NSString *)key defaultValue:(BOOL)defaultValue;
-+ (int)intFromJSONValue:(NSDictionary *)JSONValue forKey:(NSString *)key;
-+ (int)intFromJSONValue:(NSDictionary *)JSONValue forKey:(NSString *)key defaultValue:(int)defaultValue;
-+ (double)doubleFromJSONValue:(NSDictionary *)JSONValue forKey:(NSString *)key;
-+ (double)doubleFromJSONValue:(NSDictionary *)JSONValue forKey:(NSString *)key defaultValue:(int)defaultValue;
+@property(nonatomic, readonly) UIImage *image;
 
 @end

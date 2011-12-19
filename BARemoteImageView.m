@@ -28,7 +28,11 @@
 
 #import "BARemoteImageView.h"
 
-@implementation BARemoteImageView
+@implementation BARemoteImageView {
+@private
+	NSURL *_remoteImageURL;
+	BAImageLoader *_loader;
+}
 
 @synthesize animateImageUpdate = _animateImageUpdate;
 @synthesize delegate = _delegate;
@@ -76,14 +80,6 @@
 	return _remoteImageURL;
 }
 
-- (UIImage *)cachedImage:(NSURLRequest *)request {
-	NSCachedURLResponse *response = [[NSURLCache sharedURLCache] cachedResponseForRequest:request];
-	if (!response || !response.data) {
-		return nil;
-	}
-	return [UIImage imageWithData:response.data];
-}
-
 - (void)setRemoteImageURL:(NSURL *)remoteImageURL {
 	if (_remoteImageURL == remoteImageURL) {
 		return;
@@ -93,22 +89,21 @@
 
 	[self resetLoader];
 	if (_remoteImageURL) {
-		NSURLRequest *request = [NSURLRequest requestWithURL:_remoteImageURL];
 		// Check cache first so update is immediate; loader defers update
-		UIImage *image = [self cachedImage:request];
+		UIImage *image = [[BAPersistentCache persistentCache] imageForKey:[_remoteImageURL absoluteString]];
 		if (image) {
 			[self updateRemoteImage:image animated:NO];
 		} else {
-			_loader = [[BADataLoader alloc] initWithRequest:request];
+			NSURLRequest *request = [BADataLoader GETRequestWithURL:_remoteImageURL];
+			_loader = [[BAImageLoader alloc] initWithRequest:request];
 			_loader.delegate = self;
-			_loader.cache = nil;
 			[_loader startIgnoreCache:NO];
 		}
 	}
 }
 
 - (void)loader:(BADataLoader *)loader didFinishLoadingData:(NSData *)data fromCache:(BOOL)fromCache {
-	UIImage *image = [UIImage imageWithData:data];
+	UIImage *image = ((BAImageLoader *)loader).image;
 	if (image) {
 		[self updateRemoteImage:image animated:!fromCache];
 	}

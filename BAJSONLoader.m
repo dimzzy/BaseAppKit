@@ -38,7 +38,7 @@
 	_JSONValue = nil;
 }
 
-- (void)prepareData:(NSData *)data {
+- (BOOL)prepareData:(NSData *)data {
 	if (_JSONValue) {
 		[_JSONValue release];
 		_JSONValue = nil;
@@ -49,10 +49,11 @@
 //	NSLog(@"%@", text);
 
 	NSError *error = nil;
-	_JSONValue = [[[self class] parseJSONData:data error:nil] retain];
+	_JSONValue = [[[self class] parseJSONData:data error:&error] retain];
 	if (error) {
 		NSLog(@"Error parsing JSON from %@: %@", [self.request URL], error);
 	}
+	return !error;
 }
 
 + (id)parseJSONData:(NSData *)data error:(NSError **)error {

@@ -24,24 +24,23 @@
  The views and conclusions contained in the software and documentation are those of the
  authors and should not be interpreted as representing official policies, either expressed
  or implied, of Dmitry Stadnik.
-*/
+ */
 
-#import "BADataLoader.h"
+#import "BAImageLoader.h"
 
-@interface BAJSONLoader : BADataLoader
+@implementation BAImageLoader
 
-@property(nonatomic, readonly) id JSONValue;
+@synthesize image = _image;
 
-+ (id)parseJSONData:(NSData *)data error:(NSError **)error;
+- (void)dealloc {
+	[_image release];
+	[super dealloc];
+}
 
-+ (NSString *)stringFromJSONValue:(NSDictionary *)JSONValue forKey:(NSString *)key;
-+ (NSArray *)arrayFromJSONValue:(NSDictionary *)JSONValue forKey:(NSString *)key;
-+ (NSDictionary *)dictionaryFromJSONValue:(NSDictionary *)JSONValue forKey:(NSString *)key;
-+ (BOOL)boolFromJSONValue:(NSDictionary *)JSONValue forKey:(NSString *)key;
-+ (BOOL)boolFromJSONValue:(NSDictionary *)JSONValue forKey:(NSString *)key defaultValue:(BOOL)defaultValue;
-+ (int)intFromJSONValue:(NSDictionary *)JSONValue forKey:(NSString *)key;
-+ (int)intFromJSONValue:(NSDictionary *)JSONValue forKey:(NSString *)key defaultValue:(int)defaultValue;
-+ (double)doubleFromJSONValue:(NSDictionary *)JSONValue forKey:(NSString *)key;
-+ (double)doubleFromJSONValue:(NSDictionary *)JSONValue forKey:(NSString *)key defaultValue:(int)defaultValue;
+- (BOOL)prepareData:(NSData *)data {
+	[_image release];
+	_image = [[UIImage alloc] initWithData:data];
+	return !!_image;
+}
 
 @end
