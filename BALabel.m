@@ -28,6 +28,27 @@
 
 #import "BALabel.h"
 
+CGPathRef CGPathCreateRoundBezel(CGRect bounds, CGFloat lineWidth);
+
+CGPathRef CGPathCreateRoundBezel(CGRect bounds, CGFloat lineWidth) {
+	CGRect b = CGRectInset(bounds, lineWidth, lineWidth);
+	const CGFloat w = b.size.width;
+	const CGFloat h = b.size.height;
+	if (w <= h) {
+		return CGPathCreateWithEllipseInRect(b, nil);
+	}
+	const CGFloat x = b.origin.x;
+	const CGFloat y = b.origin.y;
+	CGMutablePathRef path = CGPathCreateMutable();
+	const CGFloat r = h / 2;
+	CGPathMoveToPoint(path, NULL, x + r, y);
+	CGPathAddLineToPoint(path, NULL, x + w - r, y);
+	CGPathAddArc(path, NULL, x + w - r, y + r, r, -M_PI_2, M_PI_2, NO);
+	CGPathAddLineToPoint(path, NULL, x + r, y + h);
+	CGPathAddArc(path, NULL, x + r, y + r, r, M_PI_2, -M_PI_2, NO);
+	return path;
+}
+
 @implementation BALabel {
 @private
 	UIEdgeInsets _textInsets;
@@ -127,25 +148,6 @@
 	[super drawTextInRect:tr];
 }
 
-- (CGPathRef)createRoundBezelPath {
-	CGRect b = CGRectInset(self.bounds, self.bezelLineWidth, self.bezelLineWidth);
-	const CGFloat w = b.size.width;
-	const CGFloat h = b.size.height;
-	if (w <= h) {
-		return CGPathCreateWithEllipseInRect(b, nil);
-	}
-	const CGFloat x = b.origin.x;
-	const CGFloat y = b.origin.y;
-	CGMutablePathRef path = CGPathCreateMutable();
-	const CGFloat r = h / 2;
-	CGPathMoveToPoint(path, NULL, x + r, y);
-	CGPathAddLineToPoint(path, NULL, x + w - r, y);
-	CGPathAddArc(path, NULL, x + w - r, y + r, r, -M_PI_2, M_PI_2, NO);
-	CGPathAddLineToPoint(path, NULL, x + r, y + h);
-	CGPathAddArc(path, NULL, x + r, y + r, r, M_PI_2, -M_PI_2, NO);
-	return path;
-}
-
 - (void)drawBezel {
 	switch (self.bezel) {
 		case BALabelBezelNone:
@@ -157,7 +159,7 @@
 			if (self.bezelColor) {
 				[self.bezelColor setStroke];
 			}
-			CGPathRef path = [self createRoundBezelPath];
+			CGPathRef path = CGPathCreateRoundBezel(self.bounds, self.bezelLineWidth);
 			CGContextAddPath(ctx, path);
 			CGPathRelease(path);
 			CGContextStrokePath(ctx);
@@ -170,7 +172,7 @@
 			if (self.bezelColor) {
 				[self.bezelColor setFill];
 			}
-			CGPathRef path = [self createRoundBezelPath];
+			CGPathRef path = CGPathCreateRoundBezel(self.bounds, self.bezelLineWidth);
 			CGContextAddPath(ctx, path);
 			CGPathRelease(path);
 			CGContextFillPath(ctx);
