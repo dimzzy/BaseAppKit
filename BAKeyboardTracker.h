@@ -28,7 +28,7 @@
 
 // Based on TPKeyboardAvoiding by Michael Tyson; refactored to support composition over inheritance.
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 @interface BAKeyboardTracker : NSObject {
 @private
