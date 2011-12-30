@@ -188,10 +188,7 @@
 											   rint((h - titleSize.height) / 2),
 											   titleWidth, titleSize.height);
 				//UIRectFrame(titleFrame);
-				[title drawAtPoint:titleFrame.origin
-						  forWidth:titleFrame.size.width
-						  withFont:titleFont
-					 lineBreakMode:UILineBreakModeTailTruncation];
+				[title drawInRect:titleFrame withFont:titleFont lineBreakMode:UILineBreakModeTailTruncation];
 				right -= sw;
 			}
 			[passiveSegmentImage drawInRect:CGRectMake(-p, 0, p + self.leftMargin + p, h)];
