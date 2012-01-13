@@ -38,6 +38,7 @@
 - (void)loader:(BADataLoader *)loader didFailWithError:(NSError *)error;
 
 @optional
+- (void)loaderDidReceiveResponse:(BADataLoader *)loader;
 - (void)loaderDidReceiveData:(BADataLoader *)loader;
 
 @end
@@ -52,13 +53,15 @@
 @interface BADataLoader : NSObject
 
 @property(nonatomic, readonly) NSURLRequest *request;
+@property(nonatomic, readonly) NSURLResponse *response;
+@property(nonatomic, readonly) NSHTTPURLResponse *HTTPResponse;
 @property(nonatomic, retain) BAPersistentCache *cache;
 @property(nonatomic, readonly) NSUInteger expectedBytesCount;
 @property(nonatomic, readonly) NSUInteger receivedBytesCount;
 @property(nonatomic, readonly) float progress; // 0..1
-@property(nonatomic, readonly) NSInteger statusCode;
 @property(nonatomic, assign) id<BADataLoaderDelegate> delegate;
 @property(nonatomic, readonly) NSMutableDictionary *userInfo;
+@property(nonatomic, readonly) NSStringEncoding dataEncoding;
 
 - (id)initWithRequest:(NSURLRequest *)request;
 - (void)startIgnoreCache:(BOOL)ignoreCache;
@@ -72,7 +75,6 @@
 
 // Subclasses API
 
-@property(nonatomic, readonly) NSStringEncoding dataEncoding;
 - (void)resetConnection;
 // If returns YES then received data is cached, otherwise received data is considered invalid and not cached.
 - (BOOL)prepareData:(NSData *)data;

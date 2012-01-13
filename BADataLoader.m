@@ -41,22 +41,21 @@
 @implementation BADataLoader {
 @private
 	NSURLRequest *_request;
+	NSURLResponse *_response;
 	BAPersistentCache *_cache;
-	NSInteger _statusCode;
     NSMutableData *_receivedData;
 	NSStringEncoding _dataEncoding;
 	NSUInteger _expectedBytesCount;
     NSURLConnection *_currentConnection;
 	id<BADataLoaderDelegate> _delegate;
 	NSMutableDictionary *_userInfo;
-	
 }
 
 @synthesize request = _request;
+@synthesize response = _response;
 @synthesize cache = _cache;
 @synthesize receivedData = _receivedData;
 @synthesize expectedBytesCount = _expectedBytesCount;
-@synthesize statusCode = _statusCode;
 @synthesize delegate = _delegate;
 @synthesize dataEncoding = _dataEncoding;
 
@@ -76,6 +75,8 @@
 		[_currentConnection release];
 		_currentConnection = nil;
 	}
+	[_response release];
+	_response = nil;
 	self.receivedData = nil;
 	_expectedBytesCount = 0;
 }
@@ -87,6 +88,10 @@
 	[_cache release];
 	[_userInfo release];
 	[super dealloc];
+}
+
+- (NSHTTPURLResponse *)HTTPResponse {
+	return (_response && [_response isKindOfClass:[NSHTTPURLResponse class]]) ? (NSHTTPURLResponse *)_response : nil;
 }
 
 - (BOOL)prepareData:(NSData *)data {
@@ -160,6 +165,8 @@
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
     [_receivedData setLength:0];
+	[_response release];
+	_response = [response retain];
 	long long length = [response expectedContentLength];
 	_expectedBytesCount = (length <= 0) ? 0 : length;
 	_dataEncoding = NSUTF8StringEncoding;
@@ -169,10 +176,8 @@
 			_dataEncoding = CFStringConvertEncodingToNSStringEncoding(encoding);
 		}
 	}
-	_statusCode = 200;
-	if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
-		NSHTTPURLResponse *HTTPResponse = (NSHTTPURLResponse *)response;
-		_statusCode = [HTTPResponse statusCode];
+	if (_delegate && [_delegate respondsToSelector:@selector(loaderDidReceiveResponse:)]) {
+		[_delegate loaderDidReceiveResponse:self];
 	}
 }
 
