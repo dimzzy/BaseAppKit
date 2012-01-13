@@ -28,13 +28,22 @@
 
 #import <Foundation/Foundation.h>
 
+// Day is an NSDate object at this time, which allows NSDate objects to be used as hash keys
+#define kBADayHour 12
+
 @interface NSDate (BADays)
 
 - (NSDate *)nextDay;
+- (NSDate *)nextDayInCalendar:(NSCalendar *)calendar;
 - (NSDate *)prevDay;
+- (NSDate *)prevDayInCalendar:(NSCalendar *)calendar;
 - (NSDate *)currDay;
+- (NSDate *)currDayInCalendar:(NSCalendar *)calendar;
 - (BOOL)sameDay:(NSDate *)anotherDate;
-- (int)daysSinceNow;
-- (int)currHour;
+- (BOOL)sameDay:(NSDate *)anotherDate inCalendar:(NSCalendar *)calendar;
+- (NSInteger)daysSinceNow;
+- (NSInteger)daysSinceNowInCalendar:(NSCalendar *)calendar;
+- (NSInteger)currHour;
+- (NSInteger)currHourInCalendar:(NSCalendar *)calendar;
 
 @end

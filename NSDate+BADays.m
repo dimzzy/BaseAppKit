@@ -31,20 +31,37 @@
 @implementation NSDate (BADays)
 
 - (NSDate *)nextDay {
-	return [self dateByAddingTimeInterval:(24 * 60 * 60)];
+	return [self nextDayInCalendar:[NSCalendar currentCalendar]];
+}
+
+- (NSDate *)nextDayInCalendar:(NSCalendar *)calendar {
+	NSDateComponents *components = [[[NSDateComponents alloc] init] autorelease];
+	[components setDay:1];
+	return [calendar dateByAddingComponents:components toDate:self options:0];
 }
 
 - (NSDate *)prevDay {
-	return [self dateByAddingTimeInterval:-(24 * 60 * 60)];
+	return [self prevDayInCalendar:[NSCalendar currentCalendar]];
+}
+
+- (NSDate *)prevDayInCalendar:(NSCalendar *)calendar {
+	NSDateComponents *components = [[[NSDateComponents alloc] init] autorelease];
+	[components setDay:-1];
+	return [calendar dateByAddingComponents:components toDate:self options:0];
 }
 
 - (NSDate *)currDay {
+	return [self currDayInCalendar:[NSCalendar currentCalendar]];
+}
+
+- (NSDate *)currDayInCalendar:(NSCalendar *)calendar {
 	const unsigned unitFlags = NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit;
 	NSDateComponents *components = [[NSCalendar currentCalendar] components:unitFlags fromDate:self];
 	if (!components) {
 		return self;
 	}
-	NSDate *day = [[NSCalendar currentCalendar] dateFromComponents:components];
+	[components setHour:kBADayHour];
+	NSDate *day = [calendar dateFromComponents:components];
 	if (!day) {
 		return self;
 	}
@@ -52,32 +69,38 @@
 }
 
 - (BOOL)sameDay:(NSDate *)anotherDate {
+	return [self sameDay:anotherDate inCalendar:[NSCalendar currentCalendar]];
+}
+
+- (BOOL)sameDay:(NSDate *)anotherDate inCalendar:(NSCalendar *)calendar {
 	if (!anotherDate) {
 		return NO;
 	}
 	const unsigned unitFlags = NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit;
-	NSDateComponents *components = [[NSCalendar currentCalendar] components:unitFlags fromDate:self];
-	if (!components) {
+	NSDateComponents *c1 = [calendar components:unitFlags fromDate:self];
+	NSDateComponents *c2 = [calendar components:unitFlags fromDate:anotherDate];
+	if (!c1 || !c2) {
 		return NO;
 	}
-	NSDateComponents *anotherComponents = [[NSCalendar currentCalendar] components:unitFlags fromDate:anotherDate];
-	if (!anotherComponents) {
-		return NO;
-	}
-	return [components year] == [anotherComponents year] &&
-	[components month] == [anotherComponents month] &&
-	[components day] == [anotherComponents day];
+	return [c1 year] == [c2 year] && [c1 month] == [c2 month] && [c1 day] == [c2 day];
 }
 
-- (int)daysSinceNow {
-	NSDate *today = [(NSDate *)[NSDate date] currDay];
-	NSTimeInterval t = [self.currDay timeIntervalSinceDate:today];
-	return t / (24 * 60 * 60);
+- (NSInteger)daysSinceNow {
+	return [self daysSinceNowInCalendar:[NSCalendar currentCalendar]];
 }
 
-- (int)currHour {
-	NSTimeInterval time = [self timeIntervalSinceDate:[self currDay]];
-	return time / (60 * 60);
+- (NSInteger)daysSinceNowInCalendar:(NSCalendar *)calendar {
+	NSDateComponents *components = [calendar components:NSDayCalendarUnit fromDate:[NSDate date] toDate:self options:0];
+	return [components day];
+}
+
+- (NSInteger)currHour {
+	return [self currHourInCalendar:[NSCalendar currentCalendar]];
+}
+
+- (NSInteger)currHourInCalendar:(NSCalendar *)calendar {
+	NSDateComponents *components = [calendar components:NSHourCalendarUnit fromDate:self];
+	return [components hour];
 }
 
 @end
