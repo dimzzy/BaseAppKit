@@ -68,7 +68,7 @@
 @optional
 
 - (void)gridView:(BAGridView *)gridView willDisplayCell:(BAGridViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
-- (CGFloat)gridView:(BAGridView *)gridView heightForRowAtIndexPath:(NSIndexPath *)indexPath;
+- (CGSize)gridView:(BAGridView *)gridView sizeForCellAtIndexPath:(NSIndexPath *)indexPath;
 
 // Headers & Footers
 
@@ -97,9 +97,9 @@
 
 @property(nonatomic,assign) id <BAGridViewDataSource> dataSource;
 @property(nonatomic,assign) id <BAGridViewDelegate> delegate;
-@property(nonatomic) CGFloat rowHeight;             // will return the default value if unset
-@property(nonatomic) CGFloat sectionHeaderHeight;   // will return the default value if unset
-@property(nonatomic) CGFloat sectionFooterHeight;   // will return the default value if unset
+@property(nonatomic) CGSize cellSize;               // will return the default value (44x44) if unset
+@property(nonatomic) CGFloat sectionHeaderHeight;   // will return the default value (0) if unset
+@property(nonatomic) CGFloat sectionFooterHeight;   // will return the default value (0) if unset
 
 // Data
 

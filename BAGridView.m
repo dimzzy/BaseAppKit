@@ -250,7 +250,7 @@
 
 @interface BAGridView ()
 
-- (CGFloat)heightForRow:(NSInteger)row inSection:(NSInteger)section;
+- (CGSize)sizeForCellAtColumn:(NSInteger)column inRow:(NSInteger)row inSection:(NSInteger)section;
 - (CGFloat)heightForHeaderInSection:(NSInteger)section;
 - (CGFloat)heightForFooterInSection:(NSInteger)section;
 - (void)gridDidScroll;
@@ -267,7 +267,7 @@
 	NSMutableArray *_reusableCells;
 }
 
-@synthesize rowHeight = _rowHeight;
+@synthesize cellSize = _cellSize;
 @synthesize sectionHeaderHeight = _sectionHeaderHeight;
 @synthesize sectionFooterHeight = _sectionFooterHeight;
 
@@ -280,7 +280,7 @@
 }
 
 - (void)setupGridView {
-	self.rowHeight = 44;
+	self.cellSize = CGSizeMake(44, 44);
 //	self.sectionHeaderHeight = 22;
 //	self.sectionFooterHeight = 22;
 	[_proxyDelegate release];
@@ -387,7 +387,7 @@
 			sectionData.numberOfRows = [self numberOfRowsInSection:section];
 			y += sectionData.headerHeight;
 			for (NSInteger row = 0; row < sectionData.numberOfRows; row++) {
-				const CGFloat rowHeight = [self heightForRow:row inSection:section];
+				const CGFloat rowHeight = [self sizeForCellAtColumn:0 inRow:row inSection:section].height;
 				[sectionData setY:y forRow:row];
 				[sectionData setHeight:rowHeight forRow:row];
 				y += rowHeight;
@@ -479,13 +479,9 @@
 							if (!cell) {
 								[NSException raise:@"BAGridViewError" format:@"Failed to create a cell"];
 							}
-							CGRect cellRect = cell.frame;
-							cellRect.origin.x = x;
-							cellRect.origin.y = rowY;
-							cellRect.size.height = rowHeight;
-							cell.frame = cellRect;
+							cell.frame = CGRectMake(x, rowY, self.cellSize.width, rowHeight);
 //							NSLog(@"Cell Rect: %@", NSStringFromCGRect(cellRect));
-							x += cellRect.size.width;
+							x += self.cellSize.width;
 							[cells addObject:cell];
 							[self addSubview:cell];
 						}
@@ -561,11 +557,11 @@
 	return [self.dataSource gridView:self numberOfColumnsInRow:row inSection:section];
 }
 
-- (CGFloat)heightForRow:(NSInteger)row inSection:(NSInteger)section {
-	if ([self.delegate respondsToSelector:@selector(gridView:heightForRowAtIndexPath:)]) {
-		return [self.delegate gridView:self heightForRowAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]];
+- (CGSize)sizeForCellAtColumn:(NSInteger)column inRow:(NSInteger)row inSection:(NSInteger)section {
+	if ([self.delegate respondsToSelector:@selector(gridView:sizeForCellAtIndexPath:)]) {
+		return [self.delegate gridView:self sizeForCellAtIndexPath:[NSIndexPath indexPathForColumn:column inRow:row inSection:section]];
 	}
-	return self.rowHeight;
+	return self.cellSize;
 }
 
 - (CGFloat)heightForHeaderInSection:(NSInteger)section {
