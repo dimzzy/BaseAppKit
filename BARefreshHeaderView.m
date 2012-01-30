@@ -29,7 +29,10 @@
 #import "BARefreshHeaderView.h"
 
 #define kArrowFlipAnimationDuration 0.18
-#define kRefreshHeaderHeight 60
+#define kMargin 25
+#define kArrowWidth 23
+#define kArrowHeight 60
+#define kRefreshHeaderHeight 80
 #define kRefreshHeaderActionHeight 5
 
 @interface BARefreshHeaderView (Private)
@@ -39,7 +42,10 @@
 @end
 
 
-@implementation BARefreshHeaderView
+@implementation BARefreshHeaderView {
+@private
+	BARefreshHeaderState _state;
+}
 
 @synthesize errorText = _errorText;
 @synthesize lastUpdatedLabel = _lastUpdatedLabel;
@@ -60,9 +66,9 @@
     if ((self = [super initWithFrame:frame])) {
 		self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 
-		_lastUpdatedLabel = [[UILabel alloc] initWithFrame:CGRectMake(0,
+		_lastUpdatedLabel = [[UILabel alloc] initWithFrame:CGRectMake(kMargin + kArrowWidth,
 																	  frame.size.height - 30,
-																	  self.frame.size.width,
+																	  self.frame.size.width - (kMargin + kArrowWidth + kMargin),
 																	  20)];
 		_lastUpdatedLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 		_lastUpdatedLabel.font = [UIFont systemFontOfSize:12];
@@ -70,18 +76,19 @@
 		_lastUpdatedLabel.textAlignment = UITextAlignmentCenter;
 		[self addSubview:_lastUpdatedLabel];
 		
-		_statusLabel = [[UILabel alloc] initWithFrame:CGRectMake(0,
-																 frame.size.height - 48,
-																 self.frame.size.width,
-																 20)];
+		_statusLabel = [[UILabel alloc] initWithFrame:CGRectMake(kMargin + kArrowWidth,
+																 frame.size.height - 68,
+																 self.frame.size.width - (kMargin + kArrowWidth + kMargin),
+																 40)];
 		_statusLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 		_statusLabel.font = [UIFont boldSystemFontOfSize:13];
 		_statusLabel.backgroundColor = [UIColor clearColor];
 		_statusLabel.textAlignment = UITextAlignmentCenter;
+		_statusLabel.numberOfLines = 2;
 		[self addSubview:_statusLabel];
 		
 		_arrowImageLayer = [[CALayer layer] retain];
-		_arrowImageLayer.frame = CGRectMake(25, frame.size.height - 65, 30, 55);
+		_arrowImageLayer.frame = CGRectMake(kMargin, frame.size.height - 70, kArrowWidth, kArrowHeight);
 		_arrowImageLayer.contentsGravity = kCAGravityResizeAspect;
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 		if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)]) {
@@ -91,7 +98,7 @@
 		[[self layer] addSublayer:_arrowImageLayer];
 		
 		_activityView = [[UIActivityIndicatorView alloc] init];
-		_activityView.frame = CGRectMake(25, frame.size.height - 38, 20, 20);
+		_activityView.frame = CGRectMake(kMargin, frame.size.height - 48, 20, 20);
 		[self addSubview:_activityView];
 		
 		[self setState:BARefreshHeaderStateIdle];
@@ -206,7 +213,7 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {	
 	if (_state == BARefreshHeaderStateLoading) {
-		CGFloat offset = MAX(scrollView.contentOffset.y * -1, 0);
+		CGFloat offset = MAX(-scrollView.contentOffset.y, 0);
 		offset = MIN(offset, kRefreshHeaderHeight);
 		scrollView.contentInset = UIEdgeInsetsMake(offset, 0, 0, 0);
 	} else if (scrollView.isDragging) {

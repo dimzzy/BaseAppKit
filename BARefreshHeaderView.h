@@ -35,7 +35,7 @@
 @class BARefreshHeaderView;
 
 
-@protocol BARefreshHeaderDelegate
+@protocol BARefreshHeaderDelegate <NSObject>
 
 - (void)refreshHeaderDidTriggerRefresh:(BARefreshHeaderView *)view;
 - (BOOL)refreshHeaderDataSourceLoading:(BARefreshHeaderView *)view;
@@ -52,23 +52,14 @@ typedef enum {
 	BARefreshHeaderStateLoading,	
 } BARefreshHeaderState;
 
-@interface BARefreshHeaderView : UIView <UIScrollViewDelegate> {
-@private
-	NSString *_errorText;
-	BARefreshHeaderState _state;
-	UILabel *_lastUpdatedLabel;
-	UILabel *_statusLabel;
-	CALayer *_arrowImageLayer;
-	UIActivityIndicatorView *_activityView;
-	id _delegate;
-}
+@interface BARefreshHeaderView : UIView <UIScrollViewDelegate>
 
 @property(nonatomic, copy) NSString *errorText;
 @property(nonatomic, readonly) UILabel *lastUpdatedLabel;
 @property(nonatomic, readonly) UILabel *statusLabel;
 @property(nonatomic, readonly) CALayer *arrowImageLayer;
 @property(nonatomic, readonly) UIActivityIndicatorView *activityView;
-@property(nonatomic, assign) id <BARefreshHeaderDelegate> delegate;
+@property(nonatomic, assign) id<BARefreshHeaderDelegate> delegate;
 
 - (void)refreshLastUpdatedDate;
 - (void)dataSourceDidStartLoading:(UIScrollView *)scrollView;
