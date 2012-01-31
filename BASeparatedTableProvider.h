@@ -27,6 +27,7 @@
  */
 
 #import <UIKit/UIKit.h>
+#import "BAScrollViewProxyDelegate.h"
 
 enum {
 	BACellSeparatorPositionNone = 0,
@@ -48,7 +49,7 @@ typedef NSUInteger BACellSeparatorPositions;
 @end
 
 
-@interface BASeparatedTableProvider : NSObject <UITableViewDataSource, UITableViewDelegate>
+@interface BASeparatedTableProvider : BAScrollViewProxyDelegate <UITableViewDataSource, UITableViewDelegate>
 
 @property(nonatomic, assign) id<BASeparatedTableProviderDelegate> delegate;
 

@@ -30,7 +30,13 @@
 
 @implementation BASeparatedTableProvider
 
-@synthesize delegate;
+- (id<BASeparatedTableProviderDelegate>)delegate {
+	return (id<BASeparatedTableProviderDelegate>)[super delegate];
+}
+
+- (void)setDelegate:(id<BASeparatedTableProviderDelegate>)delegate {
+	[super setDelegate:delegate];
+}
 
 - (NSIndexPath *)separatedIndexPathForIndexPath:(NSIndexPath *)indexPath {
 	return [NSIndexPath indexPathForRow:((indexPath.row * 3) + 1) inSection:indexPath.section];
