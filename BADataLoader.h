@@ -68,6 +68,15 @@
 - (void)cancel;
 - (float)progressWithExpectedBytesCount:(NSUInteger)expectedBytesCount;
 
++ (void)addHTTPQueryToString:(NSMutableString *)query
+			   forDictionary:(NSDictionary *)dict
+			   usingEncoding:(NSStringEncoding)encoding;
+
++ (void)addHTTPQueryToString:(NSMutableString *)query
+					forArray:(NSArray *)array
+			   withParameter:(NSString *)parameter
+			   usingEncoding:(NSStringEncoding)encoding;
+
 + (NSMutableURLRequest *)GETRequestWithURL:(NSURL *)URL;
 + (NSMutableURLRequest *)POSTRequestWithURL:(NSURL *)URL data:(NSData *)data;
 + (NSMutableURLRequest *)POSTRequestWithURL:(NSURL *)URL form:(NSDictionary *)form;
