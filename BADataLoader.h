@@ -69,6 +69,7 @@
 - (float)progressWithExpectedBytesCount:(NSUInteger)expectedBytesCount;
 
 + (NSMutableURLRequest *)GETRequestWithURL:(NSURL *)URL;
++ (NSMutableURLRequest *)POSTRequestWithURL:(NSURL *)URL data:(NSData *)data;
 + (NSMutableURLRequest *)POSTRequestWithURL:(NSURL *)URL form:(NSDictionary *)form;
 + (NSMutableURLRequest *)POSTRequestWithURL:(NSURL *)URL JSON:(NSData *)JSONData;
 

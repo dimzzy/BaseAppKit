@@ -29,7 +29,6 @@
 #import "BADataLoader.h"
 #import "BANetworkActivity.h"
 #import "BANetwork.h"
-#import "NSDictionary+BAHTTP.h"
 
 @interface BADataLoader()
 
@@ -222,6 +221,42 @@
 	return _userInfo;
 }
 
++ (NSString *)escapedString:(NSString *)s encoding:(CFStringEncoding)e {
+	return [(NSString *)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)s, NULL,
+																(CFStringRef)@";:@&=/+", e) autorelease];
+}
+
++ (void)addHTTPQueryToString:(NSMutableString *)query
+			   forDictionary:(NSDictionary *)dict
+			   usingEncoding:(NSStringEncoding)encoding
+{
+	CFStringEncoding cfencoding = CFStringConvertNSStringEncodingToEncoding(encoding);
+	[dict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+		if ([query length] > 0) {
+			[query appendString:@"&"];
+		}
+		NSString *escapedKey = [self escapedString:key encoding:cfencoding];
+		NSString *escapedObj = [self escapedString:[obj description] encoding:cfencoding];
+		[query appendFormat:@"%@=%@", escapedKey, escapedObj];
+	}];
+}
+
++ (void)addHTTPQueryToString:(NSMutableString *)query
+					forArray:(NSArray *)array
+			   withParameter:(NSString *)parameter
+			   usingEncoding:(NSStringEncoding)encoding
+{
+	CFStringEncoding cfencoding = CFStringConvertNSStringEncodingToEncoding(encoding);
+	NSString *escapedKey = [self escapedString:parameter encoding:cfencoding];
+	[array enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		if ([query length] > 0) {
+			[query appendString:@"&"];
+		}
+		NSString *escapedObj = [self escapedString:[obj description] encoding:cfencoding];
+		[query appendFormat:@"%@=%@", escapedKey, escapedObj];
+	}];
+}
+
 + (NSMutableURLRequest *)GETRequestWithURL:(NSURL *)URL {
 	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL
 														   cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
@@ -231,18 +266,23 @@
 	return request;
 }
 
-+ (NSMutableURLRequest *)POSTRequestWithURL:(NSURL *)URL form:(NSDictionary *)form {
++ (NSMutableURLRequest *)POSTRequestWithURL:(NSURL *)URL data:(NSData *)data {
 	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL
 														   cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
 													   timeoutInterval:60];
 	[request setHTTPMethod:@"POST"];
-	NSString *post = [form HTTPQueryUsingEncoding:NSUTF8StringEncoding];
-	NSData *postData = [post dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:YES];
-	NSString *postLength = [NSString stringWithFormat:@"%d", [postData length]];
+	NSString *postLength = [NSString stringWithFormat:@"%d", [data length]];
 	[request setValue:postLength forHTTPHeaderField:@"Content-Length"];
 	[request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
-	[request setHTTPBody:postData];
+	[request setHTTPBody:data];
 	return request;
+}
+
++ (NSMutableURLRequest *)POSTRequestWithURL:(NSURL *)URL form:(NSDictionary *)form {
+	NSMutableString *query = [NSMutableString string];
+	[self addHTTPQueryToString:query forDictionary:form usingEncoding:NSUTF8StringEncoding];
+	NSData *postData = [query dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:YES];
+	return [self POSTRequestWithURL:URL data:postData];
 }
 
 + (NSMutableURLRequest *)POSTRequestWithURL:(NSURL *)URL JSON:(NSData *)JSON {

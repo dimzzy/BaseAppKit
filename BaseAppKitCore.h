@@ -3,7 +3,6 @@
 
 #include <BaseAppKit/NSDate+BADays.h>
 #include <BaseAppKit/NSString+BACoding.h>
-#include <BaseAppKit/NSDictionary+BAHTTP.h>
 #include <BaseAppKit/BANetworkActivity.h>
 #include <BaseAppKit/BAPersistentCache.h>
 #include <BaseAppKit/BANetwork.h>
