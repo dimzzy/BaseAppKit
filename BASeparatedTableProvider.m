@@ -65,11 +65,11 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+	NSIndexPath *sourceIndexPath = [NSIndexPath indexPathForRow:(indexPath.row / 3) inSection:indexPath.section];
 	switch (indexPath.row % 3) {
-		case 0: return [self.delegate tableView:tableView topSeparatorCellForRowAtIndexPath:indexPath];
-		case 1: return [self.delegate tableView:tableView
-						  cellForRowAtIndexPath:[NSIndexPath indexPathForRow:(indexPath.row / 3) inSection:indexPath.section]];
-		case 2: return [self.delegate tableView:tableView bottomSeparatorCellForRowAtIndexPath:indexPath];
+		case 0: return [self.delegate tableView:tableView topSeparatorCellForRowAtIndexPath:sourceIndexPath];
+		case 1: return [self.delegate tableView:tableView cellForRowAtIndexPath:sourceIndexPath];
+		case 2: return [self.delegate tableView:tableView bottomSeparatorCellForRowAtIndexPath:sourceIndexPath];
 	}
 	return nil;
 }
@@ -97,8 +97,8 @@
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
 	if ((indexPath.row % 3 == 1) && [self.delegate respondsToSelector:@selector(tableView:canEditRowAtIndexPath:)]) {
-		return [self.delegate tableView:tableView
-				  canEditRowAtIndexPath:[NSIndexPath indexPathForRow:(indexPath.row / 3) inSection:indexPath.section]];
+		NSIndexPath *sourceIndexPath = [NSIndexPath indexPathForRow:(indexPath.row / 3) inSection:indexPath.section];
+		return [self.delegate tableView:tableView canEditRowAtIndexPath:sourceIndexPath];
 	}
 	return NO;
 }
@@ -114,9 +114,8 @@ commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
 forRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	if ((indexPath.row % 3 == 1) && [self.delegate respondsToSelector:@selector(tableView:commitEditingStyle:forRowAtIndexPath:)]) {
-		[self.delegate tableView:tableView
-			  commitEditingStyle:editingStyle
-			   forRowAtIndexPath:[NSIndexPath indexPathForRow:(indexPath.row / 3) inSection:indexPath.section]];
+		NSIndexPath *sourceIndexPath = [NSIndexPath indexPathForRow:(indexPath.row / 3) inSection:indexPath.section];
+		[self.delegate tableView:tableView commitEditingStyle:editingStyle forRowAtIndexPath:sourceIndexPath];
 	}
 }
 
@@ -129,24 +128,24 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 //- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath;
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+	NSIndexPath *sourceIndexPath = [NSIndexPath indexPathForRow:(indexPath.row / 3) inSection:indexPath.section];
 	switch (indexPath.row % 3) {
 		case 0: {
-			BACellSeparatorPositions positions = [self.delegate tableView:tableView separatorPositionsForRow:indexPath];
+			const BACellSeparatorPositions positions = [self.delegate tableView:tableView separatorPositionsForRow:sourceIndexPath];
 			if (positions & BACellSeparatorPositionTop) {
-				return [self.delegate tableView:tableView heightForTopSeparatorRowAtIndexPath:indexPath];
+				return [self.delegate tableView:tableView heightForTopSeparatorRowAtIndexPath:sourceIndexPath];
 			}
 			return 0;
 		}
 		case 1: 
 			if ([self.delegate respondsToSelector:@selector(tableView:heightForRowAtIndexPath:)]) {
-				return [self.delegate tableView:tableView
-						heightForRowAtIndexPath:[NSIndexPath indexPathForRow:(indexPath.row / 3) inSection:indexPath.section]];
+				return [self.delegate tableView:tableView heightForRowAtIndexPath:sourceIndexPath];
 			}
 			return 0;
 		case 2: {
-			BACellSeparatorPositions positions = [self.delegate tableView:tableView separatorPositionsForRow:indexPath];
+			const BACellSeparatorPositions positions = [self.delegate tableView:tableView separatorPositionsForRow:sourceIndexPath];
 			if (positions & BACellSeparatorPositionBottom) {
-				return [self.delegate tableView:tableView heightForBottomSeparatorRowAtIndexPath:indexPath];
+				return [self.delegate tableView:tableView heightForBottomSeparatorRowAtIndexPath:sourceIndexPath];
 			}
 			return 0;
 		}
