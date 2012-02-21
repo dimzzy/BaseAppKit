@@ -35,7 +35,10 @@ CGPathRef CGPathCreateRoundBezel(CGRect bounds, CGFloat lineWidth) {
 	const CGFloat w = b.size.width;
 	const CGFloat h = b.size.height;
 	if (w <= h) {
-		return CGPathCreateWithEllipseInRect(b, nil);
+		UIBezierPath *bpath = [UIBezierPath bezierPathWithOvalInRect:b];
+		CGPathRef path = bpath.CGPath;
+		CGPathRetain(path);
+		return path;
 	}
 	const CGFloat x = b.origin.x;
 	const CGFloat y = b.origin.y;
