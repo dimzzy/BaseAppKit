@@ -27,6 +27,7 @@
 */
 
 #import "BAJSONLoader.h"
+#import <objc/message.h>
 
 @implementation BAJSONLoader
 
@@ -60,8 +61,11 @@
 	if (!data || [data length] == 0) {
 		return nil;
 	}
-	if ([NSJSONSerialization self]) {
-		return [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:error];
+	Class serClass = NSClassFromString(@"NSJSONSerialization");
+	if (serClass) {
+		// return [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:error];
+		return objc_msgSend(serClass, @selector(JSONObjectWithData:options:error:),
+							data, [NSNumber numberWithInt:NSJSONReadingAllowFragments], error);
 	} else if ([data respondsToSelector:NSSelectorFromString(@"objectFromJSONData")]) {
 		id JSONValue = nil;
 		@try {
