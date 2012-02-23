@@ -11,5 +11,7 @@
 #include <BaseAppKit/BAXMLParserBase.h>
 #include <BaseAppKit/BAXMLLoader.h>
 #include <BaseAppKit/BAImageLoader.h>
+#include <BaseAppKit/BARemoteJSON.h>
+#include <BaseAppKit/BARuntime.h>
 
 #endif // __BASEAPPKITCORE__

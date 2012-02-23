@@ -27,7 +27,7 @@
 */
 
 #import "BAJSONLoader.h"
-#import <objc/message.h>
+#import "BARuntime.h"
 
 @implementation BAJSONLoader
 
@@ -58,33 +58,7 @@
 }
 
 + (id)parseJSONData:(NSData *)data error:(NSError **)error {
-	if (!data || [data length] == 0) {
-		return nil;
-	}
-	Class serClass = NSClassFromString(@"NSJSONSerialization");
-	if (serClass) {
-		// return [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:error];
-		return objc_msgSend(serClass, @selector(JSONObjectWithData:options:error:),
-							data, [NSNumber numberWithInt:NSJSONReadingAllowFragments], error);
-	} else if ([data respondsToSelector:NSSelectorFromString(@"objectFromJSONData")]) {
-		id JSONValue = nil;
-		@try {
-			JSONValue = [data performSelector:NSSelectorFromString(@"objectFromJSONData")];
-		}
-		@catch (NSException *e) {
-			JSONValue = nil;
-			if (error) {
-				*error = [NSError errorWithDomain:@"BaseAppKit"
-											 code:0
-										 userInfo:[NSDictionary dictionaryWithObject:e.reason
-																			  forKey:NSLocalizedDescriptionKey]];
-			}
-		}
-		return JSONValue;
-	} else {
-		NSLog(@"JSON parser is not available");
-	}
-	return nil;
+	return [BARuntime parseJSONData:data error:error];
 }
 
 + (NSString *)stringFromJSONValue:(NSDictionary *)JSONValue forKey:(NSString *)key {
