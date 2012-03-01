@@ -27,18 +27,17 @@
  */
 
 #import <UIKit/UIKit.h>
-#import "BAGridViewCell.h"
+#import "BAMeshViewCell.h"
 
 
 // Support column in index paths
 
-@interface NSIndexPath (BAGridView)
+@interface NSIndexPath (BAMeshView)
 
-+ (NSIndexPath *)indexPathForColumn:(NSInteger)column inRow:(NSInteger)row inSection:(NSInteger)section;
++ (NSIndexPath *)indexPathForCell:(NSInteger)cell inSection:(NSInteger)section;
 
-@property(nonatomic, readonly) NSInteger gridColumn;
-@property(nonatomic, readonly) NSInteger gridRow;
-@property(nonatomic, readonly) NSInteger gridSection;
+@property(nonatomic, readonly) NSInteger meshCell;
+@property(nonatomic, readonly) NSInteger meshSection;
 
 @end
 
@@ -46,46 +45,45 @@
 #pragma mark -
 #pragma mark data source
 
-@class BAGridView;
+@class BAMeshView;
 
-@protocol BAGridViewDataSource <NSObject>
+@protocol BAMeshViewDataSource <NSObject>
 
-- (NSInteger)gridView:(BAGridView *)gridView numberOfRowsInSection:(NSInteger)section;
-- (NSInteger)gridView:(BAGridView *)gridView numberOfColumnsInRow:(NSInteger)row inSection:(NSInteger)section;
-- (BAGridViewCell *)gridView:(BAGridView *)gridView cellAtIndexPath:(NSIndexPath *)indexPath;
+- (NSInteger)meshView:(BAMeshView *)meshView numberOfCellsInSection:(NSInteger)section;
+- (BAMeshViewCell *)meshView:(BAMeshView *)meshView cellAtIndexPath:(NSIndexPath *)indexPath;
 
 @optional
 
-- (NSInteger)numberOfSectionsInGridView:(BAGridView *)gridView; // Default is 1 if not implemented
+- (NSInteger)numberOfSectionsInMeshView:(BAMeshView *)meshView; // Default is 1 if not implemented
 
 @end
 
 #pragma mark -
 #pragma mark delagate
 
-@protocol BAGridViewDelegate <NSObject, UIScrollViewDelegate>
+@protocol BAMeshViewDelegate <NSObject, UIScrollViewDelegate>
 
 @optional
 
-- (void)gridView:(BAGridView *)gridView willDisplayCell:(BAGridViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
-- (CGSize)gridView:(BAGridView *)gridView sizeForCellAtIndexPath:(NSIndexPath *)indexPath;
+- (void)meshView:(BAMeshView *)meshView willDisplayCell:(BAMeshViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
+- (CGSize)meshView:(BAMeshView *)meshView sizeForCellAtIndexPath:(NSIndexPath *)indexPath;
 
 // Headers & Footers
 
-- (CGFloat)gridView:(BAGridView *)gridView heightForHeaderInSection:(NSInteger)section;
-- (CGFloat)gridView:(BAGridView *)gridView heightForFooterInSection:(NSInteger)section;
-- (UIView *)gridView:(BAGridView *)gridView viewForHeaderInSection:(NSInteger)section;
-- (UIView *)gridView:(BAGridView *)gridView viewForFooterInSection:(NSInteger)section;
+- (CGFloat)meshView:(BAMeshView *)meshView heightForHeaderInSection:(NSInteger)section;
+- (CGFloat)meshView:(BAMeshView *)meshView heightForFooterInSection:(NSInteger)section;
+- (UIView *)meshView:(BAMeshView *)meshView viewForHeaderInSection:(NSInteger)section;
+- (UIView *)meshView:(BAMeshView *)meshView viewForFooterInSection:(NSInteger)section;
 
 // Selection
 
 // Called before the user changes the selection. Return a new indexPath, or nil, to change the proposed selection.
-- (NSIndexPath *)gridView:(BAGridView *)gridView willSelectCellAtIndexPath:(NSIndexPath *)indexPath;
-- (NSIndexPath *)gridView:(BAGridView *)gridView willDeselectCellAtIndexPath:(NSIndexPath *)indexPath;
+- (NSIndexPath *)meshView:(BAMeshView *)meshView willSelectCellAtIndexPath:(NSIndexPath *)indexPath;
+- (NSIndexPath *)meshView:(BAMeshView *)meshView willDeselectCellAtIndexPath:(NSIndexPath *)indexPath;
 
 // Called after the user changes the selection.
-- (void)gridView:(BAGridView *)gridView didSelectCellAtIndexPath:(NSIndexPath *)indexPath;
-- (void)gridView:(BAGridView *)gridView didDeselectCellAtIndexPath:(NSIndexPath *)indexPath;
+- (void)meshView:(BAMeshView *)meshView didSelectCellAtIndexPath:(NSIndexPath *)indexPath;
+- (void)meshView:(BAMeshView *)meshView didDeselectCellAtIndexPath:(NSIndexPath *)indexPath;
 
 @end
 
@@ -93,10 +91,10 @@
 #pragma mark -
 #pragma mark view
 
-@interface BAGridView : UIScrollView
+@interface BAMeshView : UIScrollView
 
-@property(nonatomic,assign) id <BAGridViewDataSource> dataSource;
-@property(nonatomic,assign) id <BAGridViewDelegate> delegate;
+@property(nonatomic,assign) id <BAMeshViewDataSource> dataSource;
+@property(nonatomic,assign) id <BAMeshViewDelegate> delegate;
 @property(nonatomic) CGSize cellSize;               // will return the default value (44x44) if unset
 @property(nonatomic) CGFloat sectionHeaderHeight;   // will return the default value (0) if unset
 @property(nonatomic) CGFloat sectionFooterHeight;   // will return the default value (0) if unset
@@ -108,16 +106,15 @@
 // Info
 
 - (NSInteger)numberOfSections;
-- (NSInteger)numberOfRowsInSection:(NSInteger)section;
-- (NSInteger)numberOfColumnsInRow:(NSInteger)row inSection:(NSInteger)section;
+- (NSInteger)numberOfCellsInSection:(NSInteger)section;
 
 - (CGRect)rectForSection:(NSInteger)section;                                    // includes header, footer and all rows
 - (CGRect)rectForHeaderInSection:(NSInteger)section;
 - (CGRect)rectForFooterInSection:(NSInteger)section;
-- (CGRect)rectForRowAtIndexPath:(NSIndexPath *)indexPath;
+- (CGRect)rectForCellAtIndexPath:(NSIndexPath *)indexPath;
 
-- (NSIndexPath *)indexPathForRowAtPoint:(CGPoint)point;                         // returns nil if point is outside table
-- (NSIndexPath *)indexPathForCell:(BAGridViewCell *)cell;                       // returns nil if cell is not visible
+- (NSIndexPath *)indexPathForCellAtPoint:(CGPoint)point;                        // returns nil if point is outside table
+- (NSIndexPath *)indexPathForCell:(BAMeshViewCell *)cell;                       // returns nil if cell is not visible
 - (NSArray *)indexPathsForRowsInRect:(CGRect)rect;                              // returns nil if rect not valid 
 
 - (UITableViewCell *)cellAtIndexPath:(NSIndexPath *)indexPath;                  // returns nil if cell is not visible or index path is out of range

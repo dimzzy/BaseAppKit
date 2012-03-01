@@ -26,55 +26,18 @@
  or implied, of Dmitry Stadnik.
  */
 
-#import "BAGridViewCell.h"
+#import <UIKit/UIKit.h>
 
-@implementation BAGridViewCell {
-@private
-	BOOL _highlighted;
-	BOOL _selected;
-	UIView *_contentView;
-}
+@interface BAMeshViewCell : UIView
 
-@synthesize reuseIdentifier = _reuseIdentifier;
+- (id)initWithReuseIdentifier:(NSString *)reuseIdentifier;
+- (void)prepareForReuse;
+@property(nonatomic,readonly,copy) NSString *reuseIdentifier;
 
-- (id)initWithReuseIdentifier:(NSString *)reuseIdentifier {
-    if ((self = [super init])) {
-		_reuseIdentifier = [reuseIdentifier copy];
-    }
-    return self;
-}
+@property(nonatomic,readonly,retain) UIView *contentView;
 
-- (void)prepareForReuse {
-}
-
-- (UIView *)contentView {
-	if (!_contentView) {
-		_contentView = [[UIView alloc] init];
-		_contentView.frame = self.bounds;
-		_contentView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-		[self addSubview:_contentView];
-	}
-	return _contentView;
-}
-
-- (BOOL)isSelected {
-	return _selected;
-}
-
-- (void)setSelected:(BOOL)selected {
-	[self setSelected:selected animated:NO];
-}
-
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-	_selected = selected;
-}
-
-- (BOOL)isHighlighted {
-	return _highlighted;
-}
-
-- (void)setHighlighted:(BOOL)highlighted {
-	_highlighted = highlighted;
-}
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated;
+@property(nonatomic,getter=isSelected) BOOL selected;
+@property(nonatomic,getter=isHighlighted) BOOL highlighted;
 
 @end

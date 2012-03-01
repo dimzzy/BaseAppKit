@@ -26,28 +26,24 @@
  or implied, of Dmitry Stadnik.
  */
 
-#import "BAGridView.h"
+#import "BAMeshView.h"
 #import "BAScrollViewProxyDelegate.h"
 
-// assume slightly over 1024 / 44
-#define kMaxReusableCellsCount 25
+// assume slightly over 2 * 1024 / 44 which is two rows
+#define kMaxReusableCellsCount 50
 
-@implementation NSIndexPath (BAGridView)
+@implementation NSIndexPath (BAMeshView)
 
-+ (NSIndexPath *)indexPathForColumn:(NSInteger)column inRow:(NSInteger)row inSection:(NSInteger)section {
-	NSInteger indexes[] = { section, row, column };
-	return [NSIndexPath indexPathWithIndexes:(NSUInteger *)indexes length:3];
++ (NSIndexPath *)indexPathForCell:(NSInteger)cell inSection:(NSInteger)section {
+	NSInteger indexes[] = { section, cell };
+	return [NSIndexPath indexPathWithIndexes:(NSUInteger *)indexes length:2];
 }
 
-- (NSInteger)gridColumn {
-	return [self indexAtPosition:2];
-}
-
-- (NSInteger)gridRow {
+- (NSInteger)meshCell {
 	return [self indexAtPosition:1];
 }
 
-- (NSInteger)gridSection {
+- (NSInteger)meshSection {
 	return [self indexAtPosition:0];
 }
 
@@ -56,27 +52,24 @@
 
 // Layout data for a section
 
-@interface BAGridSectionData : NSObject
+@interface BAMeshSectionData : NSObject
 
 @property CGFloat y;
 @property CGFloat headerHeight;
 @property CGFloat footerHeight;
 @property CGFloat totalHeight;
-@property NSInteger numberOfRows;
+@property NSInteger numberOfCells;
 
-- (CGFloat)yForRow:(NSInteger)row;
-- (void)setY:(CGFloat)y forRow:(NSInteger)row;
-- (CGFloat)heightForRow:(NSInteger)row;
-- (void)setHeight:(CGFloat)height forRow:(NSInteger)row;
-
-- (NSInteger)indexOfRowAtY:(CGFloat)y;
+- (CGRect)cellFrame:(NSInteger)cell;
+- (void)setFrame:(CGRect)frame forCell:(NSInteger)cell;
+- (NSInteger)cellAtPoint:(CGPoint)p;
 
 @end
 
-@implementation BAGridSectionData {
+@implementation BAMeshSectionData {
 @private
-	NSInteger _numberOfRows;
-	CGPoint *_rows; // x -> height
+	NSInteger _numberOfCells;
+	CGRect *_cellFrames;
 }
 
 @synthesize y = _y;
@@ -85,63 +78,47 @@
 @synthesize totalHeight = _totalHeight;
 
 - (void)dealloc {
-	if (_rows) {
-		free(_rows);
-	}
+	free(_cellFrames);
     [super dealloc];
 }
 
-- (NSInteger)numberOfRows {
-	return _numberOfRows;
+- (NSInteger)numberOfCells {
+	return _numberOfCells;
 }
 
-- (void)setNumberOfRows:(NSInteger)numberOfRows {
-	if (_numberOfRows == numberOfRows) {
+- (void)setNumberOfCells:(NSInteger)numberOfCells {
+	if (_numberOfCells == numberOfCells) {
 		return;
 	}
-	_numberOfRows = numberOfRows;
-	free(_rows);
-	if (numberOfRows > 0) {
-		_rows = malloc(numberOfRows * sizeof(CGPoint));
+	_numberOfCells = numberOfCells;
+	free(_cellFrames);
+	if (numberOfCells > 0) {
+		_cellFrames = calloc(numberOfCells, sizeof(CGRect));
 	} else {
-		_rows = NULL;
+		_cellFrames = NULL;
 	}
 }
 
-- (CGFloat)yForRow:(NSInteger)row {
-	if (row < 0 || row >= _numberOfRows) {
-		return 0;
+- (CGRect)cellFrame:(NSInteger)cell {
+	if (cell < 0 || cell >= _numberOfCells) {
+		return CGRectZero;
 	}
-	return _rows[row].y;
+	return _cellFrames[cell];
 }
 
-- (void)setY:(CGFloat)y forRow:(NSInteger)row {
-	if (row < 0 || row >= _numberOfRows) {
+- (void)setFrame:(CGRect)frame forCell:(NSInteger)cell {
+	if (cell < 0 || cell >= _numberOfCells) {
 		return;
 	}
-	_rows[row].y = y;
+	_cellFrames[cell] = frame;
 }
 
-- (CGFloat)heightForRow:(NSInteger)row {
-	if (row < 0 || row >= _numberOfRows) {
-		return 0;
-	}
-	return _rows[row].x;
-}
-
-- (void)setHeight:(CGFloat)height forRow:(NSInteger)row {
-	if (row < 0 || row >= _numberOfRows) {
-		return;
-	}
-	_rows[row].x = height;
-}
-
-- (NSInteger)indexOfRowAtY:(CGFloat)y {
+- (NSInteger)cellAtPoint:(CGPoint)p {
 	// TODO: binary search
-	for (NSInteger row = 0; row < self.numberOfRows; row++) {
-		CGPoint p = _rows[row];
-		if ((y > p.y) && (y < p.y + p.x)) {
-			return row;
+	for (NSInteger cell = 0; cell < self.numberOfCells; cell++) {
+		CGRect frame = _cellFrames[cell];
+		if (CGRectContainsPoint(frame, p)) {
+			return cell;
 		}
 	}
 	return -1;
@@ -150,8 +127,9 @@
 - (NSString *)description {
 	NSMutableString *s = [NSMutableString string];
 	[s appendFormat:@"<section data %g/%g/%g/%g", self.y, self.headerHeight, self.footerHeight, self.totalHeight];
-	for (NSInteger i = 0; i < self.numberOfRows; i++) {
-		[s appendFormat:@" %g:%g", [self yForRow:i], [self heightForRow:i]];
+	for (NSInteger i = 0; i < self.numberOfCells; i++) {
+		[s appendString:@" "];
+		[s appendString:NSStringFromCGRect([self cellFrame:i])];
 	}
 	[s appendString:@">"];
 	return s;
@@ -162,42 +140,80 @@
 
 // Views added for a section
 
-@interface BAGridSectionViews : NSObject
+@interface BAMeshSectionViews : NSObject
 
 @property(assign) BOOL hasHeader;
 @property(retain) UIView *headerView;
 @property(assign) BOOL hasFooter;
 @property(retain) UIView *footerView;
-@property(assign) NSInteger firstRow; // Index of the first row in the rows array
-@property(readonly) NSMutableArray *rows;
+@property(assign) NSInteger numberOfCells;
 
+- (BAMeshViewCell *)cellView:(NSInteger)cell;
+- (void)setView:(BAMeshViewCell *)view forCell:(NSInteger)cell;
 - (void)removeViewsWithReusableCells:(NSMutableArray *)reusableCells;
 
 @end
 
-@implementation BAGridSectionViews {
+@implementation BAMeshSectionViews {
 @private
-	NSMutableArray *_rows;
+	NSInteger _numberOfCells;
+	BAMeshViewCell **_cellViews;
 }
 
 @synthesize hasHeader = _hasHeader;
 @synthesize headerView = _headerView;
 @synthesize hasFooter = _hasFooter;
 @synthesize footerView = _footerView;
-@synthesize firstRow = _firstRow;
+
+- (void)freeCells {
+	if (!_cellViews) {
+		return;
+	}
+	for (NSUInteger cell = 0; cell < _numberOfCells; cell++) {
+		[_cellViews[cell] release];
+	}
+	free(_cellViews);
+	_cellViews = NULL;
+}
 
 - (void)dealloc {
 	self.headerView = nil;
 	self.footerView = nil;
-	[_rows release];
+	[self freeCells];
     [super dealloc];
 }
 
-- (NSMutableArray *)rows {
-	if (!_rows) {
-		_rows = [[NSMutableArray alloc] init];
+- (NSInteger)numberOfCells {
+	return _numberOfCells;
+}
+
+- (void)setNumberOfCells:(NSInteger)numberOfCells {
+	if (_numberOfCells == numberOfCells) {
+		return;
 	}
-	return _rows;
+	[self freeCells];
+	_numberOfCells = numberOfCells;
+	if (numberOfCells > 0) {
+		_cellViews = calloc(numberOfCells, sizeof(BAMeshViewCell *));
+	}
+}
+
+- (BAMeshViewCell *)cellView:(NSInteger)cell {
+	if (cell < 0 || cell >= _numberOfCells) {
+		return nil;
+	}
+	return [[_cellViews[cell] retain] autorelease];
+}
+
+- (void)setView:(BAMeshViewCell *)view forCell:(NSInteger)cell {
+	if (cell < 0 || cell >= _numberOfCells) {
+		return;
+	}
+	if (_cellViews[cell] == view) {
+		return;
+	}
+	[_cellViews[cell] release];
+	_cellViews[cell] = [view retain];
 }
 
 - (void)removeViewsWithReusableCells:(NSMutableArray *)reusableCells {
@@ -205,27 +221,40 @@
 		[self.headerView removeFromSuperview];
 		self.headerView = nil;
 	}
-	for (NSArray *cells in self.rows) {
-		for (BAGridViewCell *cell in cells) {
-			[cell removeFromSuperview];
-			if (cell.reuseIdentifier) {
-				[cell prepareForReuse];
-				[reusableCells addObject:cell];
-			}
+	for (NSUInteger cell = 0; cell < _numberOfCells; cell++) {
+		BAMeshViewCell *cellView = _cellViews[cell];
+		if (!cellView) {
+			continue;
 		}
+		[cellView removeFromSuperview];
+		if (cellView.reuseIdentifier) {
+			[cellView prepareForReuse];
+			[reusableCells addObject:cellView];
+		}
+		[cellView release];
+		_cellViews[cell] = nil;
 	}
-	[self.rows removeAllObjects];
-	self.firstRow = -1;
 	if (self.footerView) {
 		[self.footerView removeFromSuperview];
 		self.footerView = nil;
 	}
 }
 
+- (NSString *)description {
+	NSMutableString *s = [NSMutableString string];
+	[s appendFormat:@"<section views %d/%p/%d/%p ", self.hasHeader, self.headerView, self.hasFooter, self.footerView];
+	for (NSInteger i = 0; i < self.numberOfCells; i++) {
+		BAMeshViewCell *cellView = [self cellView:i];
+		[s appendString:(cellView ? @"x" : @"-")];
+	}
+	[s appendString:@">"];
+	return s;
+}
+
 @end
 
 
-@interface BAGridViewProxyDelegate : BAScrollViewProxyDelegate
+@interface BAMeshViewProxyDelegate : BAScrollViewProxyDelegate
 
 @property(assign) id<NSObject> didScrollTarget;
 @property(assign) SEL didScrollAction;
@@ -233,7 +262,7 @@
 @end
 
 
-@implementation BAGridViewProxyDelegate
+@implementation BAMeshViewProxyDelegate
 
 @synthesize didScrollTarget = _didScrollTarget;
 @synthesize didScrollAction = _didScrollAction;
@@ -248,20 +277,20 @@
 @end
 
 
-@interface BAGridView ()
+@interface BAMeshView ()
 
-- (CGSize)sizeForCellAtColumn:(NSInteger)column inRow:(NSInteger)row inSection:(NSInteger)section;
+- (CGSize)sizeForCell:(NSInteger)cell inSection:(NSInteger)section;
 - (CGFloat)heightForHeaderInSection:(NSInteger)section;
 - (CGFloat)heightForFooterInSection:(NSInteger)section;
-- (void)gridDidScroll;
+- (void)meshDidScroll;
 
 @end
 
 
-@implementation BAGridView {
+@implementation BAMeshView {
 @private
-	id<BAGridViewDataSource> _dataSource;
-	BAGridViewProxyDelegate *_proxyDelegate; // retained; intercepts didScroll events
+	id<BAMeshViewDataSource> _dataSource;
+	BAMeshViewProxyDelegate *_proxyDelegate; // retained; intercepts didScroll events
 	NSMutableArray *_sectionData; // all data for layout
 	NSMutableArray *_sectionViews; // description of currently added views
 	NSMutableArray *_reusableCells;
@@ -279,36 +308,36 @@
     [super dealloc];
 }
 
-- (void)setupGridView {
+- (void)setupMeshView {
 	self.cellSize = CGSizeMake(44, 44);
 //	self.sectionHeaderHeight = 22;
 //	self.sectionFooterHeight = 22;
 	[_proxyDelegate release];
-	_proxyDelegate = [[BAGridViewProxyDelegate alloc] init];
+	_proxyDelegate = [[BAMeshViewProxyDelegate alloc] init];
 	_proxyDelegate.didScrollTarget = self;
-	_proxyDelegate.didScrollAction = @selector(gridDidScroll);
+	_proxyDelegate.didScrollAction = @selector(meshDidScroll);
 	[super setDelegate:_proxyDelegate];
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
     if ((self = [super initWithCoder:decoder])) {
-		[self setupGridView];
+		[self setupMeshView];
     }
     return self;
 }
 
 - (id)initWithFrame:(CGRect)rect {
     if ((self = [super initWithFrame:rect])) {
-		[self setupGridView];
+		[self setupMeshView];
     }
     return self;
 }
 
-- (id<BAGridViewDataSource>)dataSource {
+- (id<BAMeshViewDataSource>)dataSource {
 	return _dataSource;
 }
 
-- (void)setDataSource:(id<BAGridViewDataSource>)dataSource {
+- (void)setDataSource:(id<BAMeshViewDataSource>)dataSource {
 	if (_dataSource == dataSource) {
 		return;
 	}
@@ -320,11 +349,11 @@
 	[self setNeedsLayout];
 }
 
-- (id<BAGridViewDelegate>)delegate {
-	return (id<BAGridViewDelegate>)[_proxyDelegate delegate];
+- (id<BAMeshViewDelegate>)delegate {
+	return (id<BAMeshViewDelegate>)[_proxyDelegate delegate];
 }
 
-- (void)setDelegate:(id<BAGridViewDelegate>)delegate {
+- (void)setDelegate:(id<BAMeshViewDelegate>)delegate {
 	if ([_proxyDelegate delegate] == delegate) {
 		return;
 	}
@@ -352,8 +381,9 @@
 }
 
 - (void)compactReusableCells {
-	while ([[self reusableCells] count] > kMaxReusableCellsCount) {
-		[[self reusableCells] removeObjectAtIndex:0];
+	const int extraCellsCount = [[self reusableCells] count] - kMaxReusableCellsCount;
+	if (extraCellsCount > 0) {
+		[[self reusableCells] removeObjectsInRange:NSMakeRange(0, extraCellsCount)];
 	}
 }
 
@@ -362,7 +392,7 @@
 		return nil;
 	}
 	for (NSInteger i = 0; i < [[self reusableCells] count]; i++) {
-		BAGridViewCell *cell = [[self reusableCells] objectAtIndex:i];
+		BAMeshViewCell *cell = [[self reusableCells] objectAtIndex:i];
 		if ([[cell reuseIdentifier] isEqualToString:identifier]) {
 			[[cell retain] autorelease];
 			[[self reusableCells] removeObjectAtIndex:i];
@@ -378,26 +408,36 @@
 		const NSInteger numberOfSections = [self numberOfSections];
 		_sectionData = [[NSMutableArray alloc] initWithCapacity:numberOfSections];
 		CGFloat y = 0;
+		const CGFloat width = self.bounds.size.width;
 		for (NSInteger section = 0; section < numberOfSections; section++) {
-			BAGridSectionData *sectionData = [[[BAGridSectionData alloc] init] autorelease];
+			BAMeshSectionData *sectionData = [[[BAMeshSectionData alloc] init] autorelease];
 			sectionData.y = y;
 			sectionData.headerHeight = [self heightForHeaderInSection:section];
 			sectionData.footerHeight = [self heightForFooterInSection:section];
 			sectionData.totalHeight = sectionData.headerHeight + sectionData.footerHeight;
-			sectionData.numberOfRows = [self numberOfRowsInSection:section];
+			sectionData.numberOfCells = [self numberOfCellsInSection:section];
 			y += sectionData.headerHeight;
-			for (NSInteger row = 0; row < sectionData.numberOfRows; row++) {
-				const CGFloat rowHeight = [self sizeForCellAtColumn:0 inRow:row inSection:section].height;
-				[sectionData setY:y forRow:row];
-				[sectionData setHeight:rowHeight forRow:row];
-				y += rowHeight;
-				sectionData.totalHeight += rowHeight;
+			CGFloat x = 0;
+			CGFloat rowHeight = 0;
+			for (NSInteger cell = 0; cell < sectionData.numberOfCells; cell++) {
+				const CGSize cellSize = [self sizeForCell:cell inSection:section];
+				if (x > 0 && (x + cellSize.width) > width) {
+					y += rowHeight;
+					sectionData.totalHeight += rowHeight;
+					x = 0;
+					rowHeight = 0;
+				}
+				[sectionData setFrame:CGRectMake(x, y, cellSize.width, cellSize.height) forCell:cell];
+				x += cellSize.width;
+				rowHeight = MAX(rowHeight, cellSize.height);
 			}
+			y += rowHeight;
+			sectionData.totalHeight += rowHeight;
 			[_sectionData addObject:sectionData];
 //			NSLog(@"%@", sectionData);
 			y += sectionData.footerHeight;
 		}
-		self.contentSize = CGSizeMake(self.bounds.size.width, y);
+		self.contentSize = CGSizeMake(width, y);
 //		NSLog(@"Content Size %@", NSStringFromCGSize(self.contentSize));
 	}
 	return _sectionData;
@@ -408,10 +448,10 @@
 		const NSInteger numberOfSections = [self numberOfSections];
 		_sectionViews = [[NSMutableArray alloc] initWithCapacity:numberOfSections];
 		for (NSInteger section = 0; section < numberOfSections; section++) {
-			BAGridSectionViews *sectionViews = [[[BAGridSectionViews alloc] init] autorelease];
+			BAMeshSectionViews *sectionViews = [[[BAMeshSectionViews alloc] init] autorelease];
 			sectionViews.hasHeader = YES;
 			sectionViews.hasFooter = YES;
-			sectionViews.firstRow = -1;
+			sectionViews.numberOfCells = [self numberOfCellsInSection:section];
 			[_sectionViews addObject:sectionViews];
 		}
 	}
@@ -426,8 +466,8 @@
 //	NSLog(@"Content Rect: %@", NSStringFromCGRect(contentRect));
 	const NSInteger numberOfSections = [self numberOfSections];
 	for (NSInteger section = 0; section < numberOfSections; section++) {
-		BAGridSectionData *sectionData = [[self sectionData] objectAtIndex:section];
-		BAGridSectionViews *sectionViews = [[self sectionViews] objectAtIndex:section];
+		BAMeshSectionData *sectionData = [[self sectionData] objectAtIndex:section];
+		BAMeshSectionViews *sectionViews = [[self sectionViews] objectAtIndex:section];
 		const CGRect sectionRect = CGRectMake(0, sectionData.y, self.contentSize.width, sectionData.totalHeight);
 //		NSLog(@"Section Rect: %@", NSStringFromCGRect(sectionRect));
 		if (CGRectIntersectsRect(contentRect, sectionRect)) {
@@ -435,9 +475,11 @@
 			if (sectionViews.hasHeader) {
 				CGRect headerRect = CGRectMake(0, sectionData.y, self.contentSize.width, sectionData.headerHeight);
 				if (CGRectIntersectsRect(contentRect, headerRect)) {
-					if (!sectionViews.headerView) {
-						if ([self.delegate respondsToSelector:@selector(gridView:viewForHeaderInSection:)]) {
-							sectionViews.headerView = [self.delegate gridView:self viewForHeaderInSection:section];
+					if (sectionViews.headerView) {
+						sectionViews.headerView.frame = headerRect;
+					} else {
+						if ([self.delegate respondsToSelector:@selector(meshView:viewForHeaderInSection:)]) {
+							sectionViews.headerView = [self.delegate meshView:self viewForHeaderInSection:section];
 						}
 						if (sectionViews.headerView) {
 							sectionViews.headerView.frame = headerRect;
@@ -453,64 +495,43 @@
 					}
 				}
 			}
-			NSMutableArray *rows = [[NSMutableArray alloc] initWithArray:sectionViews.rows];
-			const NSInteger firstRow = sectionViews.firstRow;
-			const NSInteger lastRow = (firstRow >= 0 && [rows count] > 0) ? firstRow + [rows count] - 1 : -1;
-			[sectionViews.rows removeAllObjects];
-			sectionViews.firstRow = -1;
-			const NSInteger numberOfRows = [self numberOfRowsInSection:section];
-			for (NSInteger row = 0; row < numberOfRows; row++) {
-				NSMutableArray *cells = nil;
-				if (row >= firstRow && row <= lastRow) {
-					cells = [rows objectAtIndex:(row - firstRow)];
-				}
-				const CGFloat rowY = [sectionData yForRow:row];
-				const CGFloat rowHeight = [sectionData heightForRow:row];
-				const CGRect rowRect = CGRectMake(0, rowY, self.contentSize.width, rowHeight);
-//				NSLog(@"Row Rect: %@", NSStringFromCGRect(rowRect));
-				if (CGRectIntersectsRect(rowRect, contentRect)) {
-					if (!cells) {
-						const NSInteger numberOfColumns = [self numberOfColumnsInRow:row inSection:section];
-						cells = [NSMutableArray arrayWithCapacity:numberOfColumns];
-						CGFloat x = 0;
-						for (NSInteger column = 0; column < numberOfColumns; column++) {
-							NSIndexPath *indexPath = [NSIndexPath indexPathForColumn:column inRow:row inSection:section];
-							BAGridViewCell *cell = [self.dataSource gridView:self cellAtIndexPath:indexPath];
-							if (!cell) {
-								[NSException raise:@"BAGridViewError" format:@"Failed to create a cell"];
-							}
-							cell.frame = CGRectMake(x, rowY, self.cellSize.width, rowHeight);
-//							NSLog(@"Cell Rect: %@", NSStringFromCGRect(cellRect));
-							x += self.cellSize.width;
-							[cells addObject:cell];
-							[self addSubview:cell];
+			for (NSInteger cell = 0; cell < sectionViews.numberOfCells; cell++) {
+				CGRect cellFrame = [sectionData cellFrame:cell];
+				BAMeshViewCell *cellView = [sectionViews cellView:cell];
+				if (CGRectIntersectsRect(contentRect, cellFrame)) {
+					if (cellView) {
+						cellView.frame = cellFrame;
+					} else {
+						NSIndexPath *indexPath = [NSIndexPath indexPathForCell:cell inSection:section];
+						cellView = [self.dataSource meshView:self cellAtIndexPath:indexPath];
+						if (!cellView) {
+							[NSException raise:@"BAMeshViewError" format:@"Failed to create a cell"];
 						}
+						cellView.frame = cellFrame;
+						[self addSubview:cellView];
+						[sectionViews setView:cellView forCell:cell];
 					}
-					if (sectionViews.firstRow < 0) {
-						sectionViews.firstRow = row;
-					}
-					[sectionViews.rows addObject:cells];
 				} else {
-					if (cells) {
-						for (BAGridViewCell *cell in cells) {
-							[cell removeFromSuperview];
-							if (cell.reuseIdentifier) {
-								[cell prepareForReuse];
-								[[self reusableCells] addObject:cell];
-							}
+					if (cellView) {
+						[cellView removeFromSuperview];
+						if (cellView.reuseIdentifier) {
+							[cellView prepareForReuse];
+							[[self reusableCells] addObject:cellView];
 						}
-						[self compactReusableCells];
+						[sectionViews setView:nil forCell:cell];
 					}
 				}
 			}
-			[rows release];
+			[self compactReusableCells];
 			if (sectionViews.hasFooter) {
 				CGRect footerRect = CGRectMake(0, sectionData.y + sectionData.totalHeight - sectionData.footerHeight,
 											   self.contentSize.width, sectionData.footerHeight);
 				if (CGRectIntersectsRect(contentRect, footerRect)) {
-					if (!sectionViews.footerView) {
-						if ([self.delegate respondsToSelector:@selector(gridView:viewForFooterInSection:)]) {
-							sectionViews.footerView = [self.delegate gridView:self viewForFooterInSection:section];
+					if (sectionViews.footerView) {
+						sectionViews.footerView.frame = footerRect;
+					} else {
+						if ([self.delegate respondsToSelector:@selector(meshView:viewForFooterInSection:)]) {
+							sectionViews.footerView = [self.delegate meshView:self viewForFooterInSection:section];
 						}
 						if (sectionViews.footerView) {
 							sectionViews.footerView.frame = footerRect;
@@ -535,76 +556,76 @@
 }
 
 - (void)layoutSubviews {
+	
+	// update content size when view frame changes
+	[_sectionData release];
+	_sectionData = nil;
+	
 	[self updateVisibleCells];
 }
 
-- (void)gridDidScroll {
+- (void)meshDidScroll {
 	[self updateVisibleCells];
 }
 
 - (NSInteger)numberOfSections {
-	if ([self.dataSource respondsToSelector:@selector(numberOfSectionsInGridView:)]) {
-		return [self.dataSource numberOfSectionsInGridView:self];
+	if ([self.dataSource respondsToSelector:@selector(numberOfSectionsInMeshView:)]) {
+		return [self.dataSource numberOfSectionsInMeshView:self];
 	}
 	return 1;
 }
 
-- (NSInteger)numberOfRowsInSection:(NSInteger)section {
-	return [self.dataSource gridView:self numberOfRowsInSection:section];
+- (NSInteger)numberOfCellsInSection:(NSInteger)section {
+	return [self.dataSource meshView:self numberOfCellsInSection:section];
 }
 
-- (NSInteger)numberOfColumnsInRow:(NSInteger)row inSection:(NSInteger)section {
-	return [self.dataSource gridView:self numberOfColumnsInRow:row inSection:section];
-}
-
-- (CGSize)sizeForCellAtColumn:(NSInteger)column inRow:(NSInteger)row inSection:(NSInteger)section {
-	if ([self.delegate respondsToSelector:@selector(gridView:sizeForCellAtIndexPath:)]) {
-		return [self.delegate gridView:self sizeForCellAtIndexPath:[NSIndexPath indexPathForColumn:column inRow:row inSection:section]];
+- (CGSize)sizeForCell:(NSInteger)cell inSection:(NSInteger)section {
+	if ([self.delegate respondsToSelector:@selector(meshView:sizeForCellAtIndexPath:)]) {
+		return [self.delegate meshView:self sizeForCellAtIndexPath:[NSIndexPath indexPathForCell:cell inSection:section]];
 	}
 	return self.cellSize;
 }
 
 - (CGFloat)heightForHeaderInSection:(NSInteger)section {
-	if ([self.delegate respondsToSelector:@selector(gridView:heightForHeaderInSection:)]) {
-		return [self.delegate gridView:self heightForHeaderInSection:section];
+	if ([self.delegate respondsToSelector:@selector(meshView:heightForHeaderInSection:)]) {
+		return [self.delegate meshView:self heightForHeaderInSection:section];
 	}
 	return self.sectionHeaderHeight;
 }
 
 - (CGFloat)heightForFooterInSection:(NSInteger)section {
-	if ([self.delegate respondsToSelector:@selector(gridView:heightForFooterInSection:)]) {
-		return [self.delegate gridView:self heightForFooterInSection:section];
+	if ([self.delegate respondsToSelector:@selector(meshView:heightForFooterInSection:)]) {
+		return [self.delegate meshView:self heightForFooterInSection:section];
 	}
 	return self.sectionFooterHeight;
 }
 
 - (CGRect)rectForSection:(NSInteger)section {
-	BAGridSectionData *sectionData = [[self sectionData] objectAtIndex:section];
+	BAMeshSectionData *sectionData = [[self sectionData] objectAtIndex:section];
 	return CGRectMake(0, sectionData.y, self.contentSize.width, sectionData.totalHeight);
 }
 
 - (CGRect)rectForHeaderInSection:(NSInteger)section {
-	BAGridSectionData *sectionData = [[self sectionData] objectAtIndex:section];
+	BAMeshSectionData *sectionData = [[self sectionData] objectAtIndex:section];
 	return CGRectMake(0, sectionData.y, self.contentSize.width, sectionData.headerHeight);
 }
 
 - (CGRect)rectForFooterInSection:(NSInteger)section {
-	BAGridSectionData *sectionData = [[self sectionData] objectAtIndex:section];
-	return CGRectMake(0, sectionData.y + sectionData.totalHeight - sectionData.footerHeight, self.contentSize.width, sectionData.footerHeight);
+	BAMeshSectionData *sectionData = [[self sectionData] objectAtIndex:section];
+	return CGRectMake(0, sectionData.y + sectionData.totalHeight - sectionData.footerHeight,
+					  self.contentSize.width, sectionData.footerHeight);
 }
 
-- (CGRect)rectForRowAtIndexPath:(NSIndexPath *)indexPath {
-	BAGridSectionData *sectionData = [[self sectionData] objectAtIndex:indexPath.gridSection];
-	const CGFloat y = [sectionData yForRow:indexPath.gridRow];
-	const CGFloat height = [sectionData heightForRow:indexPath.gridRow];
-	return CGRectMake(0, y, self.contentSize.width, height);
+- (CGRect)rectForCellAtIndexPath:(NSIndexPath *)indexPath {
+	BAMeshSectionData *sectionData = [[self sectionData] objectAtIndex:indexPath.meshSection];
+	return [sectionData cellFrame:indexPath.meshCell];
 }
 
-- (NSIndexPath *)indexPathForRowAtPoint:(CGPoint)point {
+- (NSIndexPath *)indexPathForCellAtPoint:(CGPoint)point {
 	return nil;
 }
 
-- (NSIndexPath *)indexPathForCell:(BAGridViewCell *)cell {
+- (NSIndexPath *)indexPathForCell:(BAMeshViewCell *)cell {
 	return nil;
 }
 
@@ -624,7 +645,10 @@
 	return nil;
 }
 
-- (void)scrollToRowAtIndexPath:(NSIndexPath *)indexPath atScrollPosition:(UITableViewScrollPosition)scrollPosition animated:(BOOL)animated {
+- (void)scrollToRowAtIndexPath:(NSIndexPath *)indexPath
+			  atScrollPosition:(UITableViewScrollPosition)scrollPosition
+					  animated:(BOOL)animated
+{
 }
 
 - (void)scrollToNearestSelectedRowAtScrollPosition:(UITableViewScrollPosition)scrollPosition animated:(BOOL)animated {
@@ -636,7 +660,10 @@
 	return nil;
 }
 
-- (void)selectRowAtIndexPath:(NSIndexPath *)indexPath animated:(BOOL)animated scrollPosition:(UITableViewScrollPosition)scrollPosition {
+- (void)selectRowAtIndexPath:(NSIndexPath *)indexPath
+					animated:(BOOL)animated
+			  scrollPosition:(UITableViewScrollPosition)scrollPosition
+{
 }
 
 - (void)deselectRowAtIndexPath:(NSIndexPath *)indexPath animated:(BOOL)animated {

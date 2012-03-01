@@ -26,8 +26,8 @@
 #include <BaseAppKit/BASeparatedTableProvider.h>
 #include <BaseAppKit/BAViewsCache.h>
 #include <BaseAppKit/BASimpleReusableView.h>
-#include <BaseAppKit/BAGridViewCell.h>
-#include <BaseAppKit/BAGridView.h>
+#include <BaseAppKit/BAMeshViewCell.h>
+#include <BaseAppKit/BAMeshView.h>
 #include <BaseAppKit/BAScrollViewProxyDelegate.h>
 
 #endif // __BASEAPPKITUI__
