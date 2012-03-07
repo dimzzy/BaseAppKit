@@ -61,12 +61,27 @@
 #pragma mark -
 #pragma mark delagate
 
+typedef enum {
+	BAMeshRowLayoutSpread = 0, // default; distribute cells evenly in rows
+	BAMeshRowLayoutCenter, // all cells are packed and centered within row
+	BAMeshRowLayoutAlignLeft, // all cells are packed at the left side
+	BAMeshRowLayoutAlignRight // all cells are packed at the right side
+} BAMeshRowLayout;
+
+typedef enum {
+	BAMeshCellAlignmentCenter = 0, // default; cell is centered vertically within row
+	BAMeshCellAlignmentTop, // cell is at row's top
+	BAMeshCellAlignmentBottom // cell is at row's bottom
+} BAMeshCellAlignment;
+
 @protocol BAMeshViewDelegate <NSObject, UIScrollViewDelegate>
 
 @optional
 
 - (void)meshView:(BAMeshView *)meshView willDisplayCell:(BAMeshViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 - (CGSize)meshView:(BAMeshView *)meshView sizeForCellAtIndexPath:(NSIndexPath *)indexPath;
+- (BAMeshRowLayout)meshView:(BAMeshView *)meshView rowsLayoutInSection:(NSInteger)section;
+- (BAMeshCellAlignment)meshView:(BAMeshView *)meshView alignmentForCellAtIndexPath:(NSIndexPath *)indexPath;
 
 // Headers & Footers
 
@@ -93,8 +108,8 @@
 
 @interface BAMeshView : UIScrollView
 
-@property(nonatomic,assign) id <BAMeshViewDataSource> dataSource;
-@property(nonatomic,assign) id <BAMeshViewDelegate> delegate;
+@property(nonatomic, assign) IBOutlet id<BAMeshViewDataSource> dataSource;
+@property(nonatomic, assign) IBOutlet id<BAMeshViewDelegate> delegate;
 @property(nonatomic) CGSize cellSize;               // will return the default value (44x44) if unset
 @property(nonatomic) CGFloat sectionHeaderHeight;   // will return the default value (0) if unset
 @property(nonatomic) CGFloat sectionFooterHeight;   // will return the default value (0) if unset

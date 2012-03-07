@@ -280,6 +280,8 @@
 @interface BAMeshView ()
 
 - (CGSize)sizeForCell:(NSInteger)cell inSection:(NSInteger)section;
+- (BAMeshRowLayout)rowsLayoutInSection:(NSInteger)section;
+- (BAMeshCellAlignment)alignmentForCellAtIndexPath:(NSIndexPath *)indexPath;
 - (CGFloat)heightForHeaderInSection:(NSInteger)section;
 - (CGFloat)heightForFooterInSection:(NSInteger)section;
 - (void)meshDidScroll;
@@ -402,6 +404,62 @@
 	return nil;
 }
 
+- (void)layoutRow:(NSRange)cells
+		   ofSize:(CGSize)rowSize
+		inSection:(NSInteger)section
+			 data:(BAMeshSectionData *)sectionData
+{
+	if (cells.length == 0) {
+		return;
+	}
+	const CGFloat width = self.bounds.size.width;
+	BAMeshRowLayout rowLayout = [self rowsLayoutInSection:section];
+	CGFloat x;
+	CGFloat d; // horizontal interval
+	switch (rowLayout) {
+		case BAMeshRowLayoutSpread:
+			x = 0;
+			if (cells.length > 1) {
+				d = rint((width - rowSize.width) / (cells.length - 1));
+			} else {
+				d = 0;
+			}
+			break;
+		case BAMeshRowLayoutCenter:
+			x = rint((width - rowSize.width) / 2);
+			d = 0;
+			break;
+		case BAMeshRowLayoutAlignLeft:
+			x = 0;
+			d = 0;
+			break;
+		case BAMeshRowLayoutAlignRight:
+			x = rint(width - rowSize.width);
+			d = 0;
+			break;
+	}
+	for (NSInteger cell = cells.location; cell < cells.location + cells.length; cell++) {
+		CGRect cellFrame = [sectionData cellFrame:cell];
+		cellFrame.origin.x = x;
+		x += cellFrame.size.width + d;
+		BAMeshCellAlignment cellAlignment = [self alignmentForCellAtIndexPath:[NSIndexPath indexPathForCell:cell
+																								  inSection:section]];
+		// we assume here that cells are aligned at the top of the row
+		switch (cellAlignment) {
+			case BAMeshCellAlignmentTop:
+				// nothing to do
+				break;
+			case BAMeshCellAlignmentCenter:
+				cellFrame.origin.y += rint((rowSize.height - cellFrame.size.height) / 2);
+				break;
+			case BAMeshCellAlignmentBottom:
+				cellFrame.origin.y += rint(rowSize.height - cellFrame.size.height);
+				break;
+		}
+		[sectionData setFrame:cellFrame forCell:cell];
+	}
+}
+
 - (NSMutableArray *)sectionData {
 	if (!_sectionData) {
 //		NSLog(@"%s", __func__);
@@ -419,19 +477,31 @@
 			y += sectionData.headerHeight;
 			CGFloat x = 0;
 			CGFloat rowHeight = 0;
-			for (NSInteger cell = 0; cell < sectionData.numberOfCells; cell++) {
+			NSInteger firstRowCell = 0;
+			for (NSInteger cell = firstRowCell; cell < sectionData.numberOfCells; cell++) {
 				const CGSize cellSize = [self sizeForCell:cell inSection:section];
-				if (x > 0 && (x + cellSize.width) > width) {
+				if (cell > firstRowCell && (x + cellSize.width) > width) {
+					[self layoutRow:NSMakeRange(firstRowCell, cell - firstRowCell)
+							 ofSize:CGSizeMake(x, rowHeight)
+						  inSection:section
+							   data:sectionData];
 					y += rowHeight;
 					sectionData.totalHeight += rowHeight;
 					x = 0;
 					rowHeight = 0;
+					firstRowCell = cell;
 				}
 				[sectionData setFrame:CGRectMake(x, y, cellSize.width, cellSize.height) forCell:cell];
 				x += cellSize.width;
 				rowHeight = MAX(rowHeight, cellSize.height);
 			}
 			y += rowHeight;
+			if (sectionData.numberOfCells > firstRowCell) {
+				[self layoutRow:NSMakeRange(firstRowCell, sectionData.numberOfCells - firstRowCell)
+						 ofSize:CGSizeMake(x, rowHeight)
+					  inSection:section
+						   data:sectionData];
+			}
 			sectionData.totalHeight += rowHeight;
 			[_sectionData addObject:sectionData];
 //			NSLog(@"%@", sectionData);
@@ -584,6 +654,20 @@
 		return [self.delegate meshView:self sizeForCellAtIndexPath:[NSIndexPath indexPathForCell:cell inSection:section]];
 	}
 	return self.cellSize;
+}
+
+- (BAMeshRowLayout)rowsLayoutInSection:(NSInteger)section {
+	if ([self.delegate respondsToSelector:@selector(meshView:rowsLayoutInSection:)]) {
+		return [self.delegate meshView:self rowsLayoutInSection:section];
+	}
+	return BAMeshRowLayoutSpread;
+}
+
+- (BAMeshCellAlignment)alignmentForCellAtIndexPath:(NSIndexPath *)indexPath {
+	if ([self.delegate respondsToSelector:@selector(meshView:alignmentForCellAtIndexPath:)]) {
+		return [self.delegate meshView:self alignmentForCellAtIndexPath:indexPath];
+	}
+	return BAMeshCellAlignmentCenter;
 }
 
 - (CGFloat)heightForHeaderInSection:(NSInteger)section {
