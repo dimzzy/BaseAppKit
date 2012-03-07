@@ -61,17 +61,34 @@
 #pragma mark -
 #pragma mark delagate
 
+// Note about spread logic:
+// 
+// By default all cells in a row are distributed evenly along the row. But the last row could be treated
+// differently because it could contain fewer cells and (especially for meshes with a fixed cell size)
+// it makes sense to use the same horizontal spacing as for the rows above.
+// 
+// So layouts BAMeshRowLayoutSpread[Center|Left|Right] treat the last row in a special way: first average
+// cell width for the last row is calculated. Then we calculate how many average cells would fit in the row.
+// Next based on this estimate we calculate horizontal spacing which is used to separate the existing cells.
+// This should give us better layout for the last row and if all cells have a fixed size then horizontal
+// spacing will be exactly the same for all rows.
+
 typedef enum {
 	BAMeshRowLayoutSpread = 0, // default; distribute cells evenly in rows
+	BAMeshRowLayoutSpreadCenter, // spread with the last row centered
+	BAMeshRowLayoutSpreadLeft, // spread with the last row aligned to the left side
+	BAMeshRowLayoutSpreadRight, // spread with the last row aligned to the right side
 	BAMeshRowLayoutCenter, // all cells are packed and centered within row
-	BAMeshRowLayoutAlignLeft, // all cells are packed at the left side
-	BAMeshRowLayoutAlignRight // all cells are packed at the right side
+	BAMeshRowLayoutLeft, // all cells are packed at the left side
+	BAMeshRowLayoutRight, // all cells are packed at the right side
+	BAMeshRowLayoutFill // all cells are made equal width to cover the whole row
 } BAMeshRowLayout;
 
 typedef enum {
 	BAMeshCellAlignmentCenter = 0, // default; cell is centered vertically within row
 	BAMeshCellAlignmentTop, // cell is at row's top
-	BAMeshCellAlignmentBottom // cell is at row's bottom
+	BAMeshCellAlignmentBottom, // cell is at row's bottom
+	BAMeshCellAlignmentFill // cell height is made equal to the row height
 } BAMeshCellAlignment;
 
 @protocol BAMeshViewDelegate <NSObject, UIScrollViewDelegate>

@@ -404,6 +404,16 @@
 	return nil;
 }
 
+- (CGFloat)extrapolatedSpreadForRow:(NSRange)cells ofSize:(CGSize)rowSize {
+	if (cells.length < 2 || rowSize.width == 0) {
+		return 0;
+	}
+	const CGFloat avgCellWidth = rowSize.width / cells.length;
+	const CGFloat width = self.bounds.size.width;
+	const int availableCellsCount = (width - rowSize.width) / avgCellWidth;
+	return (width - rowSize.width - avgCellWidth * availableCellsCount) / (cells.length + availableCellsCount - 1);
+}
+
 - (void)layoutRow:(NSRange)cells
 		   ofSize:(CGSize)rowSize
 		inSection:(NSInteger)section
@@ -414,34 +424,64 @@
 	}
 	const CGFloat width = self.bounds.size.width;
 	BAMeshRowLayout rowLayout = [self rowsLayoutInSection:section];
-	CGFloat x;
+	const BOOL lastRow = (sectionData.numberOfCells == cells.location + cells.length);
+	if (!lastRow && (rowLayout == BAMeshRowLayoutSpreadCenter ||
+					 rowLayout == BAMeshRowLayoutSpreadLeft ||
+					 rowLayout == BAMeshRowLayoutSpreadRight))
+	{
+		rowLayout = BAMeshRowLayoutSpread;
+	}
 	CGFloat d; // horizontal interval
+	CGFloat x;
+	CGFloat w = 0; // cell width for fill layout
 	switch (rowLayout) {
 		case BAMeshRowLayoutSpread:
-			x = 0;
 			if (cells.length > 1) {
-				d = rint((width - rowSize.width) / (cells.length - 1));
+				d = (width - rowSize.width) / (cells.length - 1);
 			} else {
 				d = 0;
 			}
+			x = 0;
+			break;
+		case BAMeshRowLayoutSpreadCenter:
+			d = [self extrapolatedSpreadForRow:cells ofSize:rowSize];
+			x = (width - rowSize.width) / 2;
+			break;
+		case BAMeshRowLayoutSpreadLeft:
+			d = [self extrapolatedSpreadForRow:cells ofSize:rowSize];
+			x = 0;
+			break;
+		case BAMeshRowLayoutSpreadRight:
+			d = [self extrapolatedSpreadForRow:cells ofSize:rowSize];
+			x = width - rowSize.width - d * (cells.length - 1);
 			break;
 		case BAMeshRowLayoutCenter:
-			x = rint((width - rowSize.width) / 2);
 			d = 0;
+			x = (width - rowSize.width) / 2;
 			break;
-		case BAMeshRowLayoutAlignLeft:
+		case BAMeshRowLayoutLeft:
+			d = 0;
 			x = 0;
-			d = 0;
 			break;
-		case BAMeshRowLayoutAlignRight:
-			x = rint(width - rowSize.width);
+		case BAMeshRowLayoutRight:
 			d = 0;
+			x = width - rowSize.width;
+			break;
+		case BAMeshRowLayoutFill:
+			d = 0;
+			x = 0;
+			w = width / cells.length;
 			break;
 	}
 	for (NSInteger cell = cells.location; cell < cells.location + cells.length; cell++) {
 		CGRect cellFrame = [sectionData cellFrame:cell];
-		cellFrame.origin.x = x;
-		x += cellFrame.size.width + d;
+		cellFrame.origin.x = rint(x);
+		if (rowLayout == BAMeshRowLayoutFill) {
+			cellFrame.size.width = rint(w);
+			x += w + d;
+		} else {
+			x += cellFrame.size.width + d;
+		}
 		BAMeshCellAlignment cellAlignment = [self alignmentForCellAtIndexPath:[NSIndexPath indexPathForCell:cell
 																								  inSection:section]];
 		// we assume here that cells are aligned at the top of the row
@@ -454,6 +494,9 @@
 				break;
 			case BAMeshCellAlignmentBottom:
 				cellFrame.origin.y += rint(rowSize.height - cellFrame.size.height);
+				break;
+			case BAMeshCellAlignmentFill:
+				cellFrame.size.height = rowSize.height;
 				break;
 		}
 		[sectionData setFrame:cellFrame forCell:cell];
