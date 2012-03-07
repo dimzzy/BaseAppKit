@@ -28,6 +28,7 @@
 
 #import "BAMeshView.h"
 #import "BAScrollViewProxyDelegate.h"
+#import "BAMeshViewCell+Owner.h"
 
 // assume slightly over 2 * 1024 / 44 which is two rows
 #define kMaxReusableCellsCount 50
@@ -285,6 +286,7 @@
 - (CGFloat)heightForHeaderInSection:(NSInteger)section;
 - (CGFloat)heightForFooterInSection:(NSInteger)section;
 - (void)meshDidScroll;
+- (void)handleTapOnCell:(UIGestureRecognizer *)recognizer;
 
 @end
 
@@ -620,6 +622,11 @@
 						if (!cellView) {
 							[NSException raise:@"BAMeshViewError" format:@"Failed to create a cell"];
 						}
+						cellView.indexPath = indexPath;
+						UITapGestureRecognizer *tap = [[[UITapGestureRecognizer alloc] initWithTarget:self
+																							   action:@selector(handleTapOnCell:)]
+													   autorelease];
+						[cellView addGestureRecognizer:tap];
 						cellView.frame = cellFrame;
 						[self addSubview:cellView];
 						[sectionViews setView:cellView forCell:cell];
@@ -748,19 +755,27 @@
 	return [sectionData cellFrame:indexPath.meshCell];
 }
 
+- (NSIndexPath *)indexPathForCell:(BAMeshViewCell *)cell {
+	return cell.indexPath;
+}
+
+- (BAMeshViewCell *)cellAtIndexPath:(NSIndexPath *)indexPath {
+	NSArray *allSectionViews = [self sectionViews];
+	if (indexPath.meshSection < 0 || indexPath.meshSection >= [allSectionViews count]) {
+		return nil;
+	}
+	BAMeshSectionViews *sectionViews = [allSectionViews objectAtIndex:indexPath.meshSection];
+	if (indexPath.meshCell < 0 || indexPath.meshCell >= sectionViews.numberOfCells) {
+		return nil;
+	}
+	return [sectionViews cellView:indexPath.meshCell];
+}
+
 - (NSIndexPath *)indexPathForCellAtPoint:(CGPoint)point {
 	return nil;
 }
 
-- (NSIndexPath *)indexPathForCell:(BAMeshViewCell *)cell {
-	return nil;
-}
-
 - (NSArray *)indexPathsForRowsInRect:(CGRect)rect {
-	return nil;
-}
-
-- (UITableViewCell *)cellAtIndexPath:(NSIndexPath *)indexPath {
 	return nil;
 }
 
@@ -782,6 +797,49 @@
 }
 
 // Selection
+
+- (BAMeshViewCell *)willSelectCell:(BAMeshViewCell *)cell {
+	NSIndexPath *indexPath = [self indexPathForCell:cell];
+	NSIndexPath *proposedIndexPath = indexPath;
+	if (indexPath && [self.delegate respondsToSelector:@selector(meshView:willSelectCellAtIndexPath:)]) {
+		proposedIndexPath = [self.delegate meshView:self willSelectCellAtIndexPath:indexPath];
+	}
+	if (proposedIndexPath) {
+		if ([proposedIndexPath isEqual:indexPath]) {
+			return cell;
+		} else {
+			return [self cellAtIndexPath:proposedIndexPath];
+		}
+	} else {
+		return nil;
+	}
+}
+
+- (void)didSelectCell:(BAMeshViewCell *)cell {
+	NSIndexPath *indexPath = [self indexPathForCell:cell];
+	if (indexPath && [self.delegate respondsToSelector:@selector(meshView:didSelectCellAtIndexPath:)]) {
+		[self.delegate meshView:self didSelectCellAtIndexPath:indexPath];
+	}
+}
+
+- (void)handleTapOnCell:(UIGestureRecognizer *)recognizer {
+	if (![recognizer.view isKindOfClass:[BAMeshViewCell class]]) {
+		return;
+	}
+	BAMeshViewCell *cell = (BAMeshViewCell *)recognizer.view;
+	if (recognizer.state == UIGestureRecognizerStateBegan) {
+		cell.highlighted = YES;
+	} else if (recognizer.state == UIGestureRecognizerStateCancelled) {
+		cell.highlighted = NO;
+	} else if (recognizer.state == UIGestureRecognizerStateEnded) {
+		cell.highlighted = NO;
+		BAMeshViewCell *proposedCell = [self willSelectCell:cell];
+		if (proposedCell) {
+			proposedCell.selected = YES;
+			[self didSelectCell:proposedCell];
+		}
+	}
+}
 
 - (NSIndexPath *)indexPathForSelectedCell {
 	return nil;

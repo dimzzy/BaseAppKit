@@ -145,11 +145,11 @@ typedef enum {
 - (CGRect)rectForFooterInSection:(NSInteger)section;
 - (CGRect)rectForCellAtIndexPath:(NSIndexPath *)indexPath;
 
-- (NSIndexPath *)indexPathForCellAtPoint:(CGPoint)point;                        // returns nil if point is outside table
 - (NSIndexPath *)indexPathForCell:(BAMeshViewCell *)cell;                       // returns nil if cell is not visible
+- (BAMeshViewCell *)cellAtIndexPath:(NSIndexPath *)indexPath;                   // returns nil if cell is not visible or index path is out of range
+- (NSIndexPath *)indexPathForCellAtPoint:(CGPoint)point;                        // returns nil if point is outside table
 - (NSArray *)indexPathsForRowsInRect:(CGRect)rect;                              // returns nil if rect not valid 
 
-- (UITableViewCell *)cellAtIndexPath:(NSIndexPath *)indexPath;                  // returns nil if cell is not visible or index path is out of range
 - (NSArray *)visibleCells;
 - (NSArray *)indexPathsForVisibleCells;
 

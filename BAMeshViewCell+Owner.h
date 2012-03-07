@@ -27,63 +27,9 @@
  */
 
 #import "BAMeshViewCell.h"
-#import "BAMeshViewCell+Owner.h"
 
-@implementation BAMeshViewCell {
-@private
-	BOOL _highlighted;
-	BOOL _selected;
-	UIView *_contentView;
-}
+@interface BAMeshViewCell ()
 
-@synthesize reuseIdentifier = _reuseIdentifier;
-@synthesize indexPath = _indexPath;
-
-- (void)dealloc {
-	[_contentView release];
-    [_reuseIdentifier release];
-	[_indexPath release];
-    [super dealloc];
-}
-
-- (id)initWithReuseIdentifier:(NSString *)reuseIdentifier {
-    if ((self = [super init])) {
-		_reuseIdentifier = [reuseIdentifier copy];
-    }
-    return self;
-}
-
-- (void)prepareForReuse {
-}
-
-- (UIView *)contentView {
-	if (!_contentView) {
-		_contentView = [[UIView alloc] init];
-		_contentView.frame = self.bounds;
-		_contentView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-		[self addSubview:_contentView];
-	}
-	return _contentView;
-}
-
-- (BOOL)isSelected {
-	return _selected;
-}
-
-- (void)setSelected:(BOOL)selected {
-	[self setSelected:selected animated:NO];
-}
-
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-	_selected = selected;
-}
-
-- (BOOL)isHighlighted {
-	return _highlighted;
-}
-
-- (void)setHighlighted:(BOOL)highlighted {
-	_highlighted = highlighted;
-}
+@property(nonatomic, retain) NSIndexPath *indexPath;
 
 @end
