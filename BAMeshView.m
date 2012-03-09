@@ -406,25 +406,24 @@
 	return nil;
 }
 
-- (CGFloat)extrapolatedSpreadForRow:(NSRange)cells ofSize:(CGSize)rowSize {
+- (CGFloat)extrapolatedSpreadForRow:(NSRange)cells ofSize:(CGSize)rowSize maxWidth:(CGFloat)maxWidth {
 	if (cells.length < 2 || rowSize.width == 0) {
 		return 0;
 	}
 	const CGFloat avgCellWidth = rowSize.width / cells.length;
-	const CGFloat width = self.bounds.size.width;
-	const int availableCellsCount = (width - rowSize.width) / avgCellWidth;
-	return (width - rowSize.width - avgCellWidth * availableCellsCount) / (cells.length + availableCellsCount - 1);
+	const int availableCellsCount = (maxWidth - rowSize.width) / avgCellWidth;
+	return (maxWidth - rowSize.width - avgCellWidth * availableCellsCount) / (cells.length + availableCellsCount - 1);
 }
 
 - (void)layoutRow:(NSRange)cells
 		   ofSize:(CGSize)rowSize
+		 maxWidth:(CGFloat)maxWidth
 		inSection:(NSInteger)section
 			 data:(BAMeshSectionData *)sectionData
 {
 	if (cells.length == 0) {
 		return;
 	}
-	const CGFloat width = self.bounds.size.width;
 	BAMeshRowLayout rowLayout = [self rowsLayoutInSection:section];
 	const BOOL lastRow = (sectionData.numberOfCells == cells.location + cells.length);
 	if (!lastRow && (rowLayout == BAMeshRowLayoutSpreadCenter ||
@@ -439,27 +438,27 @@
 	switch (rowLayout) {
 		case BAMeshRowLayoutSpread:
 			if (cells.length > 1) {
-				d = (width - rowSize.width) / (cells.length - 1);
+				d = (maxWidth - rowSize.width) / (cells.length - 1);
 			} else {
 				d = 0;
 			}
 			x = 0;
 			break;
 		case BAMeshRowLayoutSpreadCenter:
-			d = [self extrapolatedSpreadForRow:cells ofSize:rowSize];
-			x = (width - rowSize.width) / 2;
+			d = [self extrapolatedSpreadForRow:cells ofSize:rowSize maxWidth:maxWidth];
+			x = (maxWidth - rowSize.width) / 2;
 			break;
 		case BAMeshRowLayoutSpreadLeft:
-			d = [self extrapolatedSpreadForRow:cells ofSize:rowSize];
+			d = [self extrapolatedSpreadForRow:cells ofSize:rowSize maxWidth:maxWidth];
 			x = 0;
 			break;
 		case BAMeshRowLayoutSpreadRight:
-			d = [self extrapolatedSpreadForRow:cells ofSize:rowSize];
-			x = width - rowSize.width - d * (cells.length - 1);
+			d = [self extrapolatedSpreadForRow:cells ofSize:rowSize maxWidth:maxWidth];
+			x = maxWidth - rowSize.width - d * (cells.length - 1);
 			break;
 		case BAMeshRowLayoutCenter:
 			d = 0;
-			x = (width - rowSize.width) / 2;
+			x = (maxWidth - rowSize.width) / 2;
 			break;
 		case BAMeshRowLayoutLeft:
 			d = 0;
@@ -467,12 +466,12 @@
 			break;
 		case BAMeshRowLayoutRight:
 			d = 0;
-			x = width - rowSize.width;
+			x = maxWidth - rowSize.width;
 			break;
 		case BAMeshRowLayoutFill:
 			d = 0;
 			x = 0;
-			w = width / cells.length;
+			w = maxWidth / cells.length;
 			break;
 	}
 	for (NSInteger cell = cells.location; cell < cells.location + cells.length; cell++) {
@@ -511,7 +510,7 @@
 		const NSInteger numberOfSections = [self numberOfSections];
 		_sectionData = [[NSMutableArray alloc] initWithCapacity:numberOfSections];
 		CGFloat y = 0;
-		const CGFloat width = self.bounds.size.width;
+		const CGFloat maxWidth = self.bounds.size.width - (self.contentInset.left + self.contentInset.right);
 		for (NSInteger section = 0; section < numberOfSections; section++) {
 			BAMeshSectionData *sectionData = [[[BAMeshSectionData alloc] init] autorelease];
 			sectionData.y = y;
@@ -525,9 +524,10 @@
 			NSInteger firstRowCell = 0;
 			for (NSInteger cell = firstRowCell; cell < sectionData.numberOfCells; cell++) {
 				const CGSize cellSize = [self sizeForCell:cell inSection:section];
-				if (cell > firstRowCell && (x + cellSize.width) > width) {
+				if (cell > firstRowCell && (x + cellSize.width) > maxWidth) {
 					[self layoutRow:NSMakeRange(firstRowCell, cell - firstRowCell)
 							 ofSize:CGSizeMake(x, rowHeight)
+						   maxWidth:maxWidth
 						  inSection:section
 							   data:sectionData];
 					y += rowHeight;
@@ -544,6 +544,7 @@
 			if (sectionData.numberOfCells > firstRowCell) {
 				[self layoutRow:NSMakeRange(firstRowCell, sectionData.numberOfCells - firstRowCell)
 						 ofSize:CGSizeMake(x, rowHeight)
+					   maxWidth:maxWidth
 					  inSection:section
 						   data:sectionData];
 			}
@@ -552,7 +553,7 @@
 //			NSLog(@"%@", sectionData);
 			y += sectionData.footerHeight;
 		}
-		self.contentSize = CGSizeMake(width, y);
+		self.contentSize = CGSizeMake(maxWidth, y);
 //		NSLog(@"Content Size %@", NSStringFromCGSize(self.contentSize));
 	}
 	return _sectionData;
