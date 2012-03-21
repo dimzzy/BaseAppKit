@@ -29,7 +29,12 @@
 #import "BAPager.h"
 #import "UIView+BACookie.h"
 
-@implementation BAPager
+@implementation BAPager {
+@private
+	UIScrollView *_scrollView;
+	NSUInteger _numberOfPages;
+	NSInteger _currentPageIndex;
+}
 
 @synthesize delegate = _delegate;
 
@@ -221,12 +226,7 @@
 		localIndex--;
 	}
 	self.currentPageIndex += localIndex;
-}
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-	if ([self.delegate respondsToSelector:@selector(scrollViewDidScroll:)]) {
-		[self.delegate scrollViewDidScroll:scrollView];
-	}
+	[super scrollViewDidEndDecelerating:scrollView];
 }
 
 @end

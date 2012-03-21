@@ -27,35 +27,42 @@
  */
 
 #import <UIKit/UIKit.h>
+#import "BAScrollViewProxyDelegate.h"
 
 @class BAPager;
 
 
 @protocol BAPagerDelegate <UIScrollViewDelegate>
 
+// Create or reuse a view that will serve as a page; similar to tableView:cellForRowAtIndexPath: of table's data source
 - (UIView *)pager:(BAPager *)pager pageAtIndex:(NSInteger)index;
 
 @optional
+
+// Index at which page will be inserted in scroll view; 0 if not implemented
+// You could use it to control z-order of the pages
 - (NSInteger)pager:(BAPager *)pager orderOfPageAtIndex:(NSInteger)index;
+
+// Called when pager removes the page; good place to update your controller for the page
 - (void)pager:(BAPager *)pager dropPageAtIndex:(NSInteger)index;
+
+// Update current page indicators or what you have
 - (void)pager:(BAPager *)pager currentPageDidChangeTo:(NSInteger)index;
 
 @end
 
 
-@interface BAPager : NSObject <UIScrollViewDelegate> {
-@private
-	UIScrollView *_scrollView;
-	NSUInteger _numberOfPages;
-	NSInteger _currentPageIndex;
-}
+@interface BAPager : BAScrollViewProxyDelegate
 
 @property(nonatomic, retain) UIScrollView *scrollView;
 @property(nonatomic, assign) NSUInteger numberOfPages;
 @property(nonatomic, assign) NSInteger currentPageIndex;
 @property(nonatomic, assign) id<BAPagerDelegate> delegate;
 
+// Similar to reloadData of table view
 - (void)reloadPages;
+
+// You should call this method when scroll view bounds change, typically after rotation
 - (void)layoutPages;
 
 @end
