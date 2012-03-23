@@ -34,7 +34,17 @@
 #define kPillSpacing 1
 #define kInactiveAlpha 0.3
 
-@implementation BAPageControl
+@implementation BAPageControl {
+@private
+	NSInteger _numberOfPages;
+	NSInteger _currentPage;
+	NSInteger _displayedPage;
+	BOOL _hidesForSinglePage;
+	BAPageControlMode _primaryMode;
+	BAPageControlMode _fitMode;
+	BAPageControlAlignment _alignment;
+	CGFloat _inset;
+}
 
 @synthesize defersCurrentPageDisplay = _defersCurrentPageDisplay;
 @synthesize activeColor = _activeColor;

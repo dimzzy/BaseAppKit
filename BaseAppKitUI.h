@@ -8,6 +8,7 @@
 #include <BaseAppKit/BAPager.h>
 #include <BaseAppKit/BARemoteImageView.h>
 #include <BaseAppKit/BAPageControl.h>
+#include <BaseAppKit/BACustomPageControl.h>
 #include <BaseAppKit/BAGroupedPageControl.h>
 #include <BaseAppKit/BAProgressLayer.h>
 #include <BaseAppKit/BAProgressView.h>
