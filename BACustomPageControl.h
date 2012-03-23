@@ -27,12 +27,7 @@
  */
 
 #import <UIKit/UIKit.h>
-
-typedef enum {
-	BAPageControlAlignmentCenter, // default
-	BAPageControlAlignmentLeft,
-	BAPageControlAlignmentRight
-} BAPageControlAlignment;
+#import "BAPageControl.h"
 
 @interface BACustomPageControl : UIControl
 

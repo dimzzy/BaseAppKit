@@ -53,7 +53,7 @@
 	NSInteger _displayedPage;
 	BOOL _hidesForSinglePage;
 	BAGroupedPageControlMode _primaryMode;
-	BAGroupedPageControlAlignment _alignment;
+	BAPageControlAlignment _alignment;
 	CGFloat _inset;
 	NSUInteger _pagesPerGroup;
 }
@@ -65,7 +65,7 @@
 - (void)setupView {
 	self.contentMode = UIViewContentModeRedraw;
 	self.primaryMode = BAGroupedPageControlModeDots;
-	self.alignment = BAGroupedPageControlAlignmentCenter;
+	self.alignment = BAPageControlAlignmentCenter;
 	//self.inset = 6;
 }
 
@@ -176,11 +176,11 @@
 	}
 }
 
-- (BAGroupedPageControlAlignment)alignment {
+- (BAPageControlAlignment)alignment {
 	return _alignment;
 }
 
-- (void)setAlignment:(BAGroupedPageControlAlignment)alignment {
+- (void)setAlignment:(BAPageControlAlignment)alignment {
 	if (_alignment == alignment) {
 		return;
 	}
@@ -261,13 +261,13 @@
 	CGSize size = [self sizeForDisplayedGroup];
 	CGFloat left;
 	switch (self.alignment) {
-		case BAGroupedPageControlAlignmentLeft:
+		case BAPageControlAlignmentLeft:
 			left = self.inset;
 			break;
-		case BAGroupedPageControlAlignmentCenter:
+		case BAPageControlAlignmentCenter:
 			left = (self.bounds.size.width - size.width) / 2;
 			break;
-		case BAGroupedPageControlAlignmentRight:
+		case BAPageControlAlignmentRight:
 			left = (self.bounds.size.width - size.width - self.inset);
 			break;
 	}
@@ -320,13 +320,13 @@
 	CGSize size = [self sizeForDisplayedGroup];
 	CGFloat left;
 	switch (self.alignment) {
-		case BAGroupedPageControlAlignmentLeft:
+		case BAPageControlAlignmentLeft:
 			left = self.inset;
 			break;
-		case BAGroupedPageControlAlignmentCenter:
+		case BAPageControlAlignmentCenter:
 			left = (self.bounds.size.width - size.width) / 2;
 			break;
-		case BAGroupedPageControlAlignmentRight:
+		case BAPageControlAlignmentRight:
 			left = (self.bounds.size.width - size.width - self.inset);
 			break;
 	}

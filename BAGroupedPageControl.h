@@ -27,17 +27,12 @@
  */
 
 #import <UIKit/UIKit.h>
+#import "BAPageControl.h"
 
 typedef enum {
 	BAGroupedPageControlModeDots = 0, // like system control
 	BAGroupedPageControlModeBlocks,   // squares instead of dots
 } BAGroupedPageControlMode;
-
-typedef enum {
-	BAGroupedPageControlAlignmentCenter, // default
-	BAGroupedPageControlAlignmentLeft,
-	BAGroupedPageControlAlignmentRight
-} BAGroupedPageControlAlignment;
 
 @interface BAGroupedPageControl : UIControl
 
@@ -52,7 +47,7 @@ typedef enum {
 @property(nonatomic, retain) UIColor *inactiveColor; // default is semitransparent active color
 
 @property(nonatomic, assign) BAGroupedPageControlMode primaryMode; // dots is default
-@property(nonatomic, assign) BAGroupedPageControlAlignment alignment;
+@property(nonatomic, assign) BAPageControlAlignment alignment;
 
 @property(nonatomic, assign) CGFloat inset; // for left/right aligned modes
 
