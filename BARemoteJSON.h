@@ -48,14 +48,25 @@ extern NSInteger const BARemoteJSONMaxErrorCode;
 extern NSString * const BARemoteJSONErrorDomain;
 extern NSString * const BARemoteJSONErrorDataKey;
 
-typedef void (^BARemoteJSONCallback)(id result, NSError *error);
+// Normally backend replies with some result and no errors (nils).
+// If a paticular method fails to execute then it's callback is called once with methodError.
+// All other errors like connection failure, invalid JSON or invalid response stucture are passed as
+// invocationError to all callbacks in the batch and they could be called several times.
+// IOW when we can identify method which has failed then error is passed as methodError
+// otherwise error passed as invocationError (to all callbacks in the batch).
+typedef void (^BARemoteJSONCallback)(id result, NSError *methodError, NSError *invocationError);
 
 @interface BARemoteJSON : NSObject <BADataLoaderDelegate>
 
 // MUST override to enable communication.
 - (NSURLRequest *)remoteJSON:(BARemoteJSON *)remoteJSON requestWithRPCString:(NSString *)RPCString;
 
+// All method invocations made within the block will be batched.
+// Nested invocations of this method execute within the current batch.
+- (void)batchCalls:(void (^)())block;
+
 // Clients call methods defined below to communicate with the backend.
+// Completion block can't be nil.
 - (void)invokeMethod:(NSString *)methodName completion:(BARemoteJSONCallback)completion;
 - (void)invokeMethod:(NSString *)methodName withParameters:(id)parameters completion:(BARemoteJSONCallback)completion;
 - (void)notifyMethod:(NSString *)methodName;

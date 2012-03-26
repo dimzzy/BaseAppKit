@@ -36,8 +36,14 @@ NSInteger const BARemoteJSONMaxErrorCode = -32000;
 NSString * const BARemoteJSONErrorDomain = @"BARemoteJSON";
 NSString * const BARemoteJSONErrorDataKey = @"BARemoteJSONErrorData";
 
-#define kInvocationIdKey @"invocationId"
-#define kCallbackKey @"callback"
+
+// Key for data loader to keep invocation ids and completion blocks
+#define kCallbacksKey @"callbacks"
+
+// Keys for local thread storage to keep serialized rpc calls and completion blocks
+#define kBatchedCallsKey @"baseappkit.batchedCalls"
+#define kBatchedCallbacksKey @"baseappkit.batchedCallbacks"
+
 
 @implementation BARemoteJSON {
 @private
@@ -52,6 +58,71 @@ NSString * const BARemoteJSONErrorDataKey = @"BARemoteJSONErrorData";
 
 - (int32_t)nextInvocationId {
 	return OSAtomicIncrement32(&_nextInvocationId);
+}
+
+- (NSMutableArray *)batchedCalls {
+	return [[NSThread currentThread].threadDictionary objectForKey:kBatchedCallsKey];
+}
+
+- (void)setBatchedCalls:(NSMutableArray *)batchedCalls {
+	if (batchedCalls) {
+		[[NSThread currentThread].threadDictionary setObject:batchedCalls forKey:kBatchedCallsKey];
+	} else {
+		[[NSThread currentThread].threadDictionary removeObjectForKey:kBatchedCallsKey];
+	}
+}
+
+- (NSMutableDictionary *)batchedCallbacks {
+	return [[NSThread currentThread].threadDictionary objectForKey:kBatchedCallbacksKey];
+}
+
+- (void)setBatchedCallbacks:(NSMutableDictionary *)batchedCallbacks {
+	if (batchedCallbacks) {
+		[[NSThread currentThread].threadDictionary setObject:batchedCallbacks forKey:kBatchedCallbacksKey];
+	} else {
+		[[NSThread currentThread].threadDictionary removeObjectForKey:kBatchedCallbacksKey];
+	}
+}
+
+- (void)batchCalls:(void (^)())block {
+	NSMutableArray *batchedCalls = [self batchedCalls]; // [rpc as serialized json:NSString]
+	if (batchedCalls) {
+		block();
+		return;
+	}
+	batchedCalls = [NSMutableArray array];
+	[self setBatchedCalls:batchedCalls];
+	NSMutableDictionary *batchedCallbacks = [self batchedCallbacks]; // invocationId:NSNumber -> callback:block
+	if (!batchedCallbacks) {
+		batchedCallbacks = [NSMutableDictionary dictionary];
+		[self setBatchedCallbacks:batchedCallbacks];
+	}
+	@try {
+		block();
+		if ([batchedCalls count] > 0) {
+			__block NSMutableString *RPCString = [NSMutableString string];
+			[batchedCalls enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+				if ([RPCString length] == 0) {
+					[RPCString appendString:@"["];
+				} else {
+					[RPCString appendString:@","];
+				}
+				[RPCString appendString:obj];
+			}];
+			if ([RPCString length] > 0) {
+				[RPCString appendString:@"]"];
+			}
+			NSURLRequest *request = [self remoteJSON:self requestWithRPCString:RPCString];
+			BADataLoader *loader = [[[BADataLoader alloc] initWithRequest:request] autorelease];
+			loader.delegate = self;
+			[loader.userInfo setObject:batchedCallbacks forKey:kCallbacksKey];
+			[loader startIgnoreCache:NO];
+		}
+	}
+	@finally {
+		[self setBatchedCalls:nil];
+		[self setBatchedCallbacks:nil];
+	}
 }
 
 + (void)validateMethodName:(NSString *)methodName {
@@ -75,19 +146,32 @@ NSString * const BARemoteJSONErrorDataKey = @"BARemoteJSONErrorData";
 		NSError *error = nil;
 		NSString *parametersString = [BARuntime serializeJSONToString:parameters error:&error];
 		if (!parametersString) {
-			completion(nil, error);
+			completion(nil, error, nil);
 			return;
 		}
 		[RPCString appendString:@",\"params\":"];
 		[RPCString appendString:parametersString];
 	}
 	[RPCString appendString:@"}"];
-	NSURLRequest *request = [self remoteJSON:self requestWithRPCString:RPCString];
-	BADataLoader *loader = [[[BADataLoader alloc] initWithRequest:request] autorelease];
-	loader.delegate = self;
-	[loader.userInfo setObject:[NSNumber numberWithInt:invocationId] forKey:kInvocationIdKey];
-	[loader.userInfo setObject:completion forKey:kCallbackKey];
-	[loader startIgnoreCache:NO];
+	
+	NSMutableArray *batchedCalls = [self batchedCalls];
+	if (batchedCalls) {
+		[batchedCalls addObject:RPCString];
+		NSMutableDictionary *batchedCallbacks = [self batchedCallbacks];
+		completion = Block_copy(completion);
+		[batchedCallbacks setObject:completion forKey:[NSNumber numberWithInt:invocationId]];
+		Block_release(completion);
+	} else {
+		NSURLRequest *request = [self remoteJSON:self requestWithRPCString:RPCString];
+		BADataLoader *loader = [[[BADataLoader alloc] initWithRequest:request] autorelease];
+		loader.delegate = self;
+		completion = Block_copy(completion);
+		NSDictionary *callbacks = [NSDictionary dictionaryWithObject:completion
+															  forKey:[NSNumber numberWithInt:invocationId]];
+		Block_release(completion);
+		[loader.userInfo setObject:callbacks forKey:kCallbacksKey];
+		[loader startIgnoreCache:NO];
+	}
 }
 
 - (void)notifyMethod:(NSString *)methodName {
@@ -108,90 +192,111 @@ NSString * const BARemoteJSONErrorDataKey = @"BARemoteJSONErrorData";
 		[RPCString appendString:parametersString];
 	}
 	[RPCString appendString:@"}"];
-	NSURLRequest *request = [self remoteJSON:self requestWithRPCString:RPCString];
-	BADataLoader *loader = [[[BADataLoader alloc] initWithRequest:request] autorelease];
-	loader.cache = nil;
-	[loader startIgnoreCache:YES];
+	
+	NSMutableArray *batchedCalls = [self batchedCalls];
+	if (batchedCalls) {
+		[batchedCalls addObject:RPCString];
+	} else {
+		NSURLRequest *request = [self remoteJSON:self requestWithRPCString:RPCString];
+		BADataLoader *loader = [[[BADataLoader alloc] initWithRequest:request] autorelease];
+		loader.cache = nil;
+		[loader startIgnoreCache:YES];
+	}
+}
+
+- (void)reportInvocationError:(NSError *)error callbacks:(NSDictionary *)callbacks {
+	if (!error) {
+		error = [NSError errorWithDomain:BARemoteJSONErrorDomain code:BARemoteJSONInternalError userInfo:nil];
+	}
+	[callbacks enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+		BARemoteJSONCallback completion = obj;
+		completion(nil, nil, error);
+	}];
+}
+
+- (void)handleResponse:(id)JSONValue callbacks:(NSDictionary *)callbacks {
+	NSError *error = nil;
+	if (![JSONValue isKindOfClass:[NSDictionary class]]) {
+		[self reportInvocationError:nil callbacks:callbacks];
+		return;
+	}
+	id versionObj = [JSONValue objectForKey:@"jsonrpc"];
+	if (![@"2.0" isEqual:versionObj]) {
+		[self reportInvocationError:nil callbacks:callbacks];
+		return;
+	}
+	id invocationIdObj = [JSONValue objectForKey:@"id"];
+	if (![invocationIdObj isKindOfClass:[NSNumber class]] && ![invocationIdObj isKindOfClass:[NSString class]]) {
+		[self reportInvocationError:nil callbacks:callbacks];
+		return;
+	}
+	int32_t invocationId = [invocationIdObj intValue];
+	BARemoteJSONCallback completion = [callbacks objectForKey:[NSNumber numberWithInt:invocationId]];
+	if (!completion) {
+		[self reportInvocationError:nil callbacks:callbacks];
+		return;
+	}
+	
+	// Now we know the particular invocation and can report error for a particular method
+	
+	id errorObj = [JSONValue objectForKey:@"error"];
+	if (errorObj) {
+		if (![errorObj isKindOfClass:[NSDictionary class]]) {
+			error = [NSError errorWithDomain:BARemoteJSONErrorDomain code:BARemoteJSONInternalError userInfo:nil];
+			completion(nil, error, nil);
+			return;
+		}
+		id errorCodeObj = [errorObj objectForKey:@"code"];
+		if (![errorCodeObj isKindOfClass:[NSNumber class]]) {
+			error = [NSError errorWithDomain:BARemoteJSONErrorDomain code:BARemoteJSONInternalError userInfo:nil];
+			completion(nil, error, nil);
+			return;
+		}
+		id errorMessageObj = [errorObj objectForKey:@"message"];
+		if (errorMessageObj && ![errorMessageObj isKindOfClass:[NSString class]]) {
+			error = [NSError errorWithDomain:BARemoteJSONErrorDomain code:BARemoteJSONInternalError userInfo:nil];
+			completion(nil, error, nil);
+			return;
+		}
+		id errorDataObj = [errorObj objectForKey:@"data"];
+		NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithCapacity:2];
+		if (errorMessageObj) {
+			[userInfo setObject:errorMessageObj forKey:NSLocalizedDescriptionKey];
+		}
+		if (errorDataObj) {
+			[userInfo setObject:errorDataObj forKey:BARemoteJSONErrorDataKey];
+		}
+		error = [NSError errorWithDomain:BARemoteJSONErrorDomain code:[errorCodeObj intValue] userInfo:userInfo];
+		completion(nil, error, nil);
+		return;
+	}
+	id result = [JSONValue objectForKey:@"result"];
+	completion(result, nil, nil);
 }
 
 - (void)loader:(BADataLoader *)loader didFinishLoadingData:(NSData *)data fromCache:(BOOL)fromCache {
-	BARemoteJSONCallback completion = [loader.userInfo objectForKey:kCallbackKey];
-	if (completion) {
-		NSError *error = nil;
-		id JSONValue = [BARuntime parseJSONData:data error:&error];
-		if (!JSONValue) {
-			completion(nil, error);
-			return;
+	NSDictionary *callbacks = [loader.userInfo objectForKey:kCallbacksKey];
+	NSError *error = nil;
+	id JSONValue = [BARuntime parseJSONData:data error:&error];
+	if (!JSONValue) {
+		[self reportInvocationError:error callbacks:callbacks];
+		return;
+	}
+//	NSLog(@"response: %@", JSONValue);
+	if ([JSONValue isKindOfClass:[NSDictionary class]]) {
+		// Response to a single call
+		[self handleResponse:JSONValue callbacks:callbacks];
+	} else if ([JSONValue isKindOfClass:[NSArray class]]) {
+		// Response to a batch call
+		for (id JSONResponse in JSONValue) {
+			[self handleResponse:JSONResponse callbacks:callbacks];
 		}
-		if (![JSONValue isKindOfClass:[NSDictionary class]]) {
-			error = [NSError errorWithDomain:BARemoteJSONErrorDomain code:BARemoteJSONInternalError userInfo:nil];
-			completion(nil, error);
-			return;
-		}
-		id versionObj = [JSONValue objectForKey:@"jsonrpc"];
-		if (![@"2.0" isEqual:versionObj]) {
-			error = [NSError errorWithDomain:BARemoteJSONErrorDomain code:BARemoteJSONInternalError userInfo:nil];
-			completion(nil, error);
-			return;
-		}
-		id errorObj = [JSONValue objectForKey:@"error"];
-		if (errorObj) {
-			if (![errorObj isKindOfClass:[NSDictionary class]]) {
-				error = [NSError errorWithDomain:BARemoteJSONErrorDomain code:BARemoteJSONInternalError userInfo:nil];
-				completion(nil, error);
-				return;
-			}
-			id errorCodeObj = [errorObj objectForKey:@"code"];
-			if (![errorCodeObj isKindOfClass:[NSNumber class]]) {
-				error = [NSError errorWithDomain:BARemoteJSONErrorDomain code:BARemoteJSONInternalError userInfo:nil];
-				completion(nil, error);
-				return;
-			}
-			id errorMessageObj = [errorObj objectForKey:@"message"];
-			if (errorMessageObj && ![errorMessageObj isKindOfClass:[NSString class]]) {
-				error = [NSError errorWithDomain:BARemoteJSONErrorDomain code:BARemoteJSONInternalError userInfo:nil];
-				completion(nil, error);
-				return;
-			}
-			id errorDataObj = [errorObj objectForKey:@"data"];
-			NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithCapacity:2];
-			if (errorMessageObj) {
-				[userInfo setObject:errorMessageObj forKey:NSLocalizedDescriptionKey];
-			}
-			if (errorDataObj) {
-				[userInfo setObject:errorDataObj forKey:BARemoteJSONErrorDataKey];
-			}
-			error = [NSError errorWithDomain:BARemoteJSONErrorDomain code:[errorCodeObj intValue] userInfo:userInfo];
-			completion(nil, error);
-			return;
-		}
-		id invocationIdObj = [JSONValue objectForKey:@"id"];
-		if (![invocationIdObj isKindOfClass:[NSNumber class]]) {
-			error = [NSError errorWithDomain:BARemoteJSONErrorDomain code:BARemoteJSONInternalError userInfo:nil];
-			completion(nil, error);
-			return;
-		}
-		int32_t invocationId = [invocationIdObj intValue];
-		int32_t expectedInvocationId = -1;
-		id expectedInvocationIdObj = [loader.userInfo objectForKey:kInvocationIdKey];
-		if ([expectedInvocationIdObj isKindOfClass:[NSNumber class]]) {
-			expectedInvocationId = [expectedInvocationIdObj intValue];
-		}
-		if (invocationId != expectedInvocationId) {
-			error = [NSError errorWithDomain:BARemoteJSONErrorDomain code:BARemoteJSONInternalError userInfo:nil];
-			completion(nil, error);
-			return;
-		}
-		id result = [JSONValue objectForKey:@"result"];
-		completion(result, nil);
 	}
 }
 
 - (void)loader:(BADataLoader *)loader didFailWithError:(NSError *)error {
-	BARemoteJSONCallback completion = [loader.userInfo objectForKey:kCallbackKey];
-	if (completion) {
-		completion(nil, error);
-	}
+	NSDictionary *callbacks = [loader.userInfo objectForKey:kCallbacksKey];
+	[self reportInvocationError:error callbacks:callbacks];
 }
 
 @end
