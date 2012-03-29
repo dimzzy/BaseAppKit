@@ -127,9 +127,11 @@ typedef enum {
 
 @property(nonatomic, assign) IBOutlet id<BAMeshViewDataSource> dataSource;
 @property(nonatomic, assign) IBOutlet id<BAMeshViewDelegate> delegate;
-@property(nonatomic) CGSize cellSize;               // will return the default value (44x44) if unset
-@property(nonatomic) CGFloat sectionHeaderHeight;   // will return the default value (0) if unset
-@property(nonatomic) CGFloat sectionFooterHeight;   // will return the default value (0) if unset
+@property(nonatomic) CGSize cellSize;                // will return the default value (44x44) if unset
+@property(nonatomic) CGFloat sectionHeaderHeight;    // will return the default value (0) if unset
+@property(nonatomic) CGFloat sectionFooterHeight;    // will return the default value (0) if unset
+@property(nonatomic, retain) UIView *meshHeaderView; // accessory view for above row content. default is nil. not to be confused with section header
+@property(nonatomic, retain) UIView *meshFooterView; // accessory view below content. default is nil. not to be confused with section footer
 
 // Data
 

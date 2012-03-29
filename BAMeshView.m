@@ -295,9 +295,13 @@
 @private
 	id<BAMeshViewDataSource> _dataSource;
 	BAMeshViewProxyDelegate *_proxyDelegate; // retained; intercepts didScroll events
+	CGFloat _meshHeaderHeight;
+	CGFloat _meshFooterHeight;
 	NSMutableArray *_sectionData; // all data for layout
 	NSMutableArray *_sectionViews; // description of currently added views
 	NSMutableArray *_reusableCells;
+	UIView *_meshHeaderView;
+	UIView *_meshFooterView;
 }
 
 @synthesize cellSize = _cellSize;
@@ -309,6 +313,8 @@
 	[_sectionData release];
 	[_sectionViews release];
 	[_reusableCells release];
+	[_meshHeaderView release];
+	[_meshFooterView release];
     [super dealloc];
 }
 
@@ -509,7 +515,7 @@
 //		NSLog(@"%s", __func__);
 		const NSInteger numberOfSections = [self numberOfSections];
 		_sectionData = [[NSMutableArray alloc] initWithCapacity:numberOfSections];
-		CGFloat y = 0;
+		CGFloat y = _meshHeaderHeight;
 		const CGFloat maxWidth = self.bounds.size.width - (self.contentInset.left + self.contentInset.right);
 		for (NSInteger section = 0; section < numberOfSections; section++) {
 			BAMeshSectionData *sectionData = [[[BAMeshSectionData alloc] init] autorelease];
@@ -553,6 +559,7 @@
 //			NSLog(@"%@", sectionData);
 			y += sectionData.footerHeight;
 		}
+		y += _meshFooterHeight;
 		self.contentSize = CGSizeMake(maxWidth, y);
 //		NSLog(@"Content Size %@", NSStringFromCGSize(self.contentSize));
 	}
@@ -599,7 +606,7 @@
 						}
 						if (sectionViews.headerView) {
 							sectionViews.headerView.frame = headerRect;
-							[self addSubview:sectionViews.headerView];
+							[self insertSubview:sectionViews.headerView atIndex:0];
 						} else {
 							sectionViews.hasHeader = NO;
 						}
@@ -629,7 +636,7 @@
 													   autorelease];
 						[cellView addGestureRecognizer:tap];
 						cellView.frame = cellFrame;
-						[self addSubview:cellView];
+						[self insertSubview:cellView atIndex:0];
 						[sectionViews setView:cellView forCell:cell];
 					}
 				} else {
@@ -656,7 +663,7 @@
 						}
 						if (sectionViews.footerView) {
 							sectionViews.footerView.frame = footerRect;
-							[self addSubview:sectionViews.footerView];
+							[self insertSubview:sectionViews.footerView atIndex:0];
 						} else {
 							sectionViews.hasFooter = NO;
 						}
@@ -677,16 +684,70 @@
 }
 
 - (void)layoutSubviews {
+	CGFloat width = self.bounds.size.width;
+	width -= (self.contentInset.left + self.contentInset.right);
+	if (self.meshHeaderView) {
+		_meshHeaderHeight = [self.meshHeaderView sizeThatFits:CGSizeMake(width, HUGE_VALF)].height;
+	} else {
+		_meshHeaderHeight = 0;
+	}
+	if (self.meshFooterView) {
+		_meshFooterHeight = [self.meshFooterView sizeThatFits:CGSizeMake(width, HUGE_VALF)].height;
+	} else {
+		_meshFooterHeight = 0;
+	}
 	
 	// update content size when view frame changes
 	[_sectionData release];
 	_sectionData = nil;
 	
 	[self updateVisibleCells];
+	
+	if (self.meshHeaderView) {
+		self.meshHeaderView.frame = CGRectMake(0, 0, width, _meshHeaderHeight);
+	}
+	if (self.meshFooterView) {
+		const CGFloat y = self.contentSize.height - _meshFooterHeight;
+		self.meshFooterView.frame = CGRectMake(0, y, width, _meshFooterHeight);
+	}
 }
 
 - (void)meshDidScroll {
 	[self updateVisibleCells];
+}
+
+- (UIView *)meshHeaderView {
+	return _meshHeaderView;
+}
+
+- (void)setMeshHeaderView:(UIView *)view {
+	if (_meshHeaderView == view) {
+		return;
+	}
+	[_meshHeaderView removeFromSuperview];
+	[_meshHeaderView release];
+	_meshHeaderView = [view retain];
+	if (view) {
+		[self insertSubview:view atIndex:0];
+	}
+	[self setNeedsLayout];
+}
+
+- (UIView *)meshFooterView {
+	return _meshFooterView;
+}
+
+- (void)setMeshFooterView:(UIView *)view {
+	if (_meshFooterView == view) {
+		return;
+	}
+	[_meshFooterView removeFromSuperview];
+	[_meshFooterView release];
+	_meshFooterView = [view retain];
+	if (view) {
+		[self insertSubview:view atIndex:0];
+	}
+	[self setNeedsLayout];
 }
 
 - (NSInteger)numberOfSections {
