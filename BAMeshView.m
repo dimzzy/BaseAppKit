@@ -310,6 +310,7 @@
 
 - (void)dealloc {
 	[_proxyDelegate release];
+	_proxyDelegate = nil;
 	[_sectionData release];
 	[_sectionViews release];
 	[_reusableCells release];
