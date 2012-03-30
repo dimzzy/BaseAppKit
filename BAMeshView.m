@@ -171,6 +171,7 @@
 		return;
 	}
 	for (NSUInteger cell = 0; cell < _numberOfCells; cell++) {
+		[_cellViews[cell] removeFromSuperview];
 		[_cellViews[cell] release];
 	}
 	free(_cellViews);
@@ -178,9 +179,8 @@
 }
 
 - (void)dealloc {
-	self.headerView = nil;
-	self.footerView = nil;
-	[self freeCells];
+	[self removeViewsWithReusableCells:nil];
+	free(_cellViews);
     [super dealloc];
 }
 
@@ -213,6 +213,7 @@
 	if (_cellViews[cell] == view) {
 		return;
 	}
+	[_cellViews[cell] removeFromSuperview];
 	[_cellViews[cell] release];
 	_cellViews[cell] = [view retain];
 }
