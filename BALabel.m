@@ -59,6 +59,10 @@ CGPathRef CGPathCreateRoundBezel(CGRect bounds, CGFloat lineWidth) {
 	BALabelBezel _bezel;
 	CGFloat _bezelLineWidth;
 	UIColor *_bezelColor;
+	
+	CGFloat _fitMaxWidth;
+	CGFloat _fitMaxHeight;
+	int _fit;
 }
 
 - (void)dealloc {
@@ -129,6 +133,10 @@ CGPathRef CGPathCreateRoundBezel(CGRect bounds, CGFloat lineWidth) {
 
 - (CGRect)textRectForBounds:(CGRect)bounds limitedToNumberOfLines:(NSInteger)numberOfLines {
 	CGRect r = bounds;
+	if (_fit > 0) {
+		r.size.width = _fitMaxWidth;
+		r.size.height = _fitMaxHeight;
+	}
 	const CGFloat wd = self.textInsets.left + self.textInsets.right;
 	const CGFloat hd = self.textInsets.top + self.textInsets.bottom;
 	r.size.width -= wd;
@@ -196,8 +204,18 @@ CGPathRef CGPathCreateRoundBezel(CGRect bounds, CGFloat lineWidth) {
 
 - (void)sizeToFitInWidthMaxHeight:(CGFloat)maxHeight {
 	const CGFloat w = self.bounds.size.width;
+
+	_fit++;
+	_fitMaxWidth = w;
+	_fitMaxHeight = maxHeight;
+	
 	CGSize s = [self sizeThatFits:CGSizeMake(w, maxHeight)];
-	self.bounds = CGRectMake(0, 0, w, s.height);
+	
+	_fit--;
+	
+	CGRect frame = self.frame;
+	frame.size.height = s.height;
+	self.frame = frame;
 }
 
 @end
