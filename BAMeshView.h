@@ -154,6 +154,7 @@ typedef enum {
 
 - (NSArray *)visibleCells;
 - (NSArray *)indexPathsForVisibleCells;
+- (NSIndexSet *)indexesOfVisibleSections;
 
 - (void)scrollToRowAtIndexPath:(NSIndexPath *)indexPath atScrollPosition:(UITableViewScrollPosition)scrollPosition animated:(BOOL)animated;
 - (void)scrollToNearestSelectedRowAtScrollPosition:(UITableViewScrollPosition)scrollPosition animated:(BOOL)animated;

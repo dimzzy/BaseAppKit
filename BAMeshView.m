@@ -729,8 +729,13 @@
 	[_meshHeaderView removeFromSuperview];
 	[_meshHeaderView release];
 	_meshHeaderView = [view retain];
+	CGFloat width = self.bounds.size.width;
+	width -= (self.contentInset.left + self.contentInset.right);
 	if (view) {
 		[self insertSubview:view atIndex:0];
+		_meshHeaderHeight = [self.meshHeaderView sizeThatFits:CGSizeMake(width, HUGE_VALF)].height;
+	} else {
+		_meshHeaderHeight = 0;
 	}
 	[self setNeedsLayout];
 }
@@ -746,8 +751,13 @@
 	[_meshFooterView removeFromSuperview];
 	[_meshFooterView release];
 	_meshFooterView = [view retain];
+	CGFloat width = self.bounds.size.width;
+	width -= (self.contentInset.left + self.contentInset.right);
 	if (view) {
 		[self insertSubview:view atIndex:0];
+		_meshFooterHeight = [self.meshFooterView sizeThatFits:CGSizeMake(width, HUGE_VALF)].height;
+	} else {
+		_meshFooterHeight = 0;
 	}
 	[self setNeedsLayout];
 }
@@ -836,28 +846,51 @@
 }
 
 - (NSIndexPath *)indexPathForCellAtPoint:(CGPoint)point {
+	// Not Implemented Yet
 	return nil;
 }
 
 - (NSArray *)indexPathsForRowsInRect:(CGRect)rect {
+	// Not Implemented Yet
 	return nil;
 }
 
 - (NSArray *)visibleCells {
+	// Not Implemented Yet
 	return nil;
 }
 
 - (NSArray *)indexPathsForVisibleCells {
+	// Not Implemented Yet
 	return nil;
+}
+
+- (NSIndexSet *)indexesOfVisibleSections {
+	[self sectionData]; // updates content size
+	NSMutableIndexSet *sections = [NSMutableIndexSet indexSet];
+	const CGRect contentRect = CGRectMake(0, self.contentOffset.y,
+										  self.contentSize.width,
+										  MIN(self.contentSize.height, self.bounds.size.height));
+	const NSInteger numberOfSections = [self numberOfSections];
+	for (NSInteger section = 0; section < numberOfSections; section++) {
+		BAMeshSectionData *sectionData = [[self sectionData] objectAtIndex:section];
+		const CGRect sectionRect = CGRectMake(0, sectionData.y, self.contentSize.width, sectionData.totalHeight);
+		if (CGRectIntersectsRect(contentRect, sectionRect)) {
+			[sections addIndex:section];
+		}
+	}
+	return sections;
 }
 
 - (void)scrollToRowAtIndexPath:(NSIndexPath *)indexPath
 			  atScrollPosition:(UITableViewScrollPosition)scrollPosition
 					  animated:(BOOL)animated
 {
+	// Not Implemented Yet
 }
 
 - (void)scrollToNearestSelectedRowAtScrollPosition:(UITableViewScrollPosition)scrollPosition animated:(BOOL)animated {
+	// Not Implemented Yet
 }
 
 // Selection
@@ -906,6 +939,7 @@
 }
 
 - (NSIndexPath *)indexPathForSelectedCell {
+	// Not Implemented Yet
 	return nil;
 }
 
@@ -913,9 +947,11 @@
 					animated:(BOOL)animated
 			  scrollPosition:(UITableViewScrollPosition)scrollPosition
 {
+	// Not Implemented Yet
 }
 
 - (void)deselectRowAtIndexPath:(NSIndexPath *)indexPath animated:(BOOL)animated {
+	// Not Implemented Yet
 }
 
 @end
