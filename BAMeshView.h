@@ -97,6 +97,7 @@ typedef enum {
 
 - (void)meshView:(BAMeshView *)meshView willDisplayCell:(BAMeshViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 - (CGSize)meshView:(BAMeshView *)meshView sizeForCellAtIndexPath:(NSIndexPath *)indexPath;
+- (UIEdgeInsets)meshView:(BAMeshView *)meshView rowsInsetsInSection:(NSInteger)section; // for all rows as a whole
 - (BAMeshRowLayout)meshView:(BAMeshView *)meshView rowsLayoutInSection:(NSInteger)section;
 - (BAMeshCellAlignment)meshView:(BAMeshView *)meshView alignmentForCellAtIndexPath:(NSIndexPath *)indexPath;
 

@@ -425,6 +425,7 @@
 
 - (void)layoutRow:(NSRange)cells
 		   ofSize:(CGSize)rowSize
+			 left:(CGFloat)left
 		 maxWidth:(CGFloat)maxWidth
 		inSection:(NSInteger)section
 			 data:(BAMeshSectionData *)sectionData
@@ -482,6 +483,7 @@
 			w = maxWidth / cells.length;
 			break;
 	}
+	x += left;
 	for (NSInteger cell = cells.location; cell < cells.location + cells.length; cell++) {
 		CGRect cellFrame = [sectionData cellFrame:cell];
 		cellFrame.origin.x = rint(x);
@@ -520,22 +522,28 @@
 		CGFloat y = _meshHeaderHeight;
 		const CGFloat maxWidth = self.bounds.size.width - (self.contentInset.left + self.contentInset.right);
 		for (NSInteger section = 0; section < numberOfSections; section++) {
+			UIEdgeInsets rowsInsets = UIEdgeInsetsZero;
+			if ([self.delegate respondsToSelector:@selector(meshView:rowsInsetsInSection:)]) {
+				rowsInsets = [self.delegate meshView:self rowsInsetsInSection:section];
+			}
 			BAMeshSectionData *sectionData = [[[BAMeshSectionData alloc] init] autorelease];
 			sectionData.y = y;
 			sectionData.headerHeight = [self heightForHeaderInSection:section];
 			sectionData.footerHeight = [self heightForFooterInSection:section];
-			sectionData.totalHeight = sectionData.headerHeight + sectionData.footerHeight;
+			sectionData.totalHeight = sectionData.headerHeight + rowsInsets.top + rowsInsets.bottom + sectionData.footerHeight;
 			sectionData.numberOfCells = [self numberOfCellsInSection:section];
-			y += sectionData.headerHeight;
+			y += sectionData.headerHeight + rowsInsets.top;
+			const CGFloat maxRowsWidth = maxWidth - (rowsInsets.left + rowsInsets.right);
 			CGFloat x = 0;
 			CGFloat rowHeight = 0;
 			NSInteger firstRowCell = 0;
 			for (NSInteger cell = firstRowCell; cell < sectionData.numberOfCells; cell++) {
 				const CGSize cellSize = [self sizeForCell:cell inSection:section];
-				if (cell > firstRowCell && (x + cellSize.width) > maxWidth) {
+				if (cell > firstRowCell && (x + cellSize.width) > maxRowsWidth) {
 					[self layoutRow:NSMakeRange(firstRowCell, cell - firstRowCell)
 							 ofSize:CGSizeMake(x, rowHeight)
-						   maxWidth:maxWidth
+							   left:rowsInsets.left
+						   maxWidth:maxRowsWidth
 						  inSection:section
 							   data:sectionData];
 					y += rowHeight;
@@ -552,14 +560,15 @@
 			if (sectionData.numberOfCells > firstRowCell) {
 				[self layoutRow:NSMakeRange(firstRowCell, sectionData.numberOfCells - firstRowCell)
 						 ofSize:CGSizeMake(x, rowHeight)
-					   maxWidth:maxWidth
+						   left:rowsInsets.left
+					   maxWidth:maxRowsWidth
 					  inSection:section
 						   data:sectionData];
 			}
 			sectionData.totalHeight += rowHeight;
 			[_sectionData addObject:sectionData];
 //			NSLog(@"%@", sectionData);
-			y += sectionData.footerHeight;
+			y += rowsInsets.bottom + sectionData.footerHeight;
 		}
 		y += _meshFooterHeight;
 		self.contentSize = CGSizeMake(maxWidth, y);
