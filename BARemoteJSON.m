@@ -114,9 +114,10 @@ NSString * const BARemoteJSONErrorDataKey = @"BARemoteJSONErrorData";
 			}
 			NSURLRequest *request = [self remoteJSON:self requestWithRPCString:RPCString];
 			BADataLoader *loader = [[[BADataLoader alloc] initWithRequest:request] autorelease];
+			loader.cache = nil;
 			loader.delegate = self;
 			[loader.userInfo setObject:batchedCallbacks forKey:kCallbacksKey];
-			[loader startIgnoreCache:NO];
+			[loader startIgnoreCache:YES];
 		}
 	}
 	@finally {
@@ -164,13 +165,14 @@ NSString * const BARemoteJSONErrorDataKey = @"BARemoteJSONErrorData";
 	} else {
 		NSURLRequest *request = [self remoteJSON:self requestWithRPCString:RPCString];
 		BADataLoader *loader = [[[BADataLoader alloc] initWithRequest:request] autorelease];
+		loader.cache = nil;
 		loader.delegate = self;
 		completion = Block_copy(completion);
 		NSDictionary *callbacks = [NSDictionary dictionaryWithObject:completion
 															  forKey:[NSNumber numberWithInt:invocationId]];
 		Block_release(completion);
 		[loader.userInfo setObject:callbacks forKey:kCallbacksKey];
-		[loader startIgnoreCache:NO];
+		[loader startIgnoreCache:YES];
 	}
 }
 
