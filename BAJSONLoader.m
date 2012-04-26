@@ -92,9 +92,9 @@
 + (BOOL)boolFromJSONValue:(NSDictionary *)JSONValue forKey:(NSString *)key defaultValue:(BOOL)defaultValue {
 	id value = [JSONValue objectForKey:key];
 	if (value && [value isKindOfClass:[NSString class]]) {
-		return !![value intValue];
+		return [value boolValue];
 	} else if (value && [value isKindOfClass:[NSNumber class]]) {
-		return !![value intValue];
+		return [value boolValue];
 	}
 	return defaultValue;
 }
