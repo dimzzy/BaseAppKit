@@ -63,7 +63,11 @@ static const CGFloat kTextFieldDefaultX = 120;
 }
 
 + (void)stopEditing:(UITableView *)tableView {
-	for (UITableViewCell *cell in [tableView visibleCells]) {
+	NSArray *cells = [[[tableView visibleCells] copy] autorelease];
+	if ([cells count] == 0) {
+		return;
+	}
+	for (UITableViewCell *cell in cells) {
 		if ([cell isKindOfClass:[BAEditableCell class]]) {
 			BAEditableCell *editableCell = (BAEditableCell *)cell;
 			[editableCell.textField resignFirstResponder];
