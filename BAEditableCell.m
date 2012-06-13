@@ -28,11 +28,11 @@
 
 #import "BAEditableCell.h"
 
-#define kTextFieldDefaultWidth 180
+static const CGFloat kTextFieldDefaultX = 120;
 
 @implementation BAEditableCell
 
-@synthesize textField, textFieldWidth;
+@synthesize textField, textFieldX;
 
 - (void)dealloc {
 	self.textField = nil;
@@ -55,10 +55,11 @@
 	[super layoutSubviews];
 	const CGFloat width = self.contentView.bounds.size.width;
 	const CGFloat height = self.contentView.bounds.size.height;
-	const CGFloat textWidth = self.textFieldWidth > 0 ? self.textFieldWidth : kTextFieldDefaultWidth;
+	const CGFloat textX = self.textFieldX > 0 ? self.textFieldX : kTextFieldDefaultX;
 	const CGFloat textHeight = self.textLabel.bounds.size.height;
 	const CGFloat spacing = self.textLabel.frame.origin.x;
-	self.textField.frame = CGRectMake(width - spacing - textWidth, (height - textHeight) / 2, textWidth, textHeight);
+	self.textField.frame = CGRectMake(spacing + textX, (height - textHeight) / 2,
+									  (width - textX - spacing - spacing), textHeight);
 }
 
 + (void)stopEditing:(UITableView *)tableView {

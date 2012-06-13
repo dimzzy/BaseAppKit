@@ -31,7 +31,7 @@
 @interface BAEditableCell : UITableViewCell
 
 @property(nonatomic, retain) UITextField *textField;
-@property(nonatomic, assign) CGFloat textFieldWidth;
+@property(nonatomic, assign) CGFloat textFieldX;
 
 + (void)stopEditing:(UITableView *)tableView;
 
