@@ -28,19 +28,12 @@
 
 #import "BARefreshHeaderView.h"
 
-#define kArrowFlipAnimationDuration 0.18
-#define kMargin 25
-#define kArrowWidth 23
-#define kArrowHeight 60
-#define kRefreshHeaderHeight 80
-#define kRefreshHeaderActionHeight 5
-
-@interface BARefreshHeaderView (Private)
-
-- (void)setState:(BARefreshHeaderState)state;
-
-@end
-
+const double kArrowFlipAnimationDuration = 0.18;
+const CGFloat kMargin = 25;
+const CGFloat kArrowWidth = 23;
+const CGFloat kArrowHeight = 60;
+const CGFloat kRefreshHeaderHeight = 80;
+const CGFloat kRefreshHeaderActionHeight = 5;
 
 @implementation BARefreshHeaderView {
 @private
@@ -90,11 +83,7 @@
 		_arrowImageLayer = [[CALayer layer] retain];
 		_arrowImageLayer.frame = CGRectMake(kMargin, frame.size.height - 70, kArrowWidth, kArrowHeight);
 		_arrowImageLayer.contentsGravity = kCAGravityResizeAspect;
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
-		if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)]) {
-			_arrowImageLayer.contentsScale = [[UIScreen mainScreen] scale];
-		}
-#endif
+		_arrowImageLayer.contentsScale = [[UIScreen mainScreen] scale];
 		[[self layer] addSublayer:_arrowImageLayer];
 		
 		_activityView = [[UIActivityIndicatorView alloc] init];
@@ -172,7 +161,9 @@
 						  delay:0
 						options:UIViewAnimationOptionCurveEaseInOut
 					 animations:^{
-						 [scrollView setContentInset:UIEdgeInsetsMake(kRefreshHeaderHeight, 0, 0, 0)];
+						 UIEdgeInsets insets = [scrollView contentInset];
+						 insets.top = kRefreshHeaderHeight;
+						 [scrollView setContentInset:insets];
 					 }
 					 completion:nil];
 	[self setState:BARefreshHeaderStateLoading];
@@ -183,7 +174,9 @@
 						  delay:0
 						options:UIViewAnimationOptionCurveEaseInOut
 					 animations:^{
-						 [scrollView setContentInset:UIEdgeInsetsMake(0, 0, 0, 0)];
+						 UIEdgeInsets insets = [scrollView contentInset];
+						 insets.top = 0;
+						 [scrollView setContentInset:insets];
 					 }
 					 completion:nil];
 	[self setState:BARefreshHeaderStateIdle];
@@ -194,7 +187,9 @@
 						  delay:0
 						options:UIViewAnimationOptionCurveEaseInOut
 					 animations:^{
-						 [scrollView setContentInset:UIEdgeInsetsMake(kRefreshHeaderHeight, 0, 0, 0)];
+						 UIEdgeInsets insets = [scrollView contentInset];
+						 insets.top = kRefreshHeaderHeight;
+						 [scrollView setContentInset:insets];
 					 }
 					 completion:nil];
 	[self setState:BARefreshHeaderStateIdle];
@@ -213,9 +208,10 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {	
 	if (_state == BARefreshHeaderStateLoading) {
+		UIEdgeInsets insets = [scrollView contentInset];
 		CGFloat offset = MAX(-scrollView.contentOffset.y, 0);
-		offset = MIN(offset, kRefreshHeaderHeight);
-		scrollView.contentInset = UIEdgeInsetsMake(offset, 0, 0, 0);
+		insets.top = MIN(offset, kRefreshHeaderHeight);
+		[scrollView setContentInset:insets];
 	} else if (scrollView.isDragging) {
 		const BOOL loading = [self dataSourceLoading];
 		if (_state == BARefreshHeaderStatePulling &&
@@ -247,7 +243,9 @@
 							  delay:0
 							options:UIViewAnimationOptionCurveEaseInOut
 						 animations:^{
-							 [scrollView setContentInset:UIEdgeInsetsMake(kRefreshHeaderHeight, 0, 0, 0)];
+							 UIEdgeInsets insets = [scrollView contentInset];
+							 insets.top = kRefreshHeaderHeight;
+							 [scrollView setContentInset:insets];
 						 }
 						 completion:nil];
 	}
