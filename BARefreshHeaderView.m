@@ -99,15 +99,17 @@ const CGFloat kRefreshHeaderActionHeight = 5;
 - (void)refreshLastUpdatedDate {
 	if ([_delegate respondsToSelector:@selector(refreshHeaderDataSourceLastUpdated:)]) {
 		NSDate *date = [_delegate refreshHeaderDataSourceLastUpdated:self];
-		NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-		[formatter setDateStyle:NSDateFormatterShortStyle];
-		[formatter setTimeStyle:NSDateFormatterMediumStyle];
-		_lastUpdatedLabel.text = [NSString stringWithFormat:@"%@ %@",
-								  NSLocalizedString(@"RefreshHeaderUpdated", nil),
-								  [formatter stringFromDate:date]];
-		[[NSUserDefaults standardUserDefaults] setObject:_lastUpdatedLabel.text forKey:@"BARefreshHeaderView_LastUpdate"];
-		[[NSUserDefaults standardUserDefaults] synchronize];
-		[formatter release];
+		if (date) {
+			NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+			[formatter setDateStyle:NSDateFormatterShortStyle];
+			[formatter setTimeStyle:NSDateFormatterMediumStyle];
+			_lastUpdatedLabel.text = [NSString stringWithFormat:@"%@ %@",
+									  NSLocalizedString(@"RefreshHeaderUpdated", nil),
+									  [formatter stringFromDate:date]];
+			[formatter release];
+		} else {
+			_lastUpdatedLabel.text = nil;
+		}
 	} else {
 		_lastUpdatedLabel.text = nil;
 	}
