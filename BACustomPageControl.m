@@ -28,7 +28,7 @@
 
 #import "BACustomPageControl.h"
 
-#define kUnitSpacing 10
+const CGFloat kDefaultUnitSpacing = 10.0;
 
 @implementation BACustomPageControl {
 @private
@@ -38,6 +38,7 @@
 	BOOL _hidesForSinglePage;
 	BAPageControlAlignment _alignment;
 	CGFloat _inset;
+	CGFloat _unitSpacing;
 }
 
 @synthesize defersCurrentPageDisplay = _defersCurrentPageDisplay;
@@ -49,6 +50,7 @@
 	self.contentMode = UIViewContentModeRedraw;
 	self.backgroundColor = [UIColor clearColor];
 	self.alignment = BAPageControlAlignmentCenter;
+	self.unitSpacing = kDefaultUnitSpacing;
 }
 
 - (id)initWithFrame:(CGRect)aRect {
@@ -87,11 +89,11 @@
 			break;
 	}
 	const CGFloat top = rint((self.bounds.size.height - size.height) / 2);
-	const CGFloat imageWidth = (size.width - kUnitSpacing * (_numberOfPages - 1)) / _numberOfPages;
+	const CGFloat imageWidth = (size.width - self.unitSpacing * (_numberOfPages - 1)) / _numberOfPages;
 	for (NSInteger page = 0; page < _numberOfPages; page++) {
 		UIImage *image = (page == _displayedPage) ? self.activeImage : self.inactiveImage;
 		if (image) {
-			[image drawAtPoint:CGPointMake(rint(left + page * (imageWidth + kUnitSpacing)), top)];
+			[image drawAtPoint:CGPointMake(rint(left + page * (imageWidth + self.unitSpacing)), top)];
 		}
 	}
 }
@@ -117,7 +119,7 @@
 		size.height = MAX(size.height, self.inactiveImage.size.height);
 	}
 	if (_numberOfPages > 1) {
-		size.width += kUnitSpacing * (_numberOfPages - 1);
+		size.width += self.unitSpacing * (_numberOfPages - 1);
 	}
 	return size;
 }
@@ -203,6 +205,17 @@
 	}
 }
 
+- (CGFloat)unitSpacing {
+	return _unitSpacing;
+}
+
+- (void)setUnitSpacing:(CGFloat)unitSpacing {
+	if (_unitSpacing != unitSpacing) {
+		_unitSpacing = unitSpacing;
+		[self setNeedsDisplay];
+	}
+}
+
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
 	if (_numberOfPages == 0 || (_numberOfPages == 1 && _hidesForSinglePage)) {
 		return;
@@ -212,7 +225,7 @@
 	BOOL updated = NO;
 	CGFloat displayedX = self.bounds.size.width / 2;
 	CGSize size = [self sizeForNumberOfPages:_numberOfPages];
-	const CGFloat imageWidth = (size.width - kUnitSpacing * (_numberOfPages - 1)) / _numberOfPages;
+	const CGFloat imageWidth = (size.width - self.unitSpacing * (_numberOfPages - 1)) / _numberOfPages;
 	CGFloat left;
 	switch (self.alignment) {
 		case BAPageControlAlignmentLeft:
@@ -225,7 +238,7 @@
 			left = (self.bounds.size.width - size.width - self.inset);
 			break;
 	}
-	displayedX = left + (imageWidth + kUnitSpacing) * _displayedPage + imageWidth / 2;
+	displayedX = left + (imageWidth + self.unitSpacing) * _displayedPage + imageWidth / 2;
 	
 	if (location.x < displayedX && _displayedPage > 0) {
 		_currentPage = _displayedPage - 1;

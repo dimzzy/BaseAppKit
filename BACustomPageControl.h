@@ -38,6 +38,8 @@
                                                     // displayed page until -updateCurrentPageDisplay is called.
                                                     // default is NO
 
+@property(nonatomic, assign) CGFloat unitSpacing; // distance between dots
+
 @property(nonatomic, retain) UIImage *activeImage;
 @property(nonatomic, retain) UIImage *inactiveImage;
 
