@@ -24,6 +24,7 @@
 - (UIWebView *)webView {
 	if (!_webView) {
 		_webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+		_webView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 	}
 	return _webView;
 }
