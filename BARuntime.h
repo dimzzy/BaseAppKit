@@ -33,5 +33,6 @@
 + (id)parseJSONData:(NSData *)data error:(NSError **)error;
 + (NSData *)serializeJSONToData:(id)JSONValue error:(NSError **)error;
 + (NSString *)serializeJSONToString:(id)JSONValue error:(NSError **)error;
++ (NSString *)serializeJSONToString:(id)JSONValue formatted:(BOOL)formatted error:(NSError **)error;
 
 @end

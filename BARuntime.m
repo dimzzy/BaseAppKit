@@ -114,6 +114,10 @@
 }
 
 + (NSString *)serializeJSONToString:(id)JSONValue error:(NSError **)error {
+	return [self serializeJSONToString:JSONValue formatted:NO error:error];
+}
+
++ (NSString *)serializeJSONToString:(id)JSONValue formatted:(BOOL)formatted error:(NSError **)error {
 	if (!JSONValue) {
 		return nil;
 	}
@@ -122,7 +126,7 @@
 		NSData *data = nil;
 		@try {
 			data = objc_msgSend(serClass, @selector(dataWithJSONObject:options:error:),
-								JSONValue, 0, error);
+								JSONValue, (formatted ? NSJSONWritingPrettyPrinted : 0), error);
 		}
 		@catch (NSException *e) {
 			if (error) {
@@ -140,7 +144,7 @@
 		NSString *data = nil;
 		@try {
 			data = [JSONValue performSelector:@selector(JSONStringWithOptions:error:)
-								   withObject:[NSNumber numberWithInt:0]
+								   withObject:[NSNumber numberWithInt:(formatted ? 1 /*JKSerializeOptionPretty*/ : 0)]
 								   withObject:(id)error];
 		}
 		@catch (NSException *e) {
