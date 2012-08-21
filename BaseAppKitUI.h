@@ -31,5 +31,7 @@
 #include <BaseAppKit/BAMeshViewCell.h>
 #include <BaseAppKit/BAMeshView.h>
 #include <BaseAppKit/BAScrollViewProxyDelegate.h>
+#include <BaseAppKit/BAJSONViewController.h>
+#include <BaseAppKit/BATextViewController.h>
 
 #endif // __BASEAPPKITUI__
