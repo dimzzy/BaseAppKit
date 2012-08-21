@@ -8,6 +8,8 @@
 
 #import "BAJSONViewController.h"
 #import "BATextViewController.h"
+#import "BACommon.h"
+#import "BARuntime.h"
 
 @interface BAJSONViewController ()
 
@@ -100,8 +102,29 @@
 	}
 }
 
+- (void)showRawJSONValue {
+	if (self.JSONValue) {
+		NSError *error = nil;
+		NSString *string = [BARuntime serializeJSONToString:self.JSONValue formatted:YES error:&error];
+		if (string) {
+			BATextViewController *controller = [[[BATextViewController alloc] init] autorelease];
+			controller.navigationItem.title = self.navigationItem.title;
+			controller.textView.text = string;
+			[self.navigationController pushViewController:controller animated:YES];
+		} else {
+			NSString *message = error ? [error localizedDescription] : @"Unable to serialize JSON value";
+			BAAlert(@"Error", message);
+		}
+	} else {
+		BAAlert(@"Error", @"No JSON value");
+	}
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+	self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+																							target:self
+																							action:@selector(showRawJSONValue)] autorelease];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
