@@ -223,7 +223,6 @@ const CGFloat kDefaultUnitSpacing = 10.0;
 	UITouch *touch = [touches anyObject];
 	CGPoint location = [touch locationInView:self];
 	BOOL updated = NO;
-	CGFloat displayedX = self.bounds.size.width / 2;
 	CGSize size = [self sizeForNumberOfPages:_numberOfPages];
 	const CGFloat imageWidth = (size.width - self.unitSpacing * (_numberOfPages - 1)) / _numberOfPages;
 	CGFloat left;
@@ -238,7 +237,7 @@ const CGFloat kDefaultUnitSpacing = 10.0;
 			left = (self.bounds.size.width - size.width - self.inset);
 			break;
 	}
-	displayedX = left + (imageWidth + self.unitSpacing) * _displayedPage + imageWidth / 2;
+	CGFloat displayedX = left + (imageWidth + self.unitSpacing) * _displayedPage + imageWidth / 2;
 	
 	if (location.x < displayedX && _displayedPage > 0) {
 		_currentPage = _displayedPage - 1;
