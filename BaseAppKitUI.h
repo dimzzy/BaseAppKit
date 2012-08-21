@@ -33,5 +33,6 @@
 #include <BaseAppKit/BAScrollViewProxyDelegate.h>
 #include <BaseAppKit/BAJSONViewController.h>
 #include <BaseAppKit/BATextViewController.h>
+#include <BaseAppKit/BAWebViewController.h>
 
 #endif // __BASEAPPKITUI__

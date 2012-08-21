@@ -7,6 +7,7 @@
 //
 
 #import "BATextViewController.h"
+#import "BAWebViewController.h"
 
 @interface BATextViewController ()
 
@@ -39,8 +40,34 @@
 	}
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+	[super viewWillAppear:animated];
+	self.navigationItem.rightBarButtonItem = nil;
+	if ([self.textView.text length] > 0) {
+		NSURL *URL = [NSURL URLWithString:self.textView.text];
+		if (URL) {
+			self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+																									target:self
+																									action:@selector(openURL)] autorelease];
+		}
+	}
+}
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     return YES;
+}
+
+- (void)openURL {
+	if ([self.textView.text length] > 0) {
+		NSURL *URL = [NSURL URLWithString:self.textView.text];
+		if (URL) {
+			BAWebViewController *controller = [[[BAWebViewController alloc] init] autorelease];
+			[controller.webView loadRequest:[NSURLRequest requestWithURL:URL
+															 cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
+														 timeoutInterval:60]];
+			[self.navigationController pushViewController:controller animated:YES];
+		}
+	}
 }
 
 @end
