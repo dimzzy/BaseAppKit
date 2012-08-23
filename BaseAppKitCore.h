@@ -6,6 +6,7 @@
 #include <BaseAppKit/BANetworkActivity.h>
 #include <BaseAppKit/BAPersistentCache.h>
 #include <BaseAppKit/BANetwork.h>
+#include <BaseAppKit/BANetworkReachability.h>
 #include <BaseAppKit/BADataLoader.h>
 #include <BaseAppKit/BAJSONLoader.h>
 #include <BaseAppKit/BAXMLParserBase.h>
