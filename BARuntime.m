@@ -35,6 +35,23 @@
 	if (!data || [data length] == 0) {
 		return nil;
 	}
+
+	if ([data respondsToSelector:NSSelectorFromString(@"objectFromJSONData")]) {
+		id JSONValue = nil;
+		@try {
+			JSONValue = [data performSelector:NSSelectorFromString(@"objectFromJSONData")];
+		}
+		@catch (NSException *e) {
+			if (error) {
+				*error = [NSError errorWithDomain:@"BaseAppKit"
+											 code:0
+										 userInfo:[NSDictionary dictionaryWithObject:e.reason
+																			  forKey:NSLocalizedDescriptionKey]];
+			}
+		}
+		return JSONValue;
+	}
+
 	Class serClass = NSClassFromString(@"NSJSONSerialization");
 	if (serClass) {
 		id JSONValue = nil;
@@ -51,10 +68,23 @@
 			}
 		}
 		return JSONValue;
-	} else if ([data respondsToSelector:NSSelectorFromString(@"objectFromJSONData")]) {
-		id JSONValue = nil;
+	}
+	
+	NSLog(@"JSON parser is not available");
+	return nil;
+}
+
++ (NSData *)serializeJSONToData:(id)JSONValue error:(NSError **)error {
+	if (!JSONValue) {
+		return nil;
+	}
+
+	if ([JSONValue respondsToSelector:@selector(JSONDataWithOptions:error:)]) {
+		NSData *data = nil;
 		@try {
-			JSONValue = [data performSelector:NSSelectorFromString(@"objectFromJSONData")];
+			data = [JSONValue performSelector:@selector(JSONDataWithOptions:error:)
+								   withObject:[NSNumber numberWithInt:0]
+								   withObject:(id)error];
 		}
 		@catch (NSException *e) {
 			if (error) {
@@ -64,17 +94,9 @@
 																			  forKey:NSLocalizedDescriptionKey]];
 			}
 		}
-		return JSONValue;
-	} else {
-		NSLog(@"JSON parser is not available");
+		return data;
 	}
-	return nil;
-}
 
-+ (NSData *)serializeJSONToData:(id)JSONValue error:(NSError **)error {
-	if (!JSONValue) {
-		return nil;
-	}
 	Class serClass = NSClassFromString(@"NSJSONSerialization");
 	if (serClass) {
 		NSData *data = nil;
@@ -91,25 +113,9 @@
 			}
 		}
 		return data;
-	} else if ([JSONValue respondsToSelector:@selector(JSONDataWithOptions:error:)]) {
-		NSData *data = nil;
-		@try {
-			data = [JSONValue performSelector:@selector(JSONDataWithOptions:error:)
-								   withObject:[NSNumber numberWithInt:0]
-								   withObject:(id)error];
-		}
-		@catch (NSException *e) {
-			if (error) {
-				*error = [NSError errorWithDomain:@"BaseAppKit"
-											 code:0
-										 userInfo:[NSDictionary dictionaryWithObject:e.reason
-																			  forKey:NSLocalizedDescriptionKey]];
-			}
-		}
-		return data;
-	} else {
-		NSLog(@"JSON parser is not available");
 	}
+	
+	NSLog(@"JSON parser is not available");
 	return nil;
 }
 
@@ -121,6 +127,25 @@
 	if (!JSONValue) {
 		return nil;
 	}
+
+	if ([JSONValue respondsToSelector:@selector(JSONStringWithOptions:error:)]) {
+		NSString *data = nil;
+		@try {
+			data = [JSONValue performSelector:@selector(JSONStringWithOptions:error:)
+								   withObject:[NSNumber numberWithInt:(formatted ? 1 /*JKSerializeOptionPretty*/ : 0)]
+								   withObject:(id)error];
+		}
+		@catch (NSException *e) {
+			if (error) {
+				*error = [NSError errorWithDomain:@"BaseAppKit"
+											 code:0
+										 userInfo:[NSDictionary dictionaryWithObject:e.reason
+																			  forKey:NSLocalizedDescriptionKey]];
+			}
+		}
+		return data;
+	}
+
 	Class serClass = NSClassFromString(@"NSJSONSerialization");
 	if (serClass) {
 		NSData *data = nil;
@@ -140,25 +165,9 @@
 			return nil;
 		}
 		return [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
-	} else if ([JSONValue respondsToSelector:@selector(JSONStringWithOptions:error:)]) {
-		NSString *data = nil;
-		@try {
-			data = [JSONValue performSelector:@selector(JSONStringWithOptions:error:)
-								   withObject:[NSNumber numberWithInt:(formatted ? 1 /*JKSerializeOptionPretty*/ : 0)]
-								   withObject:(id)error];
-		}
-		@catch (NSException *e) {
-			if (error) {
-				*error = [NSError errorWithDomain:@"BaseAppKit"
-											 code:0
-										 userInfo:[NSDictionary dictionaryWithObject:e.reason
-																			  forKey:NSLocalizedDescriptionKey]];
-			}
-		}
-		return data;
-	} else {
-		NSLog(@"JSON parser is not available");
 	}
+
+	NSLog(@"JSON parser is not available");
 	return nil;
 }
 
